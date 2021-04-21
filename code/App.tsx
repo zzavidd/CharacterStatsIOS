@@ -3,8 +3,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
-import Home from './src';
-import Form from './src/form';
+import Home from './screens/home';
+import Form from './screens/form';
 
 const Stack = createStackNavigator();
 
