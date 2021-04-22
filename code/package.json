@@ -1,11 +1,12 @@
 {
   "main": "node_modules/expo/AppEntry.js",
+  "prettier": "@zzavidd/prettier-config",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "eslint": "eslint --ext .ts,.tsx ."
   },
   "dependencies": {
     "@react-native-community/masked-view": "0.1.10",
@@ -27,6 +28,14 @@
     "@babel/core": "^7.9.0",
     "@types/react": "~16.9.35",
     "@types/react-native": "~0.63.2",
+    "@typescript-eslint/eslint-plugin": "^4.22.0",
+    "@zzavidd/eslint-config": "^0.2.5",
+    "@zzavidd/prettier-config": "^0.2.0",
+    "eslint": "^7.24.0",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-react": "^7.23.2",
+    "eslint-plugin-react-native": "^3.10.0",
+    "prettier": "^2.2.1",
     "typescript": "~4.0.0"
   },
   "private": true

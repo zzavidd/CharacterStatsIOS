@@ -1,7 +1,9 @@
+import { capitalCase } from 'capital-case';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { capitalCase } from 'capital-case';
+import { FlatList, StyleSheet, Text, View } from 'react-native';
+
+import COLOR from '../constants/colors';
 import request from '../utils/request';
 
 export default function Home() {
@@ -40,25 +42,33 @@ export default function Home() {
 
   return (
     <View style={styles.container}>
-      {types.map((type, key) => {
-        return <Text key={key}>{type}</Text>;
-      })}
-      {abilities.map(({ name }, key) => {
-        return <Text key={key}>{name}</Text>;
-      })}
-      <StatusBar style='auto' />
+      <FlatList
+        data={types}
+        keyExtractor={(item) => item}
+        renderItem={({ item }) => {
+          return <Text>{item}</Text>;
+        }}
+      />
+      <FlatList
+        data={abilities}
+        keyExtractor={(item) => item.name}
+        renderItem={({ item }) => {
+          return <Text>{item.name}</Text>;
+        }}
+      />
+      <StatusBar style={'dark'} />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    display: 'flex',
-    backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
-  },
+    backgroundColor: COLOR.WHITE,
+    display: 'flex',
+    flex: 1,
+    justifyContent: 'center'
+  }
 });
 
 type PokeType = {

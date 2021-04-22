@@ -1,0 +1,36 @@
+{
+  "extends": "@zzavidd/eslint-config",
+  "env": {
+    "react-native/react-native": true
+  },
+  "plugins": ["react", "react-native"],
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "rules": {
+    "import/named": 0,
+    "import/namespace": 0,
+    "import/order": [
+      1,
+      {
+        "groups": ["external", "builtin", "internal", "sibling"],
+        "pathGroupsExcludedImportTypes": ["internal"],
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ],
+    "react-native/no-color-literals": 1,
+    "react-native/no-inline-styles": 1,
+    "react-native/no-raw-text": 2,
+    "react-native/no-single-element-style-arrays": 2,
+    "react-native/no-unused-styles": 1,
+    "react-native/sort-styles": 1,
+    "react-native/split-platform-components": 2,
+    "@typescript-eslint/no-explicit-any": 0
+  }
+}
