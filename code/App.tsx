@@ -7,13 +7,14 @@ import { Provider } from 'react-redux';
 
 import Form from './screens/form';
 import Home from './screens/home';
-import { formatMetaName, sortMetaByName } from './utils/helper';
+import * as Helper from './utils/helper';
 import store, {
   setAbilities,
   setTypes,
   useAppDispatch
 } from './utils/reducers';
 import request from './utils/request';
+import { PokeMeta } from './utils/types';
 
 const Stack = createStackNavigator();
 
@@ -34,19 +35,27 @@ function Index() {
   }, []);
 
   const getPokeTypes = () => {
-    request('https://pokeapi.co/api/v2/type', ({ results }) => {
+    request('https://pokeapi.co/api/v2/type', (results) => {
       const bannedTypes = ['Shadow', 'Unknown'];
       const typeList = results
-        .map(formatMetaName)
-        .filter((type: string) => type && !bannedTypes.includes(type))
-        .sort(sortMetaByName);
+        .map(Helper.formatMetaName)
+        .filter((type: PokeMeta) => !bannedTypes.includes(type.name))
+        .sort(Helper.sortMetaByName);
       dispatch(setTypes(typeList));
     });
   };
 
   const getPokeAbilities = () => {
-    request('https://pokeapi.co/api/v2/ability', ({ results }) => {
-      const abilityList = results.map(formatMetaName).sort(sortMetaByName);
+    request('https://pokeapi.co/api/v2/ability', async (results) => {
+      const seenAbilities: Array<string> = [];
+      const abilityList = await results
+        .map(Helper.formatMetaName)
+        .filter(({ name }: PokeMeta) => {
+          if (seenAbilities.includes(name)) return false;
+          seenAbilities.push(name);
+          return true;
+        })
+        .sort(Helper.sortMetaByName);
       dispatch(setAbilities(abilityList));
     });
   };
