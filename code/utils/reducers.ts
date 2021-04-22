@@ -5,7 +5,8 @@ import type { AppInitialState } from './types';
 
 const initialState: AppInitialState = {
   types: [],
-  abilities: []
+  abilities: [],
+  moves: []
 };
 
 const typeSlice = createSlice({
@@ -17,6 +18,9 @@ const typeSlice = createSlice({
     },
     setAbilities: (state, action) => {
       state.abilities = action.payload;
+    },
+    setMoves: (state, action) => {
+      state.moves = action.payload;
     }
   }
 });
@@ -26,7 +30,7 @@ const store = configureStore({
 });
 
 export default store;
-export const { setTypes, setAbilities } = typeSlice.actions;
+export const { setTypes, setAbilities, setMoves } = typeSlice.actions;
 export const useAppDispatch = () => useDispatch<typeof store.dispatch>();
 export const useAppSelector: TypedUseSelectorHook<
   ReturnType<typeof store.getState>

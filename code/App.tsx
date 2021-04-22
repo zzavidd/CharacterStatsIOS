@@ -10,8 +10,10 @@ import Home from './screens/home';
 import * as Helper from './utils/helper';
 import store, {
   setAbilities,
+  setMoves,
   setTypes,
-  useAppDispatch
+  useAppDispatch,
+  useAppSelector
 } from './utils/reducers';
 import request from './utils/request';
 import { PokeMeta } from './utils/types';
@@ -27,17 +29,21 @@ export default function App() {
 }
 
 function Index() {
+  const { types, abilities, moves } = useAppSelector((state) => state);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
     getPokeTypes();
     getPokeAbilities();
+    getPokeMoves();
   }, []);
 
   const getPokeTypes = () => {
-    request('https://pokeapi.co/api/v2/type', (results) => {
+    if (types.length) return;
+
+    request('https://pokeapi.co/api/v2/type', async (results) => {
       const bannedTypes = ['Shadow', 'Unknown'];
-      const typeList = results
+      const typeList = await results
         .map(Helper.formatMetaName)
         .filter((type: PokeMeta) => !bannedTypes.includes(type.name))
         .sort(Helper.sortMetaByName);
@@ -46,6 +52,8 @@ function Index() {
   };
 
   const getPokeAbilities = () => {
+    if (abilities.length) return;
+
     request('https://pokeapi.co/api/v2/ability', async (results) => {
       const seenAbilities: Array<string> = [];
       const abilityList = await results
@@ -57,6 +65,17 @@ function Index() {
         })
         .sort(Helper.sortMetaByName);
       dispatch(setAbilities(abilityList));
+    });
+  };
+
+  const getPokeMoves = () => {
+    if (moves.length) return;
+
+    request('https://pokeapi.co/api/v2/move', async (results) => {
+      const moveList = await results
+        .map(Helper.formatMetaName)
+        .sort(Helper.sortMetaByName);
+      dispatch(setMoves(moveList));
     });
   };
 

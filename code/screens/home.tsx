@@ -6,11 +6,11 @@ import Color from '../constants/colors';
 import { useAppSelector } from '../utils/reducers';
 
 export default function Home() {
-  const { types, abilities } = useAppSelector((state) => state);
+  const { types, abilities, moves } = useAppSelector((state) => state);
 
   return (
     <View style={styles.container}>
-      <FlatList
+      {/* <FlatList
         data={types}
         keyExtractor={(item) => item.name}
         renderItem={({ item }) => {
@@ -19,6 +19,13 @@ export default function Home() {
       />
       <FlatList
         data={abilities}
+        keyExtractor={(item) => item.name}
+        renderItem={({ item }) => {
+          return <Text>{item.name}</Text>;
+        }}
+      /> */}
+      <FlatList
+        data={moves}
         keyExtractor={(item) => item.name}
         renderItem={({ item }) => {
           return <Text>{item.name}</Text>;
