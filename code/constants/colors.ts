@@ -1,5 +1,5 @@
-const COLOR = {
+const Color = {
   WHITE: '#fff'
 };
 
-export default COLOR;
+export default Color;
