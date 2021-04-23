@@ -1,10 +1,37 @@
 export type AppInitialState = {
-  types: PokeMeta[];
-  abilities: PokeMeta[];
-  moves: PokeMeta[]
+  types: PokeType[];
+  abilities: PokeAbility[];
+  moves: PokeMove[];
 };
 
-export interface PokeMeta {
+export type PokeType = {
+  id: number;
   name: string;
-  url: string;
-}
+};
+
+export type PokeAbility = {
+  id: number;
+  name: string;
+  effects: {
+    effect: string;
+  };
+};
+
+export type PokeMove = {
+  id: number;
+  name: string;
+  accuracy: number;
+  power: number;
+  pp: number;
+  typeId: number;
+  damageClass: {
+    name: string;
+  };
+  effect: {
+    texts: [
+      {
+        text: string;
+      }
+    ];
+  };
+};

@@ -14,7 +14,7 @@ import { Universes } from '../constants/fields';
 import styles from '../styles/Form.styles';
 import { Character } from '../utils/classes';
 import { useAppSelector } from '../utils/reducers';
-import request from '../utils/request';
+import { PokeAbility, PokeType } from '../utils/types';
 
 export default function Form() {
   const { types, abilities, moves } = useAppSelector((state) => state);
@@ -58,14 +58,14 @@ export default function Form() {
           placeholder={'Select universe'}
         />
         <View style={styles.formTypes}>
-          <SelectInput
+          <SelectInput<PokeType>
             name={'type1'}
             value={character.type1}
             options={types}
             placeholder={'First type...'}
             style={styles.formTypesField}
           />
-          <SelectInput
+          <SelectInput<PokeType>
             name={'type2'}
             value={character.type2}
             options={types}
@@ -73,19 +73,19 @@ export default function Form() {
             style={styles.formTypesField}
           />
         </View>
-        <SelectInput
+        <SelectInput<PokeAbility>
           name={'ability1'}
           value={character.ability1}
           options={abilities}
           placeholder={'Select first ability'}
         />
-        <SelectInput
+        <SelectInput<PokeAbility>
           name={'ability2'}
           value={character.ability2}
           options={abilities}
           placeholder={'Select second ability'}
         />
-        <SelectInput<x>
+        <SelectInput<PokeAbility>
           name={'abilityX'}
           value={character.abilityX}
           options={abilities}
@@ -128,7 +128,7 @@ function createInputs(
   setSelectedField: React.Dispatch<React.SetStateAction<Array<any>>>,
   selectRef: RefObject<ITextInput>
 ) {
-  const SelectInput = (props: SelectInputProps) => {
+  const SelectInput = <T extends unknown>(props: SelectInputProps<T>) => {
     const { options } = props;
     return (
       <TextInput
@@ -166,6 +166,6 @@ interface CustomTextInputProps extends TextInputProps {
   name: keyof Character;
 }
 
-interface SelectInputProps extends CustomTextInputProps {
-  options: any[];
+interface SelectInputProps<T> extends CustomTextInputProps {
+  options: T[];
 }

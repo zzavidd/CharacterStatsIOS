@@ -16,8 +16,7 @@ import store, {
   useAppDispatch,
   useAppSelector
 } from './utils/reducers';
-import request from './utils/request';
-import { PokeMeta } from './utils/types';
+import request, { Queries } from './utils/request';
 
 const Stack = createStackNavigator();
 
@@ -42,41 +41,27 @@ function Index() {
   const getPokeTypes = () => {
     if (types.length) return;
 
-    request('https://pokeapi.co/api/v2/type', async (results) => {
-      const bannedTypes = ['Shadow', 'Unknown'];
-      const typeList = await results
-        .map(Helper.formatMetaName)
-        .filter((type: PokeMeta) => !bannedTypes.includes(type.name))
-        .sort(Helper.sortMetaByName);
-      dispatch(setTypes(typeList));
+    request(Queries.TYPE, (data) => {
+      const types = data.types.map(Helper.formatMetaName);
+      dispatch(setTypes(types));
     });
   };
 
   const getPokeAbilities = () => {
     if (abilities.length) return;
 
-    request('https://pokeapi.co/api/v2/ability', async (results) => {
-      const seenAbilities: Array<string> = [];
-      const abilityList = await results
-        .map(Helper.formatMetaName)
-        .filter(({ name }: PokeMeta) => {
-          if (seenAbilities.includes(name)) return false;
-          seenAbilities.push(name);
-          return true;
-        })
-        .sort(Helper.sortMetaByName);
-      dispatch(setAbilities(abilityList));
+    request(Queries.ABILITY, (data) => {
+      const abilities = data.abilities.map(Helper.formatMetaName);
+      dispatch(setAbilities(abilities));
     });
   };
 
   const getPokeMoves = () => {
     if (moves.length) return;
 
-    request('https://pokeapi.co/api/v2/move', async (results) => {
-      const moveList = await results
-        .map(Helper.formatMetaName)
-        .sort(Helper.sortMetaByName);
-      dispatch(setMoves(moveList));
+    request(Queries.MOVE, (data) => {
+      const moves = data.moves.map(Helper.formatMetaName);
+      dispatch(setMoves(moves));
     });
   };
 
@@ -87,7 +72,7 @@ function Index() {
           headerStyle: styles.header,
           headerTitleStyle: {
             color: Color.WHITE,
-            fontWeight: 'bold',
+            fontWeight: 'bold'
           }
         }}>
         <Stack.Screen
