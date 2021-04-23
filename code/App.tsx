@@ -5,6 +5,7 @@ import React, { useEffect } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Provider } from 'react-redux';
 
+import Color from './constants/colors';
 import Form from './screens/form';
 import Home from './screens/home';
 import * as Helper from './utils/helper';
@@ -81,7 +82,14 @@ function Index() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator
+        screenOptions={{
+          headerStyle: styles.header,
+          headerTitleStyle: {
+            color: Color.WHITE,
+            fontWeight: 'bold',
+          }
+        }}>
         <Stack.Screen
           name={'Home'}
           component={Home}
@@ -102,6 +110,9 @@ function Index() {
 }
 
 const styles = StyleSheet.create({
+  header: {
+    backgroundColor: Color.DARK
+  },
   headerButton: {
     paddingRight: 8
   }
