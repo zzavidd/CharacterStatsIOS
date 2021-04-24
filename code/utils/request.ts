@@ -41,7 +41,9 @@ export const Queries = {
       accuracy
       power
       pp
-      typeId: type_id
+      type: pokemon_v2_type {
+        name
+      }
       damageClass: pokemon_v2_movedamageclass {
         name
       }

@@ -9,7 +9,14 @@ import { Provider } from 'react-redux';
 import Color from './constants/colors';
 import Form from './screens/form';
 import Home from './screens/home';
-import { PokeAbility, PokeMove, PokeType } from './types';
+import {
+  ResponseAbility,
+  ResponseMove,
+  ResponseType,
+  PokeMove,
+  PokeType,
+  PokeAbility
+} from './types';
 import { Type } from './types/enums';
 import store, {
   setAbilities,
@@ -36,37 +43,45 @@ function Index() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    bootstrapExternalData();
+    getPokeAbilities();
+    getPokeTypes();
+    getPokeMoves();
   }, []);
 
-  const bootstrapExternalData = async () => {
-    getPokeAbilities();
-    await getPokeTypes();
-    getPokeMoves();
-  };
-
-  const getPokeTypes = async () => {
+  const getPokeTypes = () => {
     if (types.length && !DevSettings.retrieveData) return;
 
-    await request(Queries.TYPE, (data) => {
-      const typeList = data.types.map((type: PokeType) => {
-        type.name = capitalCase(type.name) as Type;
-        type.color = Color.TYPE[type.name];
-        return type;
+    request(Queries.TYPE, (data) => {
+      const typeList = data.types.map((responseType: ResponseType) => {
+        const typeName = capitalCase(responseType.name) as Type;
+        const marshaledType: PokeType = {
+          id: responseType.id,
+          name: typeName,
+          color: Color.TYPE[typeName]
+        };
+        return marshaledType;
       });
       dispatch(setTypes(typeList));
     });
   };
 
-  const getPokeAbilities = async () => {
+  const getPokeAbilities = () => {
     if (abilities.length && !DevSettings.retrieveData) return;
 
-    await request(Queries.ABILITY, (data) => {
-      const abilityList = data.abilities.map((ability: PokeAbility) => {
-        ability.name = capitalCase(ability.name);
-        ability.color = Object.values(Color.GENERATION)[ability.generation];
-        return ability;
-      });
+    request(Queries.ABILITY, (data) => {
+      const abilityList = data.abilities.map(
+        (responseAbility: ResponseAbility) => {
+          const { id, generation } = responseAbility;
+          const marshaledAbility: PokeAbility = {
+            id,
+            generation,
+            name: capitalCase(responseAbility.name),
+            color: Object.values(Color.GENERATION)[generation],
+            effect: responseAbility.effects.effect
+          };
+          return marshaledAbility;
+        }
+      );
       dispatch(setAbilities(abilityList));
     });
   };
@@ -75,11 +90,21 @@ function Index() {
     if (moves.length && !DevSettings.retrieveData) return;
 
     request(Queries.MOVE, (data) => {
-      const moveList = data.moves.map((move: PokeMove) => {
-        move.name = capitalCase(move.name);
-        const hello = types.find((type) => type.id === move.typeId);
-        move.color = hello!.color;
-        return move;
+      const moveList = data.moves.map((responseMove: ResponseMove) => {
+        const { id, accuracy, power, pp } = responseMove;
+        const type = capitalCase(responseMove.type.name) as Type;
+        const marshaledMove: PokeMove = {
+          id,
+          accuracy,
+          power,
+          pp,
+          type,
+          name: capitalCase(responseMove.name),
+          color: Color.TYPE[type],
+          damageClass: responseMove.damageClass.name,
+          effect: responseMove.effect.texts[0].text
+        };
+        return marshaledMove;
       });
       dispatch(setMoves(moveList));
     });

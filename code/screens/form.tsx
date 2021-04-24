@@ -8,18 +8,18 @@ import {
   ListRenderItemInfo,
   Text,
   TouchableOpacity,
+  SafeAreaView,
   View
 } from 'react-native';
 
 import { NumberInput, SelectInput, TextInput } from '../components/input';
-import Color from '../constants/colors';
 import { Universes } from '../constants/fields';
 import styles from '../styles/Form.styles';
 import {
   GenericListItem,
-  PokeAbility,
-  PokeMove,
-  PokeType,
+  ResponseAbility,
+  ResponseMove,
+  ResponseType,
   RootStackParamList
 } from '../types';
 import { Character, CharacterStats } from '../types/classes';
@@ -55,7 +55,7 @@ export default function Form({
   };
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <StatusBar style={'light'} />
       <View style={styles.form}>
         <TextInput
@@ -72,7 +72,7 @@ export default function Form({
           {...commonProps}
         />
         <View style={styles.formTypes}>
-          <SelectInput<PokeType>
+          <SelectInput<ResponseType>
             name={'type1'}
             value={character.type1}
             options={types}
@@ -80,7 +80,7 @@ export default function Form({
             style={styles.formTypesField}
             {...commonProps}
           />
-          <SelectInput<PokeType>
+          <SelectInput<ResponseType>
             name={'type2'}
             value={character.type2}
             options={types}
@@ -89,21 +89,21 @@ export default function Form({
             {...commonProps}
           />
         </View>
-        <SelectInput<PokeAbility>
+        <SelectInput<ResponseAbility>
           name={'ability1'}
           value={character.ability1}
           options={abilities}
           placeholder={'Select first ability'}
           {...commonProps}
         />
-        <SelectInput<PokeAbility>
+        <SelectInput<ResponseAbility>
           name={'ability2'}
           value={character.ability2}
           options={abilities}
           placeholder={'Select second ability'}
           {...commonProps}
         />
-        <SelectInput<PokeAbility>
+        <SelectInput<ResponseAbility>
           name={'abilityX'}
           value={character.abilityX}
           options={abilities}
@@ -156,7 +156,7 @@ export default function Form({
             style={styles.formStatsField}
           />
         </View>
-        <SelectInput<PokeMove>
+        <SelectInput<ResponseMove>
           name={'learnset'}
           value={character.name}
           options={moves}
@@ -176,7 +176,7 @@ export default function Form({
         field={focusedField}
         setCharacterMeta={setCharacterMeta}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -192,7 +192,7 @@ function DisplayedList({ items, field, setCharacterMeta }: DisplayedListProps) {
     );
   };
   return (
-    <KeyboardAvoidingView behavior={'padding'} style={styles.list}>
+    <View style={styles.list}>
       <FlatList
         data={items}
         keyExtractor={(item: GenericListItem) => item.id.toString()}
@@ -200,7 +200,7 @@ function DisplayedList({ items, field, setCharacterMeta }: DisplayedListProps) {
         removeClippedSubviews={true}
         initialNumToRender={20}
       />
-    </KeyboardAvoidingView>
+    </View>
   );
 }
 
