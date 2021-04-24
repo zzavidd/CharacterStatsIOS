@@ -1,10 +1,13 @@
 import { StatusBar } from 'expo-status-bar';
-import React, { RefObject, useEffect, useRef, useState } from 'react';
+import React, { RefObject, useRef, useState } from 'react';
 import {
+  Button,
   FlatList,
+  StyleProp,
   Text,
   TextInput as ITextInput,
   TextInputProps,
+  TextStyle,
   View
 } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -12,7 +15,7 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import Color from '../constants/colors';
 import { Universes } from '../constants/fields';
 import styles from '../styles/Form.styles';
-import { Character } from '../utils/classes';
+import { Character, CharacterStats } from '../utils/classes';
 import { useAppSelector } from '../utils/reducers';
 import { PokeAbility, PokeType } from '../utils/types';
 
@@ -20,26 +23,25 @@ export default function Form() {
   const { types, abilities, moves } = useAppSelector((state) => state);
 
   const [character, setCharacter] = useState<Character>(new Character());
-  const [selectedField, setSelectedField] = useState<Array<any>>([]);
-
-  useEffect(() => {
-    console.log(selectedField);
-  }, [selectedField]);
-
-  const selectRef = useRef<ITextInput>(null);
+  const [displayedListItems, setDisplayedListItems] = useState<Array<any>>([]);
+  const [focusedField, setFocusedField] = useState<keyof Character>('name');
 
   const setCharacterMeta = (value: any, property: keyof Character) => {
-    setCharacter((character) => {
-      character[property] = value;
-      return character;
-    });
+    setCharacter((character) => ({ ...character, [property]: value }));
   };
 
-  const { TextInput, SelectInput } = createInputs(
+  const setCharacterStat = (value: string, property: keyof CharacterStats) => {
+    setCharacter((character) => ({
+      ...character,
+      stats: { ...character.stats, [property]: value }
+    }));
+  };
+
+  const commonProps = {
     setCharacterMeta,
-    setSelectedField,
-    selectRef
-  );
+    setDisplayedListItems,
+    setFocusedField
+  };
 
   return (
     <View style={styles.container}>
@@ -50,12 +52,14 @@ export default function Form() {
           value={character.name}
           placeholder={'Enter name'}
           autoFocus={true}
+          {...commonProps}
         />
         <SelectInput
           name={'universe'}
           value={character.universe}
           options={Universes}
           placeholder={'Select universe'}
+          {...commonProps}
         />
         <View style={styles.formTypes}>
           <SelectInput<PokeType>
@@ -64,6 +68,7 @@ export default function Form() {
             options={types}
             placeholder={'First type...'}
             style={styles.formTypesField}
+            {...commonProps}
           />
           <SelectInput<PokeType>
             name={'type2'}
@@ -71,6 +76,7 @@ export default function Form() {
             options={types}
             placeholder={'Second type...'}
             style={styles.formTypesField}
+            {...commonProps}
           />
         </View>
         <SelectInput<PokeAbility>
@@ -78,43 +84,102 @@ export default function Form() {
           value={character.ability1}
           options={abilities}
           placeholder={'Select first ability'}
+          {...commonProps}
         />
         <SelectInput<PokeAbility>
           name={'ability2'}
           value={character.ability2}
           options={abilities}
           placeholder={'Select second ability'}
+          {...commonProps}
         />
         <SelectInput<PokeAbility>
           name={'abilityX'}
           value={character.abilityX}
           options={abilities}
           placeholder={'Select hidden ability'}
+          {...commonProps}
+        />
+        <View style={styles.formStats}>
+          <NumberInput
+            name={'hp'}
+            value={character.stats?.hp}
+            placeholder={'HP'}
+            setCharacterStat={setCharacterStat}
+            style={styles.formStatsField}
+          />
+          <NumberInput
+            name={'attack'}
+            value={character.stats?.attack}
+            placeholder={'Attack'}
+            setCharacterStat={setCharacterStat}
+            style={styles.formStatsField}
+          />
+          <NumberInput
+            name={'defence'}
+            value={character.stats?.defence}
+            placeholder={'Defence'}
+            setCharacterStat={setCharacterStat}
+            style={styles.formStatsField}
+          />
+        </View>
+        <View style={styles.formStats}>
+          <NumberInput
+            name={'spAtk'}
+            value={character.stats?.spAtk}
+            placeholder={'Sp. Atk'}
+            setCharacterStat={setCharacterStat}
+            style={styles.formStatsField}
+          />
+          <NumberInput
+            name={'spDef'}
+            value={character.stats?.spDef}
+            placeholder={'Sp. Def'}
+            setCharacterStat={setCharacterStat}
+            style={styles.formStatsField}
+          />
+          <NumberInput
+            name={'speed'}
+            value={character.stats?.speed}
+            placeholder={'Speed'}
+            setCharacterStat={setCharacterStat}
+            style={styles.formStatsField}
+          />
+        </View>
+        <Button
+          title={'Save'}
+          onPress={() => {
+            console.log(character);
+          }}
         />
       </View>
-      <MetaList selectedField={selectedField} selectRef={selectRef} />
+      <MetaList
+        displayedListItems={displayedListItems}
+        focusedField={focusedField}
+        setCharacterMeta={setCharacterMeta}
+      />
     </View>
   );
 }
 
-function MetaList({ selectedField, selectRef }: MetaListProps) {
+function MetaList({
+  displayedListItems,
+  focusedField,
+  setCharacterMeta
+}: MetaListProps) {
   return (
     <View style={styles.list}>
       <FlatList
-        data={selectedField}
-        keyExtractor={(item) => item.name ?? item}
-        renderItem={({ item }) => {
+        data={displayedListItems}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item, index }) => {
           return (
             <TouchableOpacity
               onPress={() => {
-                const select = selectRef.current;
-                if (select && select.isFocused) {
-                  select.setNativeProps({
-                    text: item.name ?? item
-                  });
-                }
-              }}>
-              <Text style={styles.listItem}>{item.name ?? item}</Text>
+                setCharacterMeta(item.name, focusedField);
+              }}
+              key={index}>
+              <Text style={styles.listItem}>{item.name}</Text>
             </TouchableOpacity>
           );
         }}
@@ -123,49 +188,68 @@ function MetaList({ selectedField, selectRef }: MetaListProps) {
   );
 }
 
-function createInputs(
-  setCharacterMeta: (value: any, property: keyof Character) => void,
-  setSelectedField: React.Dispatch<React.SetStateAction<Array<any>>>,
-  selectRef: RefObject<ITextInput>
-) {
-  const SelectInput = <T extends unknown>(props: SelectInputProps<T>) => {
-    const { options } = props;
-    return (
-      <TextInput
-        {...props}
-        ref={selectRef}
-        onFocus={() => setSelectedField(options)}
-      />
-    );
-  };
-
-  const TextInput = React.forwardRef<ITextInput, CustomTextInputProps>(
-    (props, ref) => {
-      const { name, style } = props;
-      return (
-        <ITextInput
-          {...props}
-          ref={ref}
-          placeholderTextColor={Color.PLACEHOLDER_TEXT_COLOR}
-          style={[styles.formTextInput, style]}
-          onChangeText={(text) => setCharacterMeta(text, name)}
-        />
-      );
-    }
+function TextInput(props: CustomTextInputProps) {
+  const { name, style, setCharacterMeta } = props;
+  return (
+    <ITextInput
+      {...props}
+      placeholderTextColor={Color.PLACEHOLDER_TEXT_COLOR}
+      style={[styles.formTextInput, style]}
+      onChangeText={(text) => setCharacterMeta(text, name)}
+    />
   );
+}
 
-  return { TextInput, SelectInput };
+function SelectInput<T extends unknown>(props: SelectInputProps<T>) {
+  const { name, options, setDisplayedListItems, setFocusedField } = props;
+  return (
+    <TextInput
+      {...props}
+      onFocus={() => {
+        setDisplayedListItems(options);
+        setFocusedField(name);
+      }}
+    />
+  );
+}
+
+function NumberInput(props: NumberInputProps) {
+  const { name, placeholder, setCharacterStat, style } = props;
+  return (
+    <ITextInput
+      {...props}
+      value={props.value?.toString()}
+      keyboardType={'numeric'}
+      placeholder={placeholder}
+      placeholderTextColor={Color.PLACEHOLDER_TEXT_COLOR}
+      style={[styles.formTextInput, style]}
+      onChangeText={(text) => setCharacterStat(text, name)}
+    />
+  );
 }
 
 type MetaListProps = {
-  selectedField: any[];
-  selectRef: RefObject<ITextInput>;
+  displayedListItems: any[];
+  focusedField: keyof Character;
+  setCharacterMeta: (value: any, property: keyof Character) => void;
 };
 
 interface CustomTextInputProps extends TextInputProps {
   name: keyof Character;
+  setCharacterMeta: (value: any, property: keyof Character) => void;
+}
+
+interface NumberInputProps {
+  name: keyof CharacterStats;
+  placeholder: string;
+  value: number;
+  style?: StyleProp<TextStyle>;
+  setCharacterStat: (value: string, property: keyof CharacterStats) => void;
 }
 
 interface SelectInputProps<T> extends CustomTextInputProps {
+  name: keyof Character;
   options: T[];
+  setDisplayedListItems: React.Dispatch<React.SetStateAction<Array<any>>>;
+  setFocusedField: React.Dispatch<React.SetStateAction<keyof Character>>;
 }

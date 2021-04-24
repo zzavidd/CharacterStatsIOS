@@ -15,8 +15,8 @@ export default async function request(
     body: JSON.stringify({ query })
   })
     .then((res) => res.json())
-    .then((response) => {
-      callback(response.data);
+    .then((results) => {
+      callback(results.data);
     });
 }
 

@@ -28,6 +28,14 @@ export default StyleSheet.create({
   formTypesField: {
     flex: 1
   },
+  formStats: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap'
+  },
+  formStatsField: {
+    flex: 1
+  },
   list: {
     borderLeftColor: Color.PLACEHOLDER_TEXT_COLOR,
     borderLeftWidth: 2,
