@@ -1,6 +1,7 @@
 import { AntDesign } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import { capitalCase } from 'capital-case';
 import React, { useEffect } from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Provider } from 'react-redux';
@@ -8,7 +9,8 @@ import { Provider } from 'react-redux';
 import Color from './constants/colors';
 import Form from './screens/form';
 import Home from './screens/home';
-import * as Helper from './utils/helper';
+import { PokeAbility, PokeMove, PokeType } from './types';
+import { Type } from './types/enums';
 import store, {
   setAbilities,
   setMoves,
@@ -17,6 +19,7 @@ import store, {
   useAppSelector
 } from './utils/reducers';
 import request, { Queries } from './utils/request';
+import DevSettings from './utils/settings';
 
 const Stack = createStackNavigator();
 
@@ -33,41 +36,59 @@ function Index() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    getPokeTypes();
-    getPokeAbilities();
-    getPokeMoves();
+    bootstrapExternalData();
   }, []);
 
-  const getPokeTypes = () => {
-    if (types.length) return;
+  const bootstrapExternalData = async () => {
+    getPokeAbilities();
+    await getPokeTypes();
+    getPokeMoves();
+  };
 
-    request(Queries.TYPE, (data) => {
-      const types = data.types.map(Helper.formatMetaName);
-      dispatch(setTypes(types));
+  const getPokeTypes = async () => {
+    if (types.length && !DevSettings.retrieveData) return;
+
+    await request(Queries.TYPE, (data) => {
+      const typeList = data.types.map((type: PokeType) => {
+        type.name = capitalCase(type.name) as Type;
+        type.color = Color.TYPE[type.name];
+        return type;
+      });
+      dispatch(setTypes(typeList));
     });
   };
 
-  const getPokeAbilities = () => {
-    if (abilities.length) return;
+  const getPokeAbilities = async () => {
+    if (abilities.length && !DevSettings.retrieveData) return;
 
-    request(Queries.ABILITY, (data) => {
-      const abilities = data.abilities.map(Helper.formatMetaName);
-      dispatch(setAbilities(abilities));
+    await request(Queries.ABILITY, (data) => {
+      const abilityList = data.abilities.map((ability: PokeAbility) => {
+        ability.name = capitalCase(ability.name);
+        ability.color = Object.values(Color.GENERATION)[ability.generation];
+        return ability;
+      });
+      dispatch(setAbilities(abilityList));
     });
   };
 
   const getPokeMoves = () => {
-    if (moves.length) return;
+    if (moves.length && !DevSettings.retrieveData) return;
 
     request(Queries.MOVE, (data) => {
-      const moves = data.moves.map(Helper.formatMetaName);
-      dispatch(setMoves(moves));
+      const moveList = data.moves.map((move: PokeMove) => {
+        move.name = capitalCase(move.name);
+        const hello = types.find((type) => type.id === move.typeId);
+        move.color = hello!.color;
+        return move;
+      });
+      dispatch(setMoves(moveList));
     });
   };
 
   return (
     <NavigationContainer>
       <Stack.Navigator
+        mode={'modal'}
         screenOptions={{
           headerStyle: styles.header,
           headerTitleStyle: {
@@ -83,7 +104,7 @@ function Index() {
               <TouchableOpacity
                 onPress={() => navigation.navigate('Form')}
                 style={styles.headerButton}>
-                <AntDesign name={'plus'} size={18} color={'black'} />
+                <AntDesign name={'plus'} size={24} color={Color.WHITE} />
               </TouchableOpacity>
             )
           })}

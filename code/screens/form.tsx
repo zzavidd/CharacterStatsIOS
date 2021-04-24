@@ -1,29 +1,40 @@
+import { StackScreenProps } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
-import React, { RefObject, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   FlatList,
-  StyleProp,
+  KeyboardAvoidingView,
+  ListRenderItemInfo,
   Text,
-  TextInput as ITextInput,
-  TextInputProps,
-  TextStyle,
+  TouchableOpacity,
   View
 } from 'react-native';
-import { TouchableOpacity } from 'react-native-gesture-handler';
 
+import { NumberInput, SelectInput, TextInput } from '../components/input';
 import Color from '../constants/colors';
 import { Universes } from '../constants/fields';
 import styles from '../styles/Form.styles';
-import { Character, CharacterStats } from '../utils/classes';
+import {
+  GenericListItem,
+  PokeAbility,
+  PokeMove,
+  PokeType,
+  RootStackParamList
+} from '../types';
+import { Character, CharacterStats } from '../types/classes';
 import { useAppSelector } from '../utils/reducers';
-import { PokeAbility, PokeType } from '../utils/types';
+import * as Storage from '../utils/storage';
 
-export default function Form() {
+export default function Form({
+  navigation
+}: StackScreenProps<RootStackParamList, 'Form'>) {
   const { types, abilities, moves } = useAppSelector((state) => state);
 
   const [character, setCharacter] = useState<Character>(new Character());
-  const [displayedListItems, setDisplayedListItems] = useState<Array<any>>([]);
+  const [displayedListItems, setDisplayedListItems] = useState<
+    Array<GenericListItem>
+  >([]);
   const [focusedField, setFocusedField] = useState<keyof Character>('name');
 
   const setCharacterMeta = (value: any, property: keyof Character) => {
@@ -51,7 +62,6 @@ export default function Form() {
           name={'name'}
           value={character.name}
           placeholder={'Enter name'}
-          autoFocus={true}
           {...commonProps}
         />
         <SelectInput
@@ -146,110 +156,85 @@ export default function Form() {
             style={styles.formStatsField}
           />
         </View>
+        <SelectInput<PokeMove>
+          name={'learnset'}
+          value={character.name}
+          options={moves}
+          placeholder={'Learnset'}
+          {...commonProps}
+        />
         <Button
           title={'Save'}
-          onPress={() => {
-            console.log(character);
+          onPress={async () => {
+            await Storage.save(character);
+            navigation.goBack();
           }}
         />
       </View>
-      <MetaList
-        displayedListItems={displayedListItems}
-        focusedField={focusedField}
+      <DisplayedList
+        items={displayedListItems}
+        field={focusedField}
         setCharacterMeta={setCharacterMeta}
       />
     </View>
   );
 }
 
-function MetaList({
-  displayedListItems,
-  focusedField,
-  setCharacterMeta
-}: MetaListProps) {
-  return (
-    <View style={styles.list}>
-      <FlatList
-        data={displayedListItems}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item, index }) => {
-          return (
-            <TouchableOpacity
-              onPress={() => {
-                setCharacterMeta(item.name, focusedField);
-              }}
-              key={index}>
-              <Text style={styles.listItem}>{item.name}</Text>
-            </TouchableOpacity>
-          );
-        }}
+function DisplayedList({ items, field, setCharacterMeta }: DisplayedListProps) {
+  const renderItem = ({ item, index }: ListRenderItemInfo<GenericListItem>) => {
+    return (
+      <DisplayedListItem
+        item={item}
+        index={index}
+        field={field}
+        setCharacterMeta={setCharacterMeta}
       />
-    </View>
+    );
+  };
+  return (
+    <KeyboardAvoidingView behavior={'padding'} style={styles.list}>
+      <FlatList
+        data={items}
+        keyExtractor={(item: GenericListItem) => item.id.toString()}
+        renderItem={renderItem}
+        removeClippedSubviews={true}
+        initialNumToRender={20}
+      />
+    </KeyboardAvoidingView>
   );
 }
 
-function TextInput(props: CustomTextInputProps) {
-  const { name, style, setCharacterMeta } = props;
-  return (
-    <ITextInput
-      {...props}
-      placeholderTextColor={Color.PLACEHOLDER_TEXT_COLOR}
-      style={[styles.formTextInput, style]}
-      onChangeText={(text) => setCharacterMeta(text, name)}
-    />
-  );
-}
+const DisplayedListItem = React.memo((props: DisplayedListItemProps) => {
+  const { item, index, field, setCharacterMeta } = props;
 
-function SelectInput<T extends unknown>(props: SelectInputProps<T>) {
-  const { name, options, setDisplayedListItems, setFocusedField } = props;
   return (
-    <TextInput
-      {...props}
-      onFocus={() => {
-        setDisplayedListItems(options);
-        setFocusedField(name);
+    <TouchableOpacity
+      onPress={() => {
+        setCharacterMeta(item.name, field);
       }}
-    />
+      key={index}>
+      <Text
+        style={[
+          styles.listItem,
+          {
+            backgroundColor: item.color
+          }
+        ]}>
+        {item.name}
+      </Text>
+    </TouchableOpacity>
   );
-}
+});
 
-function NumberInput(props: NumberInputProps) {
-  const { name, placeholder, setCharacterStat, style } = props;
-  return (
-    <ITextInput
-      {...props}
-      value={props.value?.toString()}
-      keyboardType={'numeric'}
-      placeholder={placeholder}
-      placeholderTextColor={Color.PLACEHOLDER_TEXT_COLOR}
-      style={[styles.formTextInput, style]}
-      onChangeText={(text) => setCharacterStat(text, name)}
-    />
-  );
-}
-
-type MetaListProps = {
-  displayedListItems: any[];
-  focusedField: keyof Character;
+type DisplayedListProps = {
+  items: GenericListItem[];
+  field: keyof Character;
   setCharacterMeta: (value: any, property: keyof Character) => void;
 };
 
-interface CustomTextInputProps extends TextInputProps {
-  name: keyof Character;
+type DisplayedListItemProps = {
+  item: GenericListItem;
+  index: number;
+  field: keyof Character;
   setCharacterMeta: (value: any, property: keyof Character) => void;
-}
-
-interface NumberInputProps {
-  name: keyof CharacterStats;
-  placeholder: string;
-  value: number;
-  style?: StyleProp<TextStyle>;
-  setCharacterStat: (value: string, property: keyof CharacterStats) => void;
-}
-
-interface SelectInputProps<T> extends CustomTextInputProps {
-  name: keyof Character;
-  options: T[];
-  setDisplayedListItems: React.Dispatch<React.SetStateAction<Array<any>>>;
-  setFocusedField: React.Dispatch<React.SetStateAction<keyof Character>>;
-}
+};

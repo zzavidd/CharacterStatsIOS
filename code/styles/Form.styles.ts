@@ -10,8 +10,16 @@ export default StyleSheet.create({
     flexDirection: 'row'
   },
   form: {
-    flex: 6,
+    flex: 9,
     paddingHorizontal: 8
+  },
+  formStats: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap'
+  },
+  formStatsField: {
+    flex: 1
   },
   formTextInput: {
     borderBottomColor: Color.WHITE,
@@ -28,14 +36,6 @@ export default StyleSheet.create({
   formTypesField: {
     flex: 1
   },
-  formStats: {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap'
-  },
-  formStatsField: {
-    flex: 1
-  },
   list: {
     borderLeftColor: Color.PLACEHOLDER_TEXT_COLOR,
     borderLeftWidth: 2,
@@ -43,7 +43,7 @@ export default StyleSheet.create({
   },
   listItem: {
     color: Color.WHITE,
-    fontSize: 15,
+    fontSize: 12,
     paddingHorizontal: 8,
     paddingVertical: 8
   }

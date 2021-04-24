@@ -1,9 +1,9 @@
 import { createSlice, configureStore } from '@reduxjs/toolkit';
 import { useDispatch, TypedUseSelectorHook, useSelector } from 'react-redux';
 
-import type { AppInitialState } from './types';
+import type { AppState } from '../types';
 
-const initialState: AppInitialState = {
+const initialState: AppState = {
   types: [],
   abilities: [],
   moves: []

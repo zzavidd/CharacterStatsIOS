@@ -1,23 +1,13 @@
-import { capitalCase } from 'capital-case';
+import { GenericListItem, PokeAbility, PokeMove, PokeType } from '../types';
 
-import { PokeMeta } from './types';
-
-/**
- * Transforms a type or ability into capital case.
- * @param meta The type or ability to transform.
- * @returns The capital-cased meta.
- */
-export function formatMetaName(meta: PokeMeta) {
-  meta.name = capitalCase(meta.name);
-  return meta;
+export function isType(item: GenericListItem): item is PokeType {
+  return !isAbility(item) && !isMove(item);
 }
 
-/**
- * The sort function for the list of types or abilities.
- * @param a The first operand.
- * @param b The second operand.
- * @returns True if alphabetical.
- */
-export function sortMetaByName(a: PokeMeta, b: PokeMeta) {
-  return a.name > b.name;
+export function isAbility(item: GenericListItem): item is PokeAbility {
+  return 'generation' in item;
+}
+
+export function isMove(item: GenericListItem): item is PokeMove {
+  return 'power' in item;
 }

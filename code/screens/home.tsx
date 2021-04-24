@@ -7,7 +7,7 @@ import Color from '../constants/colors';
 export default function Home() {
   return (
     <View style={styles.container}>
-      <StatusBar style={'dark'} />
+      <StatusBar style={'light'} />
     </View>
   );
 }
@@ -15,7 +15,7 @@ export default function Home() {
 const styles = StyleSheet.create({
   container: {
     alignItems: 'center',
-    backgroundColor: Color.WHITE,
+    backgroundColor: Color.DARK,
     display: 'flex',
     flex: 1,
     justifyContent: 'center'

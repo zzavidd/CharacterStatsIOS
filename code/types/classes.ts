@@ -6,8 +6,8 @@ export class Character {
   ability1: string;
   ability2: string;
   abilityX: string;
-  learnset: Learnset;
   stats: CharacterStats;
+  learnset: Learnset;
 
   constructor() {
     this.stats = {
@@ -21,10 +21,6 @@ export class Character {
   }
 }
 
-type Learnset = {
-  [key: string]: string;
-};
-
 export type CharacterStats = {
   hp: number;
   attack: number;
@@ -32,4 +28,8 @@ export type CharacterStats = {
   spAtk: number;
   spDef: number;
   speed: number;
+};
+
+type Learnset = {
+  [key: number]: string;
 };
