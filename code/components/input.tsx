@@ -17,7 +17,7 @@ export function TextInput(props: CustomTextInputProps) {
       {...props}
       placeholderTextColor={Color.PLACEHOLDER_TEXT_COLOR}
       onChangeText={(text) => setCharacterMeta(text, name)}
-      style={[styles.formTextInput, style]}
+      style={[styles.textInput, style]}
       keyboardAppearance={'dark'}
       autoCompleteType={'off'}
       returnKeyType={'next'}
@@ -47,7 +47,7 @@ export function NumberInput(props: NumberInputProps) {
       onChangeText={(text) => setCharacterStat(text, name)}
       placeholder={placeholder}
       placeholderTextColor={Color.PLACEHOLDER_TEXT_COLOR}
-      style={[styles.formTextInput, style]}
+      style={[styles.textInput, style]}
       clearTextOnFocus={true}
       keyboardAppearance={'dark'}
       keyboardType={'number-pad'}

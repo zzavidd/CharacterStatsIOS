@@ -5,23 +5,23 @@ import Color from '../constants/colors';
 export default StyleSheet.create({
   container: {
     backgroundColor: Color.DARK,
-    display: 'flex',
-    flex: 1,
-    flexDirection: 'row'
-  },
-  form: {
-    flex: 9,
-    paddingHorizontal: 8
-  },
-  formStats: {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap'
-  },
-  formStatsField: {
     flex: 1
   },
-  formTextInput: {
+  main: {
+    flexDirection: 'row',
+    flex: 1
+  },
+  form: {
+    flex: 0.7,
+    paddingHorizontal: 8,
+    paddingVertical: 5
+  },
+  label: {
+    color: Color.WHITE,
+    paddingHorizontal: 8,
+    paddingVertical: 12
+  },
+  textInput: {
     borderBottomColor: Color.WHITE,
     borderBottomWidth: 1,
     color: Color.WHITE,
@@ -36,10 +36,18 @@ export default StyleSheet.create({
   formTypesField: {
     flex: 1
   },
+  formStats: {
+    display: 'flex',
+    flexDirection: 'row',
+    flexWrap: 'wrap'
+  },
+  formStatsField: {
+    flex: 1
+  },
   list: {
     borderLeftColor: Color.PLACEHOLDER_TEXT_COLOR,
     borderLeftWidth: 2,
-    flex: 4
+    flex: 0.4
   },
   listItem: {
     color: Color.WHITE,

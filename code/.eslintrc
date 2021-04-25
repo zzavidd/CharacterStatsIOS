@@ -29,7 +29,7 @@
     "react-native/no-raw-text": 2,
     "react-native/no-single-element-style-arrays": 2,
     "react-native/no-unused-styles": 1,
-    "react-native/sort-styles": 1,
+    "react-native/sort-styles": [1, "asc", { "ignoreClassNames": true }],
     "react-native/split-platform-components": 2,
     "@typescript-eslint/no-explicit-any": 0
   }

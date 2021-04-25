@@ -10,12 +10,12 @@ import Color from './constants/colors';
 import Form from './screens/form';
 import Home from './screens/home';
 import {
-  ResponseAbility,
-  ResponseMove,
-  ResponseType,
+  PokeAbility,
   PokeMove,
   PokeType,
-  PokeAbility
+  ResponseAbility,
+  ResponseMove,
+  ResponseType
 } from './types';
 import { Type } from './types/enums';
 import store, {
@@ -27,7 +27,6 @@ import store, {
 } from './utils/reducers';
 import request, { Queries } from './utils/request';
 import DevSettings from './utils/settings';
-import * as Storage from './utils/storage';
 
 const Stack = createStackNavigator();
 
@@ -44,7 +43,6 @@ function Index() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    // Storage.clearAllData();
     getPokeAbilities();
     getPokeTypes();
     getPokeMoves();

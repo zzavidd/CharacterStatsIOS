@@ -1,4 +1,4 @@
-import { StackScreenProps } from '@react-navigation/stack';
+import { useHeaderHeight, StackScreenProps } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import {
@@ -7,8 +7,7 @@ import {
   Keyboard,
   KeyboardAvoidingView,
   ListRenderItemInfo,
-  Platform,
-  SafeAreaView,
+  ScrollView,
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -33,6 +32,7 @@ import * as Storage from '../utils/storage';
 export default function Form({
   navigation
 }: StackScreenProps<RootStackParamList, 'Form'>) {
+  const headerHeight = useHeaderHeight();
   const { types, abilities, moves } = useAppSelector((state) => state);
 
   const [character, setCharacter] = useState<Character>(new Character());
@@ -59,13 +59,14 @@ export default function Form({
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar style={'light'} />
-      <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.container}>
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.form}>
+    <KeyboardAvoidingView
+      behavior={'padding'}
+      style={styles.container}
+      keyboardVerticalOffset={headerHeight}>
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+        <View style={styles.main}>
+          <StatusBar style={'light'} />
+          <ScrollView style={styles.form}>
             <TextInput
               name={'name'}
               value={character.name}
@@ -118,6 +119,7 @@ export default function Form({
               placeholder={'Select hidden ability'}
               {...commonProps}
             />
+            <Text style={styles.label}>Stats:</Text>
             <View style={styles.formStats}>
               <NumberInput
                 name={Stat.HP}
@@ -164,6 +166,7 @@ export default function Form({
                 style={styles.formStatsField}
               />
             </View>
+            <Text style={styles.label}>Learnset:</Text>
             <SelectInput<PokeMove>
               name={'learnset'}
               value={character.name}
@@ -178,15 +181,17 @@ export default function Form({
                 navigation.goBack();
               }}
             />
+          </ScrollView>
+          <View style={styles.list}>
+            <DisplayedList
+              items={displayedListItems}
+              field={focusedField}
+              setCharacterMeta={setCharacterMeta}
+            />
           </View>
-        </TouchableWithoutFeedback>
-        <DisplayedList
-          items={displayedListItems}
-          field={focusedField}
-          setCharacterMeta={setCharacterMeta}
-        />
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        </View>
+      </TouchableWithoutFeedback>
+    </KeyboardAvoidingView>
   );
 }
 
@@ -202,36 +207,28 @@ function DisplayedList({ items, field, setCharacterMeta }: DisplayedListProps) {
     );
   };
   return (
-    <View style={styles.list}>
-      <FlatList
-        data={items}
-        keyExtractor={(item: GenericListItem) => item.id.toString()}
-        renderItem={renderItem}
-        removeClippedSubviews={true}
-        initialNumToRender={20}
-      />
-    </View>
+    <FlatList
+      data={items}
+      keyExtractor={(item: GenericListItem) => item.id.toString()}
+      renderItem={renderItem}
+      removeClippedSubviews={true}
+      initialNumToRender={20}
+      keyboardShouldPersistTaps={'handled'}
+    />
   );
 }
 
 const DisplayedListItem = React.memo((props: DisplayedListItemProps) => {
   const { item, index, field, setCharacterMeta } = props;
+  const itemStyle = {
+    backgroundColor: item.color
+  };
 
   return (
     <TouchableOpacity
-      onPress={() => {
-        setCharacterMeta(item.name, field);
-      }}
+      onPress={() => setCharacterMeta(item.name, field)}
       key={index}>
-      <Text
-        style={[
-          styles.listItem,
-          {
-            backgroundColor: item.color
-          }
-        ]}>
-        {item.name}
-      </Text>
+      <Text style={[styles.listItem, itemStyle]}>{item.name}</Text>
     </TouchableOpacity>
   );
 });

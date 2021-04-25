@@ -1,14 +1,7 @@
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import {
-  Button,
-  FlatList,
-  ListRenderItemInfo,
-  SafeAreaView,
-  Text,
-  View
-} from 'react-native';
+import { Button, FlatList, ListRenderItemInfo, Text, View } from 'react-native';
 
 import Color from '../constants/colors';
 import styles from '../styles/Home.styles';
@@ -22,10 +15,10 @@ export default function Home() {
 
   useEffect(() => {
     getAllCharacters();
-  }, [characters]);
+  }, []);
 
   const getAllCharacters = async () => {
-    const allCharacters = await Storage.getAll();
+    const allCharacters = (await Storage.getAll()) as Character[];
     setCharacters(allCharacters);
   };
 
@@ -36,15 +29,26 @@ export default function Home() {
       <View style={styles.footer}>
         <Button
           title={'Ingest Example Data'}
-          onPress={() => Storage.ingestExampleData(appState)}
+          onPress={() => {
+            Storage.ingestExampleData(appState);
+            getAllCharacters();
+          }}
         />
-        <Button title={'Clear Data'} onPress={Storage.clearAllData} />
+        <Button
+          title={'Clear Data'}
+          onPress={async () => {
+            await Storage.clearAllData();
+            getAllCharacters();
+          }}
+        />
       </View>
     </View>
   );
 }
 
 function CharacterGrid({ characters }: CharacterGridProps) {
+  if (!characters?.length) return <View style={styles.table} />;
+
   const renderItem = ({ item, index }: ListRenderItemInfo<Character>) => {
     const { name, universe, type1, type2 } = item;
     const color1 = Color.TYPE[type1];

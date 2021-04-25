@@ -19,17 +19,6 @@ export class Character {
   learnset: CharacterLearnset;
   dateAdded: Date;
 
-  constructor() {
-    this.stats = {
-      hp: 0,
-      attack: 0,
-      defence: 0,
-      spAtk: 0,
-      spDef: 0,
-      speed: 0
-    };
-  }
-
   static buildRandomCharacter({ abilities, moves }: AppState) {
     const types = Object.values(Type);
     const addSecondType = faker.datatype.boolean();
@@ -53,6 +42,8 @@ export class Character {
 
     character.stats = Character.generateStats();
     character.learnset = Character.generateLearnset(moves);
+
+    character.id = `${character.universe}:${character.name}`;
 
     return character;
   }
