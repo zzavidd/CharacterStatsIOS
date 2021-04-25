@@ -27,6 +27,7 @@ import store, {
 } from './utils/reducers';
 import request, { Queries } from './utils/request';
 import DevSettings from './utils/settings';
+import * as Storage from './utils/storage';
 
 const Stack = createStackNavigator();
 
@@ -43,6 +44,7 @@ function Index() {
   const dispatch = useAppDispatch();
 
   useEffect(() => {
+    // Storage.clearAllData();
     getPokeAbilities();
     getPokeTypes();
     getPokeMoves();

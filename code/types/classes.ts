@@ -1,13 +1,17 @@
+import { Type } from "./enums";
+
 export class Character {
+  id: string;
   name: string;
   universe: string;
-  type1: string;
-  type2: string;
+  type1: Type;
+  type2: Type;
   ability1: string;
   ability2: string;
   abilityX: string;
   stats: CharacterStats;
   learnset: Learnset;
+  dateAdded: Date
 
   constructor() {
     this.stats = {

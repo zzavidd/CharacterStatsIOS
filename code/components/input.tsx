@@ -20,6 +20,7 @@ export function TextInput(props: CustomTextInputProps) {
       style={[styles.formTextInput, style]}
       keyboardAppearance={'dark'}
       autoCompleteType={'off'}
+      returnKeyType={'next'}
     />
   );
 }
@@ -50,6 +51,7 @@ export function NumberInput(props: NumberInputProps) {
       clearTextOnFocus={true}
       keyboardAppearance={'dark'}
       keyboardType={'number-pad'}
+      returnKeyType={'next'}
     />
   );
 }
