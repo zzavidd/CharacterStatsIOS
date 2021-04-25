@@ -1,9 +1,9 @@
 import { Type } from './enums';
 
 export type AppState = {
-  types: ResponseType[];
-  abilities: ResponseAbility[];
-  moves: ResponseMove[];
+  types: PokeType[];
+  abilities: PokeAbility[];
+  moves: PokeMove[];
 };
 
 export type RootStackParamList = {

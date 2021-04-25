@@ -31,10 +31,10 @@ export enum Generation {
 }
 
 export enum Stat {
-  HP = 'HP',
-  ATTACK = 'Atk',
-  DEFENCE = 'Def',
-  SPATK = 'SpAtk',
-  SPDEF = 'SpDef',
-  SPEED = 'Speed'
+  HP = 'hp',
+  ATTACK = 'attack',
+  DEFENCE = 'defence',
+  SPATK = 'spAtk',
+  SPDEF = 'spDef',
+  SPEED = 'speed'
 }

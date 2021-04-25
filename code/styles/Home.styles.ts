@@ -4,7 +4,7 @@ import Color from '../constants/colors';
 
 export default StyleSheet.create({
   cell: {
-    flex: 1 / 3,
+    flex: 1 / 3
   },
   cellLinGrad: {
     borderRadius: 10,
@@ -13,7 +13,14 @@ export default StyleSheet.create({
   },
   container: {
     backgroundColor: Color.DARK,
-    flex: 1
+    flex: 1,
+    flexDirection: 'column'
+  },
+  footer: {
+    display: 'flex',
+    flex: 0.1,
+    flexDirection: 'row',
+    justifyContent: 'space-evenly'
   },
   metadata: {
     color: Color.WHITE,
@@ -25,9 +32,7 @@ export default StyleSheet.create({
     fontWeight: 'bold'
   },
   table: {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    flex: 0.9,
     paddingVertical: 8
   }
 });

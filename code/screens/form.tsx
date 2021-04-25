@@ -1,15 +1,17 @@
 import { StackScreenProps } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
-import { Keyboard, Platform, TouchableWithoutFeedback } from 'react-native';
 import {
   Button,
   FlatList,
+  Keyboard,
   KeyboardAvoidingView,
   ListRenderItemInfo,
+  Platform,
+  SafeAreaView,
   Text,
   TouchableOpacity,
-  SafeAreaView,
+  TouchableWithoutFeedback,
   View
 } from 'react-native';
 
@@ -18,12 +20,13 @@ import { Universes } from '../constants/fields';
 import styles from '../styles/Form.styles';
 import {
   GenericListItem,
-  ResponseAbility,
-  ResponseMove,
-  ResponseType,
+  PokeAbility,
+  PokeMove,
+  PokeType,
   RootStackParamList
 } from '../types';
 import { Character, CharacterStats } from '../types/classes';
+import { Stat } from '../types/enums';
 import { useAppSelector } from '../utils/reducers';
 import * as Storage from '../utils/storage';
 
@@ -77,7 +80,7 @@ export default function Form({
               {...commonProps}
             />
             <View style={styles.formTypes}>
-              <SelectInput<ResponseType>
+              <SelectInput<PokeType>
                 name={'type1'}
                 value={character.type1}
                 options={types}
@@ -85,7 +88,7 @@ export default function Form({
                 style={styles.formTypesField}
                 {...commonProps}
               />
-              <SelectInput<ResponseType>
+              <SelectInput<PokeType>
                 name={'type2'}
                 value={character.type2}
                 options={types}
@@ -94,21 +97,21 @@ export default function Form({
                 {...commonProps}
               />
             </View>
-            <SelectInput<ResponseAbility>
+            <SelectInput<PokeAbility>
               name={'ability1'}
               value={character.ability1}
               options={abilities}
               placeholder={'Select first ability'}
               {...commonProps}
             />
-            <SelectInput<ResponseAbility>
+            <SelectInput<PokeAbility>
               name={'ability2'}
               value={character.ability2}
               options={abilities}
               placeholder={'Select second ability'}
               {...commonProps}
             />
-            <SelectInput<ResponseAbility>
+            <SelectInput<PokeAbility>
               name={'abilityX'}
               value={character.abilityX}
               options={abilities}
@@ -117,21 +120,21 @@ export default function Form({
             />
             <View style={styles.formStats}>
               <NumberInput
-                name={'hp'}
+                name={Stat.HP}
                 value={character.stats?.hp}
                 placeholder={'HP'}
                 setCharacterStat={setCharacterStat}
                 style={styles.formStatsField}
               />
               <NumberInput
-                name={'attack'}
+                name={Stat.ATTACK}
                 value={character.stats?.attack}
                 placeholder={'Attack'}
                 setCharacterStat={setCharacterStat}
                 style={styles.formStatsField}
               />
               <NumberInput
-                name={'defence'}
+                name={Stat.DEFENCE}
                 value={character.stats?.defence}
                 placeholder={'Defence'}
                 setCharacterStat={setCharacterStat}
@@ -140,28 +143,28 @@ export default function Form({
             </View>
             <View style={styles.formStats}>
               <NumberInput
-                name={'spAtk'}
+                name={Stat.SPATK}
                 value={character.stats?.spAtk}
                 placeholder={'Sp. Atk'}
                 setCharacterStat={setCharacterStat}
                 style={styles.formStatsField}
               />
               <NumberInput
-                name={'spDef'}
+                name={Stat.SPDEF}
                 value={character.stats?.spDef}
                 placeholder={'Sp. Def'}
                 setCharacterStat={setCharacterStat}
                 style={styles.formStatsField}
               />
               <NumberInput
-                name={'speed'}
+                name={Stat.SPEED}
                 value={character.stats?.speed}
                 placeholder={'Speed'}
                 setCharacterStat={setCharacterStat}
                 style={styles.formStatsField}
               />
             </View>
-            <SelectInput<ResponseMove>
+            <SelectInput<PokeMove>
               name={'learnset'}
               value={character.name}
               options={moves}

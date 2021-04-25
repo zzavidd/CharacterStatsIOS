@@ -64,7 +64,7 @@ interface CustomTextInputProps extends TextInputProps {
 interface NumberInputProps {
   name: keyof CharacterStats;
   placeholder: string;
-  value: number;
+  value: number | undefined;
   style?: StyleProp<TextStyle>;
   setCharacterStat: (value: string, property: keyof CharacterStats) => void;
 }
