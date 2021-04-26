@@ -1,64 +1,110 @@
 import React from 'react';
 import {
   StyleProp,
-  TextInput as IInput,
-  TextInputProps,
+  TextInput as DefaultInput,
+  TextInputProps as DefaultInputProps,
   TextStyle
 } from 'react-native';
 
 import Color from '../constants/colors';
 import styles from '../styles/Form.styles';
+import { PokeMove } from '../types';
 import { Character, CharacterStats } from '../types/classes';
+import { useAppSelector } from '../utils/reducers';
 
-export function TextInput(props: CustomTextInputProps) {
-  const { name, style, setCharacterMeta } = props;
+export function TextInput(props: TextInputProps) {
+  const { name, setCharacterMeta } = props;
   return (
-    <IInput
+    <Input {...props} onChangeText={(text) => setCharacterMeta(text, name)} />
+  );
+}
+
+export function StatInput(props: NumberInputProps) {
+  const { name, setCharacterStat, value } = props;
+  return (
+    <Input
       {...props}
-      placeholderTextColor={Color.PLACEHOLDER_TEXT_COLOR}
-      onChangeText={(text) => setCharacterMeta(text, name)}
-      style={[styles.textInput, style]}
-      keyboardAppearance={'dark'}
-      autoCompleteType={'off'}
-      returnKeyType={'next'}
+      value={value?.toString()}
+      onChangeText={(text) => setCharacterStat(text, name)}
+      clearTextOnFocus={true}
+      keyboardType={'number-pad'}
     />
   );
 }
 
-export function SelectInput<T extends unknown>(props: SelectInputProps<T>) {
-  const { name, options, setDisplayedListItems, setFocusedField } = props;
+export function TypeSelect(props: TypeSelectProps) {
+  const { types } = useAppSelector((state) => state);
+  const { name, setCharacterMeta } = props;
   return (
-    <TextInput
+    <Select
       {...props}
+      items={types}
+      onChangeText={(text) => setCharacterMeta(text, name)}
+    />
+  );
+}
+
+export function AbilitySelect(props: AbilitySelectProps) {
+  const { abilities } = useAppSelector((state) => state);
+  const { name, setCharacterMeta } = props;
+  return (
+    <Select
+      {...props}
+      items={abilities}
+      onChangeText={(text) => setCharacterMeta(text, name)}
+    />
+  );
+}
+
+export function MoveSelect(props: MoveSelectProps) {
+  const { moves } = useAppSelector((state) => state);
+  const { name, setDisplayedListItems, setFocusedField } = props;
+  return (
+    <Input
+      {...props}
+      clearButtonMode={'always'}
+      returnKeyLabel={'Add'}
       onFocus={() => {
-        setDisplayedListItems(options);
+        setDisplayedListItems(moves);
         setFocusedField(name);
       }}
     />
   );
 }
 
-export function NumberInput(props: NumberInputProps) {
-  const { name, placeholder, setCharacterStat, style } = props;
+export function Select<T extends unknown>(props: SelectProps<T>) {
+  const { name, items, setDisplayedListItems, setFocusedField } = props;
   return (
-    <IInput
+    <Input
       {...props}
-      value={props.value?.toString()}
-      onChangeText={(text) => setCharacterStat(text, name)}
-      placeholder={placeholder}
-      placeholderTextColor={Color.PLACEHOLDER_TEXT_COLOR}
-      style={[styles.textInput, style]}
-      clearTextOnFocus={true}
-      keyboardAppearance={'dark'}
-      keyboardType={'number-pad'}
-      returnKeyType={'next'}
+      onFocus={() => {
+        setDisplayedListItems(items);
+        setFocusedField(name);
+      }}
     />
   );
 }
 
-interface CustomTextInputProps extends TextInputProps {
+function Input(props: InputProps) {
+  return (
+    <DefaultInput
+      returnKeyLabel={'Confirm'}
+      {...props}
+      placeholderTextColor={Color.PLACEHOLDER_TEXT_COLOR}
+      style={[styles.textInput, props.style]}
+      keyboardAppearance={'dark'}
+      autoCompleteType={'off'}
+    />
+  );
+}
+
+interface InputProps extends DefaultInputProps {
+  name: any;
+}
+
+interface TextInputProps extends InputProps {
   name: keyof Character;
-  setCharacterMeta: (value: any, property: keyof Character) => void;
+  setCharacterMeta: SetCharacterMetaType;
 }
 
 interface NumberInputProps {
@@ -69,9 +115,28 @@ interface NumberInputProps {
   setCharacterStat: (value: string, property: keyof CharacterStats) => void;
 }
 
-interface SelectInputProps<T> extends CustomTextInputProps {
-  name: keyof Character;
-  options: T[];
+interface ScopedSelectProps extends InputProps {
   setDisplayedListItems: React.Dispatch<React.SetStateAction<Array<any>>>;
   setFocusedField: React.Dispatch<React.SetStateAction<keyof Character>>;
 }
+
+interface SelectProps<T> extends ScopedSelectProps {
+  name: keyof Character;
+  items: T[];
+}
+
+interface TypeSelectProps extends ScopedSelectProps {
+  name: keyof Character;
+  setCharacterMeta: SetCharacterMetaType;
+}
+
+interface AbilitySelectProps extends ScopedSelectProps {
+  name: keyof Character;
+  setCharacterMeta: SetCharacterMetaType;
+}
+
+interface MoveSelectProps extends ScopedSelectProps {
+  setCharacterLearnset: (move: PokeMove) => void;
+}
+
+type SetCharacterMetaType = (value: any, property: keyof Character) => void;

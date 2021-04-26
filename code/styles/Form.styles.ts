@@ -18,8 +18,9 @@ export default StyleSheet.create({
   },
   label: {
     color: Color.WHITE,
+    paddingBottom: 6,
     paddingHorizontal: 8,
-    paddingVertical: 12
+    paddingTop: 12
   },
   textInput: {
     borderBottomColor: Color.WHITE,
@@ -43,6 +44,19 @@ export default StyleSheet.create({
   },
   formStatsField: {
     flex: 1
+  },
+  learnsetList: {
+    flex: 1,
+    padding: 8
+  },
+  learnsetMove: {
+    borderRadius: 4,
+    marginVertical: 2,
+    padding: 8
+  },
+
+  learnsetMoveText: {
+    color: Color.WHITE
   },
   list: {
     borderLeftColor: Color.PLACEHOLDER_TEXT_COLOR,

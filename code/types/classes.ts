@@ -16,8 +16,12 @@ export class Character {
   ability2: string;
   abilityX: string;
   stats: CharacterStats;
-  learnset: CharacterLearnset;
+  learnset: number[];
   dateAdded: Date;
+
+  constructor() {
+    this.learnset = [];
+  }
 
   static buildRandomCharacter({ abilities, moves }: AppState) {
     const types = Object.values(Type);
@@ -61,10 +65,10 @@ export class Character {
   }
 
   static generateLearnset(moveList: PokeMove[]) {
-    const learnset: CharacterLearnset = {};
+    const learnset = [];
     for (let i = 0; i < 15; i++) {
-      learnset[randomNumber(100)] =
-        moveList[randomNumber(moveList.length - 1)].name;
+      const move = moveList[randomNumber(moveList.length - 1)].id;
+      learnset.push(move);
     }
     return learnset;
   }
@@ -72,8 +76,4 @@ export class Character {
 
 export type CharacterStats = {
   [key in Stat]?: number;
-};
-
-type CharacterLearnset = {
-  [key: number]: string;
 };

@@ -1,4 +1,4 @@
-import { useHeaderHeight, StackScreenProps } from '@react-navigation/stack';
+import { StackScreenProps, useHeaderHeight } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import {
@@ -14,18 +14,20 @@ import {
   View
 } from 'react-native';
 
-import { NumberInput, SelectInput, TextInput } from '../components/input';
+import {
+  AbilitySelect,
+  MoveSelect,
+  Select,
+  StatInput,
+  TextInput,
+  TypeSelect
+} from '../components/input';
 import { Universes } from '../constants/fields';
 import styles from '../styles/Form.styles';
-import {
-  GenericListItem,
-  PokeAbility,
-  PokeMove,
-  PokeType,
-  RootStackParamList
-} from '../types';
+import { GenericListItem, PokeMove, RootStackParamList } from '../types';
 import { Character, CharacterStats } from '../types/classes';
 import { Stat } from '../types/enums';
+import { findMoveById } from '../utils/helper';
 import { useAppSelector } from '../utils/reducers';
 import * as Storage from '../utils/storage';
 
@@ -33,7 +35,7 @@ export default function Form({
   navigation
 }: StackScreenProps<RootStackParamList, 'Form'>) {
   const headerHeight = useHeaderHeight();
-  const { types, abilities, moves } = useAppSelector((state) => state);
+  const { moves } = useAppSelector((state) => state);
 
   const [character, setCharacter] = useState<Character>(new Character());
   const [displayedListItems, setDisplayedListItems] = useState<
@@ -41,15 +43,59 @@ export default function Form({
   >([]);
   const [focusedField, setFocusedField] = useState<keyof Character>('name');
 
+  /**
+   * Hook for setting character information.
+   * @param value The value to set.
+   * @param property The character property to set the value to.
+   */
   const setCharacterMeta = (value: any, property: keyof Character) => {
     setCharacter((character) => ({ ...character, [property]: value }));
   };
 
+  /**
+   * Hook for setting a character stat number.
+   * @param value The number (as a string) to set to a stat.
+   * @param property The stat property.
+   */
   const setCharacterStat = (value: string, property: keyof CharacterStats) => {
     setCharacter((character) => ({
       ...character,
       stats: { ...character.stats, [property]: value }
     }));
+  };
+
+  /**
+   * Hook adding a new move to the character's learnset.
+   * @param move The move to add.
+   */
+  const setCharacterLearnset = (move: PokeMove) => {
+    setCharacter((character) => ({
+      ...character,
+      learnset: [...character.learnset, move.id]
+    }));
+  };
+
+  /**
+   * Filters the move list to only return moves whose name or type match input.
+   * @param text The form field.
+   */
+  const filterMoves = (text: string) => {
+    if (!text) {
+      setDisplayedListItems(moves);
+      return;
+    }
+
+    const filteredList = moves.filter((move) => {
+      if (move.name.toLowerCase().includes(text.toLowerCase())) {
+        return true;
+      }
+      if (move.type.toLowerCase().includes(text.toLowerCase())) {
+        return true;
+      }
+      return false;
+    });
+
+    setDisplayedListItems(filteredList);
   };
 
   const commonProps = {
@@ -70,109 +116,61 @@ export default function Form({
             <TextInput
               name={'name'}
               value={character.name}
-              placeholder={'Enter name'}
+              placeholder={'Enter character name...'}
               {...commonProps}
             />
-            <SelectInput
+            <Select
               name={'universe'}
               value={character.universe}
-              options={Universes}
-              placeholder={'Select universe'}
+              items={Universes}
+              placeholder={'Select origin universe...'}
               {...commonProps}
             />
             <View style={styles.formTypes}>
-              <SelectInput<PokeType>
+              <TypeSelect
                 name={'type1'}
                 value={character.type1}
-                options={types}
                 placeholder={'First type...'}
                 style={styles.formTypesField}
                 {...commonProps}
               />
-              <SelectInput<PokeType>
+              <TypeSelect
                 name={'type2'}
                 value={character.type2}
-                options={types}
                 placeholder={'Second type...'}
                 style={styles.formTypesField}
                 {...commonProps}
               />
             </View>
-            <SelectInput<PokeAbility>
+            <AbilitySelect
               name={'ability1'}
               value={character.ability1}
-              options={abilities}
-              placeholder={'Select first ability'}
+              placeholder={'Select first ability...'}
               {...commonProps}
             />
-            <SelectInput<PokeAbility>
+            <AbilitySelect
               name={'ability2'}
               value={character.ability2}
-              options={abilities}
-              placeholder={'Select second ability'}
+              placeholder={'Select second ability...'}
               {...commonProps}
             />
-            <SelectInput<PokeAbility>
+            <AbilitySelect
               name={'abilityX'}
               value={character.abilityX}
-              options={abilities}
-              placeholder={'Select hidden ability'}
+              placeholder={'Select hidden ability...'}
               {...commonProps}
             />
-            <Text style={styles.label}>Stats:</Text>
-            <View style={styles.formStats}>
-              <NumberInput
-                name={Stat.HP}
-                value={character.stats?.hp}
-                placeholder={'HP'}
-                setCharacterStat={setCharacterStat}
-                style={styles.formStatsField}
-              />
-              <NumberInput
-                name={Stat.ATTACK}
-                value={character.stats?.attack}
-                placeholder={'Attack'}
-                setCharacterStat={setCharacterStat}
-                style={styles.formStatsField}
-              />
-              <NumberInput
-                name={Stat.DEFENCE}
-                value={character.stats?.defence}
-                placeholder={'Defence'}
-                setCharacterStat={setCharacterStat}
-                style={styles.formStatsField}
-              />
-            </View>
-            <View style={styles.formStats}>
-              <NumberInput
-                name={Stat.SPATK}
-                value={character.stats?.spAtk}
-                placeholder={'Sp. Atk'}
-                setCharacterStat={setCharacterStat}
-                style={styles.formStatsField}
-              />
-              <NumberInput
-                name={Stat.SPDEF}
-                value={character.stats?.spDef}
-                placeholder={'Sp. Def'}
-                setCharacterStat={setCharacterStat}
-                style={styles.formStatsField}
-              />
-              <NumberInput
-                name={Stat.SPEED}
-                value={character.stats?.speed}
-                placeholder={'Speed'}
-                setCharacterStat={setCharacterStat}
-                style={styles.formStatsField}
-              />
-            </View>
-            <Text style={styles.label}>Learnset:</Text>
-            <SelectInput<PokeMove>
-              name={'learnset'}
-              value={character.name}
-              options={moves}
-              placeholder={'Learnset'}
-              {...commonProps}
+            <CharacterStatsForm
+              character={character}
+              setCharacterStat={setCharacterStat}
+            />
+            <CharacterLearnsetForm
+              character={character}
+              allMoves={moves}
+              filterMatchingMoves={filterMoves}
+              setCharacterLearnset={setCharacterLearnset}
+              setDisplayedListItems={setDisplayedListItems}
+              setFocusedField={setFocusedField}
             />
             <Button
               title={'Save'}
@@ -186,7 +184,7 @@ export default function Form({
             <DisplayedList
               items={displayedListItems}
               field={focusedField}
-              setCharacterMeta={setCharacterMeta}
+              characterMethods={{ setCharacterLearnset, setCharacterMeta }}
             />
           </View>
         </View>
@@ -195,17 +193,123 @@ export default function Form({
   );
 }
 
-function DisplayedList({ items, field, setCharacterMeta }: DisplayedListProps) {
-  const renderItem = ({ item, index }: ListRenderItemInfo<GenericListItem>) => {
+function CharacterStatsForm({
+  character,
+  setCharacterStat
+}: CharacterStatsFormProps) {
+  const commonProps = {
+    setCharacterStat,
+    style: styles.formStatsField
+  };
+  return (
+    <>
+      <Text style={styles.label}>Stats:</Text>
+      <View style={styles.formStats}>
+        <StatInput
+          name={Stat.HP}
+          value={character.stats?.hp}
+          placeholder={'HP'}
+          {...commonProps}
+        />
+        <StatInput
+          name={Stat.ATTACK}
+          value={character.stats?.attack}
+          placeholder={'Attack'}
+          {...commonProps}
+        />
+        <StatInput
+          name={Stat.DEFENCE}
+          value={character.stats?.defence}
+          placeholder={'Defence'}
+          {...commonProps}
+        />
+      </View>
+      <View style={styles.formStats}>
+        <StatInput
+          name={Stat.SPATK}
+          value={character.stats?.spAtk}
+          placeholder={'Sp. Atk'}
+          {...commonProps}
+        />
+        <StatInput
+          name={Stat.SPDEF}
+          value={character.stats?.spDef}
+          placeholder={'Sp. Def'}
+          {...commonProps}
+        />
+        <StatInput
+          name={Stat.SPEED}
+          value={character.stats?.speed}
+          placeholder={'Speed'}
+          {...commonProps}
+        />
+      </View>
+    </>
+  );
+}
+
+function CharacterLearnsetForm({
+  allMoves,
+  character,
+  filterMatchingMoves,
+  setCharacterLearnset,
+  setDisplayedListItems,
+  setFocusedField
+}: CharacterLearnsetFormProps) {
+  const [value, setValue] = useState('');
+
+  const renderItem = ({ item, index }: ListRenderItemInfo<number>) => {
+    const move = findMoveById(item, allMoves);
+    if (!move) return null;
+
+    const style = { backgroundColor: move.color };
     return (
-      <DisplayedListItem
-        item={item}
-        index={index}
-        field={field}
-        setCharacterMeta={setCharacterMeta}
-      />
+      <View style={[styles.learnsetMove, style]} key={index}>
+        <Text style={styles.learnsetMoveText}>{move.name}</Text>
+      </View>
     );
   };
+
+  return (
+    <>
+      <Text style={styles.label}>Learnset:</Text>
+      <MoveSelect
+        name={'learnset'}
+        value={value}
+        placeholder={'Select a move...'}
+        onChangeText={(text) => {
+          filterMatchingMoves(text);
+          setValue(text);
+        }}
+        onSubmitEditing={() => setValue('')}
+        setCharacterLearnset={setCharacterLearnset}
+        setDisplayedListItems={setDisplayedListItems}
+        setFocusedField={setFocusedField}
+      />
+      <View style={styles.learnsetList}>
+        <FlatList
+          data={character.learnset}
+          keyExtractor={(_, index) => index.toString()}
+          renderItem={renderItem}
+        />
+      </View>
+    </>
+  );
+}
+
+function DisplayedList({ items, field, characterMethods }: DisplayedListProps) {
+  const { setCharacterLearnset, setCharacterMeta } = characterMethods;
+
+  const renderItem = ({ item, index }: ListRenderItemInfo<GenericListItem>) => {
+    let onPress;
+    if (field === 'learnset') {
+      onPress = () => setCharacterLearnset(item as PokeMove);
+    } else {
+      onPress = () => setCharacterMeta(item.name, field);
+    }
+    return <DisplayedListItem item={item} index={index} onPress={onPress} />;
+  };
+
   return (
     <FlatList
       data={items}
@@ -219,29 +323,43 @@ function DisplayedList({ items, field, setCharacterMeta }: DisplayedListProps) {
 }
 
 const DisplayedListItem = React.memo((props: DisplayedListItemProps) => {
-  const { item, index, field, setCharacterMeta } = props;
+  const { item, index, onPress } = props;
   const itemStyle = {
     backgroundColor: item.color
   };
 
   return (
-    <TouchableOpacity
-      onPress={() => setCharacterMeta(item.name, field)}
-      key={index}>
+    <TouchableOpacity onPress={onPress} key={index}>
       <Text style={[styles.listItem, itemStyle]}>{item.name}</Text>
     </TouchableOpacity>
   );
 });
 
+type CharacterStatsFormProps = {
+  character: Character;
+  setCharacterStat: (value: string, property: Stat) => void;
+};
+
+type CharacterLearnsetFormProps = {
+  allMoves: PokeMove[];
+  character: Character;
+  filterMatchingMoves: (text: string) => void;
+  setCharacterLearnset: (move: PokeMove) => void;
+  setDisplayedListItems: React.Dispatch<React.SetStateAction<Array<any>>>;
+  setFocusedField: React.Dispatch<React.SetStateAction<keyof Character>>;
+};
+
 type DisplayedListProps = {
   items: GenericListItem[];
   field: keyof Character;
-  setCharacterMeta: (value: any, property: keyof Character) => void;
+  characterMethods: {
+    setCharacterLearnset: (move: PokeMove) => void;
+    setCharacterMeta: (value: any, property: keyof Character) => void;
+  };
 };
 
 type DisplayedListItemProps = {
   item: GenericListItem;
   index: number;
-  field: keyof Character;
-  setCharacterMeta: (value: any, property: keyof Character) => void;
+  onPress: any;
 };
