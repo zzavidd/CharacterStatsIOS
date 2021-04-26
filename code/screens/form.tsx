@@ -65,10 +65,13 @@ export default function Form({
   };
 
   /**
-   * Hook adding a new move to the character's learnset.
+   * Hook for adding a new move to the character's learnset if it does not
+   * already exist.
    * @param move The move to add.
    */
-  const setCharacterLearnset = (move: PokeMove) => {
+  const addToCharacterLearnset = (move: PokeMove) => {
+    if (character.learnset.includes(move.id)) return;
+
     setCharacter((character) => ({
       ...character,
       learnset: [...character.learnset, move.id]
@@ -105,91 +108,95 @@ export default function Form({
   };
 
   return (
-    <KeyboardAvoidingView
-      behavior={'padding'}
-      style={styles.container}
-      keyboardVerticalOffset={headerHeight}>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.main}>
-          <StatusBar style={'light'} />
-          <ScrollView style={styles.form}>
-            <TextInput
-              name={'name'}
-              value={character.name}
-              placeholder={'Enter character name...'}
-              {...commonProps}
-            />
-            <Select
-              name={'universe'}
-              value={character.universe}
-              items={Universes}
-              placeholder={'Select origin universe...'}
-              {...commonProps}
-            />
-            <View style={styles.formTypes}>
-              <TypeSelect
-                name={'type1'}
-                value={character.type1}
-                placeholder={'First type...'}
-                style={styles.formTypesField}
+    <View style={styles.container}>
+      <View style={styles.main}>
+        <StatusBar style={'light'} />
+        <KeyboardAvoidingView
+          behavior={'padding'}
+          style={styles.container}
+          keyboardVerticalOffset={headerHeight}>
+          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <ScrollView style={styles.form}>
+              <TextInput
+                name={'name'}
+                value={character.name}
+                placeholder={'Enter character name...'}
                 {...commonProps}
               />
-              <TypeSelect
-                name={'type2'}
-                value={character.type2}
-                placeholder={'Second type...'}
-                style={styles.formTypesField}
+              <Select
+                name={'universe'}
+                value={character.universe}
+                items={Universes}
+                placeholder={'Select origin universe...'}
                 {...commonProps}
               />
-            </View>
-            <AbilitySelect
-              name={'ability1'}
-              value={character.ability1}
-              placeholder={'Select first ability...'}
-              {...commonProps}
-            />
-            <AbilitySelect
-              name={'ability2'}
-              value={character.ability2}
-              placeholder={'Select second ability...'}
-              {...commonProps}
-            />
-            <AbilitySelect
-              name={'abilityX'}
-              value={character.abilityX}
-              placeholder={'Select hidden ability...'}
-              {...commonProps}
-            />
-            <CharacterStatsForm
-              character={character}
-              setCharacterStat={setCharacterStat}
-            />
-            <CharacterLearnsetForm
-              character={character}
-              allMoves={moves}
-              filterMatchingMoves={filterMoves}
-              setCharacterLearnset={setCharacterLearnset}
-              setDisplayedListItems={setDisplayedListItems}
-              setFocusedField={setFocusedField}
-            />
-            <Button
-              title={'Save'}
-              onPress={async () => {
-                await Storage.save(character);
-                navigation.goBack();
-              }}
-            />
-          </ScrollView>
-          <View style={styles.list}>
-            <DisplayedList
-              items={displayedListItems}
-              field={focusedField}
-              characterMethods={{ setCharacterLearnset, setCharacterMeta }}
-            />
-          </View>
-        </View>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+              <View style={styles.formTypes}>
+                <TypeSelect
+                  name={'type1'}
+                  value={character.type1}
+                  placeholder={'First type...'}
+                  style={styles.formTypesField}
+                  {...commonProps}
+                />
+                <TypeSelect
+                  name={'type2'}
+                  value={character.type2}
+                  placeholder={'Second type...'}
+                  style={styles.formTypesField}
+                  {...commonProps}
+                />
+              </View>
+              <AbilitySelect
+                name={'ability1'}
+                value={character.ability1}
+                placeholder={'Select first ability...'}
+                {...commonProps}
+              />
+              <AbilitySelect
+                name={'ability2'}
+                value={character.ability2}
+                placeholder={'Select second ability...'}
+                {...commonProps}
+              />
+              <AbilitySelect
+                name={'abilityX'}
+                value={character.abilityX}
+                placeholder={'Select hidden ability...'}
+                {...commonProps}
+              />
+              <CharacterStatsForm
+                character={character}
+                setCharacterStat={setCharacterStat}
+              />
+              <CharacterLearnsetForm
+                useCharacterState={[character, setCharacter]}
+                allMoves={moves}
+                filterMatchingMoves={filterMoves}
+                setDisplayedListItems={setDisplayedListItems}
+                setFocusedField={setFocusedField}
+              />
+              <Button
+                title={'Save'}
+                onPress={async () => {
+                  await Storage.save(character);
+                  navigation.goBack();
+                }}
+              />
+            </ScrollView>
+          </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+        <KeyboardAvoidingView
+          behavior={'padding'}
+          style={styles.list}
+          keyboardVerticalOffset={headerHeight}>
+          <DisplayedList
+            items={displayedListItems}
+            field={focusedField}
+            characterMethods={{ addToCharacterLearnset, setCharacterMeta }}
+          />
+        </KeyboardAvoidingView>
+      </View>
+    </View>
   );
 }
 
@@ -250,60 +257,102 @@ function CharacterStatsForm({
 
 function CharacterLearnsetForm({
   allMoves,
-  character,
+  useCharacterState,
   filterMatchingMoves,
-  setCharacterLearnset,
   setDisplayedListItems,
   setFocusedField
 }: CharacterLearnsetFormProps) {
+  const [character, setCharacter] = useCharacterState;
   const [value, setValue] = useState('');
 
-  const renderItem = ({ item, index }: ListRenderItemInfo<number>) => {
-    const move = findMoveById(item, allMoves);
-    if (!move) return null;
+  const moveUp = (item: number, index: number) => {
+    if (index === 0) return;
 
-    const style = { backgroundColor: move.color };
-    return (
-      <View style={[styles.learnsetMove, style]} key={index}>
-        <Text style={styles.learnsetMoveText}>{move.name}</Text>
-      </View>
-    );
+    const { learnset } = character;
+    learnset.splice(index, 1);
+    learnset.splice(index - 1, 0, item);
+    setCharacter((character) => ({
+      ...character,
+      learnset
+    }));
+  };
+
+  const moveDown = (item: number, index: number) => {
+    const { learnset } = character;
+    if (index === learnset.length - 1) return;
+
+    learnset.splice(index, 1);
+    learnset.splice(index + 1, 0, item);
+    setCharacter((character) => ({
+      ...character,
+      learnset
+    }));
+  };
+
+  const deleteMove = (index: number) => {
+    const { learnset } = character;
+    learnset.splice(index, 1);
+    setCharacter((character) => ({
+      ...character,
+      learnset
+    }));
   };
 
   return (
     <>
       <Text style={styles.label}>Learnset:</Text>
+      <View style={styles.learnsetList}>
+        {character.learnset.map((item, key) => {
+          const move = findMoveById(item, allMoves);
+          if (!move) return null;
+
+          const style = { backgroundColor: move.color };
+          return (
+            <View style={styles.learnsetRow} key={key}>
+              <TouchableOpacity onPress={() => moveUp(item, key)}>
+                <Text style={[styles.learnsetRowArrow, { paddingRight: 5 }]}>
+                  &#9650;
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onLongPress={() => deleteMove(key)}
+                style={{ flex: 1 }}>
+                <View style={[styles.learnsetMove, style]}>
+                  <Text style={styles.learnsetMoveText}>{move.name}</Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => moveDown(item, key)}>
+                <Text style={[styles.learnsetRowArrow, { paddingLeft: 5 }]}>
+                  &#9660;
+                </Text>
+              </TouchableOpacity>
+            </View>
+          );
+        })}
+      </View>
       <MoveSelect
         name={'learnset'}
         value={value}
-        placeholder={'Select a move...'}
+        placeholder={'Type a move to filter...'}
         onChangeText={(text) => {
           filterMatchingMoves(text);
           setValue(text);
         }}
         onSubmitEditing={() => setValue('')}
-        setCharacterLearnset={setCharacterLearnset}
         setDisplayedListItems={setDisplayedListItems}
         setFocusedField={setFocusedField}
       />
-      <View style={styles.learnsetList}>
-        <FlatList
-          data={character.learnset}
-          keyExtractor={(_, index) => index.toString()}
-          renderItem={renderItem}
-        />
-      </View>
     </>
   );
 }
 
 function DisplayedList({ items, field, characterMethods }: DisplayedListProps) {
-  const { setCharacterLearnset, setCharacterMeta } = characterMethods;
+  const { addToCharacterLearnset, setCharacterMeta } = characterMethods;
 
   const renderItem = ({ item, index }: ListRenderItemInfo<GenericListItem>) => {
     let onPress;
     if (field === 'learnset') {
-      onPress = () => setCharacterLearnset(item as PokeMove);
+      onPress = () => addToCharacterLearnset(item as PokeMove);
     } else {
       onPress = () => setCharacterMeta(item.name, field);
     }
@@ -342,9 +391,11 @@ type CharacterStatsFormProps = {
 
 type CharacterLearnsetFormProps = {
   allMoves: PokeMove[];
-  character: Character;
+  useCharacterState: [
+    Character,
+    React.Dispatch<React.SetStateAction<Character>>
+  ];
   filterMatchingMoves: (text: string) => void;
-  setCharacterLearnset: (move: PokeMove) => void;
   setDisplayedListItems: React.Dispatch<React.SetStateAction<Array<any>>>;
   setFocusedField: React.Dispatch<React.SetStateAction<keyof Character>>;
 };
@@ -353,7 +404,7 @@ type DisplayedListProps = {
   items: GenericListItem[];
   field: keyof Character;
   characterMethods: {
-    setCharacterLearnset: (move: PokeMove) => void;
+    addToCharacterLearnset: (move: PokeMove) => void;
     setCharacterMeta: (value: any, property: keyof Character) => void;
   };
 };

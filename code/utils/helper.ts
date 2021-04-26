@@ -24,3 +24,9 @@ export function findMoveById(id: number, moves: PokeMove[]) {
     if (move.id === id) return move;
   }
 }
+
+export function shiftElement(list: number[], fromIndex: number, toIndex: number) {
+  const element = list[fromIndex];
+  list.splice(fromIndex, 1);
+  list.splice(toIndex, 0, element);
+}

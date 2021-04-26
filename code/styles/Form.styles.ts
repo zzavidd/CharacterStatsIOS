@@ -49,12 +49,18 @@ export default StyleSheet.create({
     flex: 1,
     padding: 8
   },
+  learnsetRow: {
+    alignItems: 'center',
+    flexDirection: 'row',
+  },
+  learnsetRowArrow: {
+    color: Color.WHITE
+  },
   learnsetMove: {
     borderRadius: 4,
     marginVertical: 2,
     padding: 8
   },
-
   learnsetMoveText: {
     color: Color.WHITE
   },

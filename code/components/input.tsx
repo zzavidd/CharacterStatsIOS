@@ -8,7 +8,6 @@ import {
 
 import Color from '../constants/colors';
 import styles from '../styles/Form.styles';
-import { PokeMove } from '../types';
 import { Character, CharacterStats } from '../types/classes';
 import { useAppSelector } from '../utils/reducers';
 
@@ -56,7 +55,7 @@ export function AbilitySelect(props: AbilitySelectProps) {
   );
 }
 
-export function MoveSelect(props: MoveSelectProps) {
+export function MoveSelect(props: ScopedSelectProps) {
   const { moves } = useAppSelector((state) => state);
   const { name, setDisplayedListItems, setFocusedField } = props;
   return (
@@ -133,10 +132,6 @@ interface TypeSelectProps extends ScopedSelectProps {
 interface AbilitySelectProps extends ScopedSelectProps {
   name: keyof Character;
   setCharacterMeta: SetCharacterMetaType;
-}
-
-interface MoveSelectProps extends ScopedSelectProps {
-  setCharacterLearnset: (move: PokeMove) => void;
 }
 
 type SetCharacterMetaType = (value: any, property: keyof Character) => void;
