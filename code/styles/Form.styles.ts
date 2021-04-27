@@ -20,7 +20,8 @@ export default StyleSheet.create({
     color: Color.WHITE,
     paddingBottom: 6,
     paddingHorizontal: 8,
-    paddingTop: 12
+    paddingTop: 12,
+    fontWeight: '600'
   },
   textInput: {
     borderBottomColor: Color.WHITE,

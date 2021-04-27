@@ -25,7 +25,6 @@ export function StatInput(props: NumberInputProps) {
       {...props}
       value={value?.toString()}
       onChangeText={(text) => setCharacterStat(text, name)}
-      clearTextOnFocus={true}
       keyboardType={'number-pad'}
     />
   );

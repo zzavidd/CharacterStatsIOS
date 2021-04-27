@@ -21,6 +21,7 @@ export class Character {
 
   constructor() {
     this.learnset = [];
+    this.stats = {};
   }
 
   static buildRandomCharacter({ abilities, moves }: AppState) {

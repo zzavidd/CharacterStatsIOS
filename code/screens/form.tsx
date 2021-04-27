@@ -1,6 +1,6 @@
 import { StackScreenProps, useHeaderHeight } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Button,
   FlatList,
@@ -38,10 +38,21 @@ export default function Form({
   const { moves } = useAppSelector((state) => state);
 
   const [character, setCharacter] = useState<Character>(new Character());
+  const [baseStatTotal, setBaseStatTotal] = useState(0);
   const [displayedListItems, setDisplayedListItems] = useState<
     Array<GenericListItem>
   >([]);
   const [focusedField, setFocusedField] = useState<keyof Character>('name');
+
+  useEffect(() => {
+    let bst = 0;
+    Object.values(character.stats).forEach((value: unknown) => {
+      if (value) {
+        bst += parseInt(value as string);
+      }
+    });
+    setBaseStatTotal(bst);
+  }, [JSON.stringify(character)]);
 
   /**
    * Hook for setting character information.
@@ -166,6 +177,7 @@ export default function Form({
               />
               <CharacterStatsForm
                 character={character}
+                baseStatTotal={baseStatTotal}
                 setCharacterStat={setCharacterStat}
               />
               <CharacterLearnsetForm
@@ -202,6 +214,7 @@ export default function Form({
 
 function CharacterStatsForm({
   character,
+  baseStatTotal,
   setCharacterStat
 }: CharacterStatsFormProps) {
   const commonProps = {
@@ -251,6 +264,7 @@ function CharacterStatsForm({
           {...commonProps}
         />
       </View>
+      <Text style={styles.label}>BST: {baseStatTotal}</Text>
     </>
   );
 }
@@ -386,6 +400,7 @@ const DisplayedListItem = React.memo((props: DisplayedListItemProps) => {
 
 type CharacterStatsFormProps = {
   character: Character;
+  baseStatTotal: number;
   setCharacterStat: (value: string, property: Stat) => void;
 };
 

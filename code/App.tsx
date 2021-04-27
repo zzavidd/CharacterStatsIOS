@@ -64,25 +64,16 @@ function Index() {
     if (error) {
       console.error(error);
     } else if (data && !loading) {
-      gatherTypes(data);
       gatherAbilities(data);
       gatherMoves(data);
+      gatherTypes(data);
     }
   }, [loading]);
 
-  const gatherTypes = (data: ResponseData) => {
-    const typeList = data.types.map((responseType: ResponseType) => {
-      const typeName = capitalCase(responseType.name) as Type;
-      const marshaledType: PokeType = {
-        id: responseType.id,
-        name: typeName,
-        color: Color.TYPE[typeName]
-      };
-      return marshaledType;
-    });
-    dispatch(setTypes(typeList));
-  };
-
+  /**
+   * Extract abilities to Redux store.
+   * @param data The full response data.
+   */
   const gatherAbilities = (data: ResponseData) => {
     const abilityList = data.abilities.map(
       (responseAbility: ResponseAbility) => {
@@ -102,6 +93,10 @@ function Index() {
     dispatch(setAbilities(abilityList));
   };
 
+  /**
+   * Extract moves to Redux store.
+   * @param data The full response data.
+   */
   const gatherMoves = (data: ResponseData) => {
     const moveList = data.moves.map((responseMove: ResponseMove) => {
       const { id, accuracy, power, pp } = responseMove;
@@ -120,6 +115,23 @@ function Index() {
       return marshaledMove;
     });
     dispatch(setMoves(moveList));
+  };
+
+  /**
+   * Extract types to Redux store.
+   * @param data The full response data.
+   */
+  const gatherTypes = (data: ResponseData) => {
+    const typeList = data.types.map((responseType: ResponseType) => {
+      const typeName = capitalCase(responseType.name) as Type;
+      const marshaledType: PokeType = {
+        id: responseType.id,
+        name: typeName,
+        color: Color.TYPE[typeName]
+      };
+      return marshaledType;
+    });
+    dispatch(setTypes(typeList));
   };
 
   return (
