@@ -1,7 +1,7 @@
 import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   ActionSheetIOS,
   Button,
@@ -16,14 +16,19 @@ import Color from '../constants/colors';
 import styles from '../styles/Home.styles';
 import { RootStackParamList } from '../types';
 import { Character } from '../types/classes';
-import { useAppSelector } from '../utils/reducers';
+import {
+  setCharacters,
+  useAppDispatch,
+  useAppSelector
+} from '../utils/reducers';
 import Settings from '../utils/settings';
 import * as Storage from '../utils/storage';
 
 export default function Home({
   navigation
 }: StackScreenProps<RootStackParamList, 'Home'>) {
-  const [characters, setCharacters] = useState<Array<Character>>([]);
+  const { characters } = useAppSelector((state) => state);
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     refreshCharacters();
@@ -31,7 +36,7 @@ export default function Home({
 
   const refreshCharacters = async () => {
     const allCharacters = (await Storage.getAll()) as Character[];
-    setCharacters(allCharacters);
+    dispatch(setCharacters(allCharacters));
   };
 
   return (

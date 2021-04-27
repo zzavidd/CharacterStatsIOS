@@ -3,9 +3,10 @@ import { Type } from './enums';
 
 export type AppState = {
   isInitialised: boolean;
-  types: PokeType[];
+  characters: Character[];
   abilities: PokeAbility[];
   moves: PokeMove[];
+  types: PokeType[];
 };
 
 export type RootStackParamList = {

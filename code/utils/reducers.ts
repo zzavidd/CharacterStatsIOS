@@ -5,9 +5,10 @@ import type { AppState } from '../types';
 
 const initialState: AppState = {
   isInitialised: false,
-  types: [],
+  characters: [],
   abilities: [],
-  moves: []
+  moves: [],
+  types: []
 };
 
 const typeSlice = createSlice({
@@ -22,6 +23,9 @@ const typeSlice = createSlice({
     },
     setMoves: (state, action) => {
       state.moves = action.payload;
+    },
+    setCharacters: (state, action) => {
+      state.characters = action.payload;
     }
   }
 });
@@ -31,7 +35,7 @@ const store = configureStore({
 });
 
 export default store;
-export const { setTypes, setAbilities, setMoves } = typeSlice.actions;
+export const { setTypes, setAbilities, setMoves, setCharacters } = typeSlice.actions;
 export const useAppDispatch = () => useDispatch<typeof store.dispatch>();
 export const useAppSelector: TypedUseSelectorHook<
   ReturnType<typeof store.getState>

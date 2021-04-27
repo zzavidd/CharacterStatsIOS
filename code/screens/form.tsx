@@ -28,7 +28,11 @@ import { GenericListItem, PokeMove, RootStackParamList } from '../types';
 import { Character, CharacterStats } from '../types/classes';
 import { Stat } from '../types/enums';
 import { findMoveById } from '../utils/helper';
-import { useAppSelector } from '../utils/reducers';
+import {
+  setCharacters,
+  useAppDispatch,
+  useAppSelector
+} from '../utils/reducers';
 import * as Storage from '../utils/storage';
 
 export default function Form({
@@ -36,7 +40,6 @@ export default function Form({
   navigation
 }: StackScreenProps<RootStackParamList, 'Form'>) {
   const { moves, abilities } = useAppSelector((state) => state);
-  const headerHeight = useHeaderHeight();
 
   const [character, setCharacter] = useState<Character>(new Character());
   const [baseStatTotal, setBaseStatTotal] = useState(0);
@@ -44,6 +47,9 @@ export default function Form({
     Array<GenericListItem>
   >([]);
   const [focusedField, setFocusedField] = useState<keyof Character>('name');
+
+  const headerHeight = useHeaderHeight();
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     const { params } = route;
@@ -149,6 +155,8 @@ export default function Form({
     } else {
       await Storage.insert(character);
     }
+    const allCharacters = (await Storage.getAll()) as Character[];
+    dispatch(setCharacters(allCharacters));
     navigation.goBack();
   };
 
@@ -230,7 +238,10 @@ export default function Form({
                 setDisplayedListItems={setDisplayedListItems}
                 setFocusedField={setFocusedField}
               />
-              <Button title={route.params?.isEdit ? 'Update' : 'Save & Submit'} onPress={onConfirm} />
+              <Button
+                title={route.params?.isEdit ? 'Update' : 'Save & Submit'}
+                onPress={onConfirm}
+              />
             </ScrollView>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
