@@ -55,6 +55,9 @@ export default StyleSheet.create({
     flexDirection: 'row'
   },
   learnsetRowArrow: {
+    padding: 10
+  },
+  learnsetRowArrowText: {
     color: Color.WHITE
   },
   learnsetMove: {

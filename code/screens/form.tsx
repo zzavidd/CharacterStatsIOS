@@ -385,8 +385,10 @@ function CharacterLearnsetForm({
           const style = { backgroundColor: move.color };
           return (
             <View style={styles.learnsetRow} key={key}>
-              <TouchableOpacity onPress={() => moveUp(item, key)}>
-                <Text style={[styles.learnsetRowArrow, { paddingRight: 5 }]}>
+              <TouchableOpacity
+                style={styles.learnsetRowArrow}
+                onPress={() => moveUp(item, key)}>
+                <Text style={[styles.learnsetRowArrowText, { marginRight: 5 }]}>
                   &#9650;
                 </Text>
               </TouchableOpacity>
@@ -397,8 +399,10 @@ function CharacterLearnsetForm({
                   <Text style={styles.learnsetMoveText}>{move.name}</Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => moveDown(item, key)}>
-                <Text style={[styles.learnsetRowArrow, { paddingLeft: 5 }]}>
+              <TouchableOpacity
+                style={styles.learnsetRowArrow}
+                onPress={() => moveDown(item, key)}>
+                <Text style={[styles.learnsetRowArrowText, { marginLeft: 5 }]}>
                   &#9660;
                 </Text>
               </TouchableOpacity>
