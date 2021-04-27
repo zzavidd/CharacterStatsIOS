@@ -35,7 +35,7 @@ export default function Form({
   navigation
 }: StackScreenProps<RootStackParamList, 'Form'>) {
   const headerHeight = useHeaderHeight();
-  const { moves } = useAppSelector((state) => state);
+  const { moves, abilities } = useAppSelector((state) => state);
 
   const [character, setCharacter] = useState<Character>(new Character());
   const [baseStatTotal, setBaseStatTotal] = useState(0);
@@ -93,7 +93,7 @@ export default function Form({
    * Filters the move list to only return moves whose name or type match input.
    * @param text The form field.
    */
-  const filterMoves = (text: string) => {
+  const filterMatchingMoves = (text: string) => {
     if (!text) {
       setDisplayedListItems(moves);
       return;
@@ -104,6 +104,29 @@ export default function Form({
         return true;
       }
       if (move.type.toLowerCase().includes(text.toLowerCase())) {
+        return true;
+      }
+      return false;
+    });
+
+    setDisplayedListItems(filteredList);
+  };
+
+  /**
+   * Filters the move list to only return moves whose name or type match input.
+   * @param text The form field.
+   */
+  const filterMatchingAbilities = (text: string) => {
+    if (!text) {
+      setDisplayedListItems(abilities);
+      return;
+    }
+
+    const filteredList = abilities.filter((ability) => {
+      if (ability.name.toLowerCase().includes(text.toLowerCase())) {
+        return true;
+      }
+      if (ability.commonType.toLowerCase().includes(text.toLowerCase())) {
         return true;
       }
       return false;
@@ -161,18 +184,21 @@ export default function Form({
                 name={'ability1'}
                 value={character.ability1}
                 placeholder={'Select first ability...'}
+                filterMatchingAbilities={filterMatchingAbilities}
                 {...commonProps}
               />
               <AbilitySelect
                 name={'ability2'}
                 value={character.ability2}
                 placeholder={'Select second ability...'}
+                filterMatchingAbilities={filterMatchingAbilities}
                 {...commonProps}
               />
               <AbilitySelect
                 name={'abilityX'}
                 value={character.abilityX}
                 placeholder={'Select hidden ability...'}
+                filterMatchingAbilities={filterMatchingAbilities}
                 {...commonProps}
               />
               <CharacterStatsForm
@@ -183,7 +209,7 @@ export default function Form({
               <CharacterLearnsetForm
                 useCharacterState={[character, setCharacter]}
                 allMoves={moves}
-                filterMatchingMoves={filterMoves}
+                filterMatchingMoves={filterMatchingMoves}
                 setDisplayedListItems={setDisplayedListItems}
                 setFocusedField={setFocusedField}
               />

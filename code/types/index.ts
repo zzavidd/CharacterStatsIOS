@@ -38,6 +38,7 @@ export type PokeAbility = {
   color: string;
   generation: number;
   effect: string;
+  commonType: Type;
 };
 
 export type ResponseData = {

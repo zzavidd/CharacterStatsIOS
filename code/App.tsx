@@ -79,13 +79,14 @@ function Index() {
       (responseAbility: ResponseAbility) => {
         const { id, generation } = responseAbility;
 
-        const commonType = findMostCommonType(responseAbility);
+        const commonType = findMostCommonType(responseAbility)!;
         const marshaledAbility: PokeAbility = {
           id,
           generation,
+          commonType,
           name: capitalCase(responseAbility.name),
           color: Color.TYPE[commonType!],
-          effect: responseAbility.effects.effect
+          effect: responseAbility.effects.effect,
         };
         return marshaledAbility;
       }

@@ -14,7 +14,10 @@ import { useAppSelector } from '../utils/reducers';
 export function TextInput(props: TextInputProps) {
   const { name, setCharacterProperty } = props;
   return (
-    <Input {...props} onChangeText={(text) => setCharacterProperty(text, name)} />
+    <Input
+      {...props}
+      onChangeText={(text) => setCharacterProperty(text, name)}
+    />
   );
 }
 
@@ -44,12 +47,15 @@ export function TypeSelect(props: TypeSelectProps) {
 
 export function AbilitySelect(props: AbilitySelectProps) {
   const { abilities } = useAppSelector((state) => state);
-  const { name, setCharacterProperty } = props;
+  const { name, filterMatchingAbilities, setCharacterProperty } = props;
   return (
     <Select
       {...props}
       items={abilities}
-      onChangeText={(text) => setCharacterProperty(text, name)}
+      onChangeText={(text) => {
+        setCharacterProperty(text, name);
+        filterMatchingAbilities(text);
+      }}
     />
   );
 }
@@ -130,6 +136,7 @@ interface TypeSelectProps extends ScopedSelectProps {
 
 interface AbilitySelectProps extends ScopedSelectProps {
   name: keyof Character;
+  filterMatchingAbilities: (text: string) => void;
   setCharacterProperty: SetCharacterMetaType;
 }
 
