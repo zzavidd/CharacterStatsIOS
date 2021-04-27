@@ -102,7 +102,9 @@ function CharacterGrid({
         }}>
         <LinearGradient
           colors={[color1, color2]}
-          locations={[0.85, 1]}
+          locations={[0.85, 0.85]}
+          start={[0, 0]}
+          end={[1, 1]}
           style={styles.cellLinGrad}>
           <Text style={styles.name}>{name}</Text>
           <Text style={styles.metadata}>{types}</Text>
