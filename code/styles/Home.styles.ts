@@ -13,6 +13,7 @@ export default StyleSheet.create({
   },
   cellLinGrad: {
     borderRadius: 10,
+    flex: 1,
     margin: 5,
     padding: 10
   },

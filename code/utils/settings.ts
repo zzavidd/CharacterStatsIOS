@@ -1,3 +1,3 @@
 export default {
-  showDevTools: true
+  showDevTools: false
 };

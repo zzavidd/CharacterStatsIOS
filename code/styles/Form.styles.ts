@@ -14,14 +14,14 @@ export default StyleSheet.create({
   form: {
     flex: 0.7,
     paddingHorizontal: 8,
-    paddingVertical: 5
+    paddingTop: 5
   },
   label: {
     color: Color.WHITE,
+    fontWeight: '600',
     paddingBottom: 6,
     paddingHorizontal: 8,
-    paddingTop: 12,
-    fontWeight: '600'
+    paddingTop: 12
   },
   textInput: {
     borderBottomColor: Color.WHITE,
@@ -52,7 +52,7 @@ export default StyleSheet.create({
   },
   learnsetRow: {
     alignItems: 'center',
-    flexDirection: 'row',
+    flexDirection: 'row'
   },
   learnsetRowArrow: {
     color: Color.WHITE
@@ -64,6 +64,10 @@ export default StyleSheet.create({
   },
   learnsetMoveText: {
     color: Color.WHITE
+  },
+  moveSelect: {
+    marginVertical: 10,
+    paddingVertical: 10
   },
   list: {
     borderLeftColor: Color.PLACEHOLDER_TEXT_COLOR,

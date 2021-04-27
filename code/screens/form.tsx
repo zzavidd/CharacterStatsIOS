@@ -1,6 +1,6 @@
 import { StackScreenProps, useHeaderHeight } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {
   Button,
   FlatList,
@@ -67,6 +67,19 @@ export default function Form({
     });
     setBaseStatTotal(bst);
   }, [JSON.stringify(character)]);
+
+  useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => {
+        return (
+          <Button
+            title={route.params?.isEdit ? 'Update' : 'Submit'}
+            onPress={onConfirm}
+          />
+        );
+      }
+    });
+  });
 
   /**
    * Hook for setting character information.
@@ -170,81 +183,79 @@ export default function Form({
     <View style={styles.container}>
       <View style={styles.main}>
         <StatusBar style={'light'} />
-        <KeyboardAvoidingView
-          behavior={'padding'}
-          style={styles.container}
-          keyboardVerticalOffset={headerHeight}>
-          <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <ScrollView style={styles.form}>
-              <TextInput
-                name={'name'}
-                value={character.name}
-                placeholder={'Enter character name...'}
-                {...commonProps}
-              />
-              <Select
-                name={'universe'}
-                value={character.universe}
-                items={Universes}
-                placeholder={'Select origin universe...'}
-                {...commonProps}
-              />
-              <View style={styles.formTypes}>
-                <TypeSelect
-                  name={'type1'}
-                  value={character.type1}
-                  placeholder={'First type...'}
-                  style={styles.formTypesField}
+        <ScrollView style={styles.form}>
+          <KeyboardAvoidingView
+            behavior={'padding'}
+            style={{ flex: 1 }}
+            keyboardVerticalOffset={headerHeight}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+              <View>
+                <TextInput
+                  name={'name'}
+                  value={character.name}
+                  placeholder={'Enter character name...'}
                   {...commonProps}
                 />
-                <TypeSelect
-                  name={'type2'}
-                  value={character.type2}
-                  placeholder={'Second type...'}
-                  style={styles.formTypesField}
+                <Select
+                  name={'universe'}
+                  value={character.universe}
+                  items={Universes}
+                  placeholder={'Select origin universe...'}
                   {...commonProps}
+                />
+                <View style={styles.formTypes}>
+                  <TypeSelect
+                    name={'type1'}
+                    value={character.type1}
+                    placeholder={'First type...'}
+                    style={styles.formTypesField}
+                    {...commonProps}
+                  />
+                  <TypeSelect
+                    name={'type2'}
+                    value={character.type2}
+                    placeholder={'Second type...'}
+                    style={styles.formTypesField}
+                    {...commonProps}
+                  />
+                </View>
+                <AbilitySelect
+                  name={'ability1'}
+                  value={character.ability1}
+                  placeholder={'Select first ability...'}
+                  filterMatchingAbilities={filterMatchingAbilities}
+                  {...commonProps}
+                />
+                <AbilitySelect
+                  name={'ability2'}
+                  value={character.ability2}
+                  placeholder={'Select second ability...'}
+                  filterMatchingAbilities={filterMatchingAbilities}
+                  {...commonProps}
+                />
+                <AbilitySelect
+                  name={'abilityX'}
+                  value={character.abilityX}
+                  placeholder={'Select hidden ability...'}
+                  filterMatchingAbilities={filterMatchingAbilities}
+                  {...commonProps}
+                />
+                <CharacterStatsForm
+                  character={character}
+                  baseStatTotal={baseStatTotal}
+                  setCharacterStat={setCharacterStat}
+                />
+                <CharacterLearnsetForm
+                  useCharacterState={[character, setCharacter]}
+                  allMoves={moves}
+                  filterMatchingMoves={filterMatchingMoves}
+                  setDisplayedListItems={setDisplayedListItems}
+                  setFocusedField={setFocusedField}
                 />
               </View>
-              <AbilitySelect
-                name={'ability1'}
-                value={character.ability1}
-                placeholder={'Select first ability...'}
-                filterMatchingAbilities={filterMatchingAbilities}
-                {...commonProps}
-              />
-              <AbilitySelect
-                name={'ability2'}
-                value={character.ability2}
-                placeholder={'Select second ability...'}
-                filterMatchingAbilities={filterMatchingAbilities}
-                {...commonProps}
-              />
-              <AbilitySelect
-                name={'abilityX'}
-                value={character.abilityX}
-                placeholder={'Select hidden ability...'}
-                filterMatchingAbilities={filterMatchingAbilities}
-                {...commonProps}
-              />
-              <CharacterStatsForm
-                character={character}
-                baseStatTotal={baseStatTotal}
-                setCharacterStat={setCharacterStat}
-              />
-              <CharacterLearnsetForm
-                useCharacterState={[character, setCharacter]}
-                allMoves={moves}
-                filterMatchingMoves={filterMatchingMoves}
-                setDisplayedListItems={setDisplayedListItems}
-                setFocusedField={setFocusedField}
-              />
-              <Button
-                title={route.params?.isEdit ? 'Update' : 'Save & Submit'}
-                onPress={onConfirm}
-              />
-            </ScrollView>
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
+            </TouchableWithoutFeedback>
+          </KeyboardAvoidingView>
+        </ScrollView>
         <KeyboardAvoidingView
           behavior={'padding'}
           style={styles.list}
@@ -252,7 +263,10 @@ export default function Form({
           <DisplayedList
             items={displayedListItems}
             field={focusedField}
-            characterMethods={{ addToCharacterLearnset, setCharacterProperty }}
+            characterMethods={{
+              addToCharacterLearnset,
+              setCharacterProperty
+            }}
           />
         </KeyboardAvoidingView>
       </View>
@@ -395,6 +409,7 @@ function CharacterLearnsetForm({
       <MoveSelect
         name={'learnset'}
         value={value}
+        style={styles.moveSelect}
         placeholder={'Type a move to filter...'}
         onChangeText={(text) => {
           filterMatchingMoves(text);
