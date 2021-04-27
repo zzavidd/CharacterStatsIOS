@@ -1,3 +1,9 @@
+import {
+  ApolloClient,
+  ApolloProvider,
+  InMemoryCache,
+  useQuery
+} from '@apollo/client';
 import { AntDesign } from '@expo/vector-icons';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -14,10 +20,13 @@ import {
   PokeMove,
   PokeType,
   ResponseAbility,
+  ResponseData,
   ResponseMove,
   ResponseType
 } from './types';
 import { Type } from './types/enums';
+import { findMostCommonType } from './utils/helper';
+import QUERY from './utils/queries';
 import store, {
   setAbilities,
   setMoves,
@@ -25,101 +34,92 @@ import store, {
   useAppDispatch,
   useAppSelector
 } from './utils/reducers';
-import request, { Queries } from './utils/request';
-import DevSettings from './utils/settings';
 
 const Stack = createStackNavigator();
 
+const client = new ApolloClient({
+  uri: 'https://beta.pokeapi.co/graphql/v1beta',
+  cache: new InMemoryCache()
+});
+
 export default function App() {
   return (
-    <Provider store={store}>
-      <Index />
-    </Provider>
+    <ApolloProvider client={client}>
+      <Provider store={store}>
+        <Index />
+      </Provider>
+    </ApolloProvider>
   );
 }
 
 function Index() {
-  const { types, abilities, moves } = useAppSelector((state) => state);
+  const { isInitialised } = useAppSelector((state) => state);
   const dispatch = useAppDispatch();
 
+  const { data, error, loading } = useQuery<ResponseData>(QUERY, {
+    skip: isInitialised
+  });
+
   useEffect(() => {
-    getPokeAbilities();
-    getPokeTypes();
-    getPokeMoves();
-  }, []);
+    if (error) {
+      console.error(error);
+    } else if (data && !loading) {
+      gatherTypes(data);
+      gatherAbilities(data);
+      gatherMoves(data);
+    }
+  }, [loading]);
 
-  const getPokeTypes = () => {
-    if (types.length && !DevSettings.retrieveData) return;
-
-    request(Queries.TYPE, (data) => {
-      const typeList = data.types.map((responseType: ResponseType) => {
-        const typeName = capitalCase(responseType.name) as Type;
-        const marshaledType: PokeType = {
-          id: responseType.id,
-          name: typeName,
-          color: Color.TYPE[typeName]
-        };
-        return marshaledType;
-      });
-      dispatch(setTypes(typeList));
+  const gatherTypes = (data: ResponseData) => {
+    const typeList = data.types.map((responseType: ResponseType) => {
+      const typeName = capitalCase(responseType.name) as Type;
+      const marshaledType: PokeType = {
+        id: responseType.id,
+        name: typeName,
+        color: Color.TYPE[typeName]
+      };
+      return marshaledType;
     });
+    dispatch(setTypes(typeList));
   };
 
-  const getPokeAbilities = () => {
-    if (abilities.length && !DevSettings.retrieveData) return;
+  const gatherAbilities = (data: ResponseData) => {
+    const abilityList = data.abilities.map(
+      (responseAbility: ResponseAbility) => {
+        const { id, generation } = responseAbility;
 
-    request(Queries.ABILITY, (data) => {
-      const abilityList = data.abilities.map(
-        (responseAbility: ResponseAbility) => {
-          const { id, generation, candidates } = responseAbility;
-
-          const types: string[] = [];
-
-          candidates.forEach((candidate) => {
-            candidate.pokemon.types.forEach((type) => {
-              console.log(type);
-              types.push(type.name);
-            });
-          });
-
-          // console.log(types);
-
-          const marshaledAbility: PokeAbility = {
-            id,
-            generation,
-            name: capitalCase(responseAbility.name),
-            color: Object.values(Color.GENERATION)[generation],
-            effect: responseAbility.effects.effect
-          };
-          return marshaledAbility;
-        }
-      );
-      dispatch(setAbilities(abilityList));
-    });
-  };
-
-  const getPokeMoves = () => {
-    if (moves.length && !DevSettings.retrieveData) return;
-
-    request(Queries.MOVE, (data) => {
-      const moveList = data.moves.map((responseMove: ResponseMove) => {
-        const { id, accuracy, power, pp } = responseMove;
-        const type = capitalCase(responseMove.type.name) as Type;
-        const marshaledMove: PokeMove = {
+        const commonType = findMostCommonType(responseAbility);
+        const marshaledAbility: PokeAbility = {
           id,
-          accuracy,
-          power,
-          pp,
-          type,
-          name: capitalCase(responseMove.name),
-          color: Color.TYPE[type],
-          damageClass: responseMove.damageClass.name,
-          effect: responseMove.effect.texts[0].text
+          generation,
+          name: capitalCase(responseAbility.name),
+          color: Color.TYPE[commonType!],
+          effect: responseAbility.effects.effect
         };
-        return marshaledMove;
-      });
-      dispatch(setMoves(moveList));
+        return marshaledAbility;
+      }
+    );
+    dispatch(setAbilities(abilityList));
+  };
+
+  const gatherMoves = (data: ResponseData) => {
+    const moveList = data.moves.map((responseMove: ResponseMove) => {
+      const { id, accuracy, power, pp } = responseMove;
+      const type = capitalCase(responseMove.type.name) as Type;
+      const marshaledMove: PokeMove = {
+        id,
+        accuracy,
+        power,
+        pp,
+        type,
+        name: capitalCase(responseMove.name),
+        color: Color.TYPE[type],
+        damageClass: responseMove.damageClass.name,
+        effect: responseMove.effect?.texts[0].text
+      };
+      return marshaledMove;
     });
+    dispatch(setMoves(moveList));
   };
 
   return (

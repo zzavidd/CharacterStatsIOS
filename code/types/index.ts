@@ -1,6 +1,7 @@
 import { Type } from './enums';
 
 export type AppState = {
+  isInitialised: boolean;
   types: PokeType[];
   abilities: PokeAbility[];
   moves: PokeMove[];
@@ -39,9 +40,10 @@ export type PokeAbility = {
   effect: string;
 };
 
-export type ResponseType = {
-  id: number;
-  name: string;
+export type ResponseData = {
+  abilities: ResponseAbility[];
+  moves: ResponseMove[];
+  types: ResponseType[];
 };
 
 export type ResponseAbility = {
@@ -55,8 +57,10 @@ export type ResponseAbility = {
     {
       pokemon: {
         types: [
-          type: {
-            name: string;
+          {
+            type: {
+              name: string;
+            };
           }
         ];
       };
@@ -83,4 +87,9 @@ export type ResponseMove = {
       }
     ];
   };
+};
+
+export type ResponseType = {
+  id: number;
+  name: string;
 };

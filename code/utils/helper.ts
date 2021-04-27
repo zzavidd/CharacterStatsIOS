@@ -1,6 +1,8 @@
+import { capitalCase } from 'capital-case';
 import * as faker from 'faker';
 
-import { PokeMove } from '../types';
+import { PokeMove, ResponseAbility } from '../types';
+import { Type } from '../types/enums';
 
 /**
  * Generate a random number between specified bounds;
@@ -25,8 +27,21 @@ export function findMoveById(id: number, moves: PokeMove[]) {
   }
 }
 
-export function shiftElement(list: number[], fromIndex: number, toIndex: number) {
-  const element = list[fromIndex];
-  list.splice(fromIndex, 1);
-  list.splice(toIndex, 0, element);
+export function findMostCommonType(ability: ResponseAbility) {
+  const { candidates } = ability;
+  const types: Type[] = [];
+
+  candidates.forEach((candidate) => {
+    candidate.pokemon.types.forEach(({ type }) => {
+      types.push(capitalCase(type.name) as Type);
+    });
+  });
+
+  const sortedTypes = types.sort((a, b) => {
+    const first = types.filter((type) => type === a).length;
+    const second = types.filter((type) => type === b).length;
+    return first - second;
+  });
+  const mostCommonType = sortedTypes.pop();
+  return mostCommonType;
 }

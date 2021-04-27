@@ -4,6 +4,7 @@ import { useDispatch, TypedUseSelectorHook, useSelector } from 'react-redux';
 import type { AppState } from '../types';
 
 const initialState: AppState = {
+  isInitialised: false,
   types: [],
   abilities: [],
   moves: []
