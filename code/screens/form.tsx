@@ -112,7 +112,7 @@ export default function Form({
 
     setCharacter((character) => ({
       ...character,
-      learnset: [...character.learnset, move.id]
+      learnset: [move.id, ...character.learnset]
     }));
   };
 
