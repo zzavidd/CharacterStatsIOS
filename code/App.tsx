@@ -86,7 +86,7 @@ function Index() {
           commonType,
           name: capitalCase(responseAbility.name),
           color: Color.TYPE[commonType!],
-          effect: responseAbility.effects.effect,
+          effect: responseAbility.effects.effect
         };
         return marshaledAbility;
       }
@@ -147,7 +147,7 @@ function Index() {
           }
         }}>
         <Stack.Screen
-          name={'Home'}
+          name={'Characters'}
           component={Home}
           options={({ navigation }) => ({
             headerRight: () => (
@@ -159,7 +159,11 @@ function Index() {
             )
           })}
         />
-        <Stack.Screen name={'Form'} component={Form} />
+        <Stack.Screen
+          name={'Form'}
+          component={Form}
+          options={{ headerBackTitle: 'Cancel' }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

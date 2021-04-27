@@ -1,3 +1,3 @@
 export default {
-  retrieveData: false
+  showDevTools: true
 };

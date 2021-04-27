@@ -32,10 +32,11 @@ import { useAppSelector } from '../utils/reducers';
 import * as Storage from '../utils/storage';
 
 export default function Form({
+  route,
   navigation
 }: StackScreenProps<RootStackParamList, 'Form'>) {
-  const headerHeight = useHeaderHeight();
   const { moves, abilities } = useAppSelector((state) => state);
+  const headerHeight = useHeaderHeight();
 
   const [character, setCharacter] = useState<Character>(new Character());
   const [baseStatTotal, setBaseStatTotal] = useState(0);
@@ -43,6 +44,13 @@ export default function Form({
     Array<GenericListItem>
   >([]);
   const [focusedField, setFocusedField] = useState<keyof Character>('name');
+
+  useEffect(() => {
+    const { params } = route;
+    if (params?.isEdit) {
+      setCharacter(params.character);
+    }
+  }, []);
 
   useEffect(() => {
     let bst = 0;
@@ -135,6 +143,15 @@ export default function Form({
     setDisplayedListItems(filteredList);
   };
 
+  const onConfirm = async () => {
+    if (route.params?.isEdit) {
+      await Storage.update(character);
+    } else {
+      await Storage.insert(character);
+    }
+    navigation.goBack();
+  };
+
   const commonProps = {
     setCharacterProperty,
     setDisplayedListItems,
@@ -213,13 +230,7 @@ export default function Form({
                 setDisplayedListItems={setDisplayedListItems}
                 setFocusedField={setFocusedField}
               />
-              <Button
-                title={'Save'}
-                onPress={async () => {
-                  await Storage.save(character);
-                  navigation.goBack();
-                }}
-              />
+              <Button title={route.params?.isEdit ? 'Update' : 'Save & Submit'} onPress={onConfirm} />
             </ScrollView>
           </TouchableWithoutFeedback>
         </KeyboardAvoidingView>

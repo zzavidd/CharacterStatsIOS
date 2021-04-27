@@ -1,23 +1,35 @@
+import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useState } from 'react';
-import { Button, FlatList, ListRenderItemInfo, Text, View } from 'react-native';
+import {
+  ActionSheetIOS,
+  Button,
+  FlatList,
+  ListRenderItemInfo,
+  Text,
+  TouchableOpacity,
+  View
+} from 'react-native';
 
 import Color from '../constants/colors';
 import styles from '../styles/Home.styles';
+import { RootStackParamList } from '../types';
 import { Character } from '../types/classes';
 import { useAppSelector } from '../utils/reducers';
+import Settings from '../utils/settings';
 import * as Storage from '../utils/storage';
 
-export default function Home() {
-  const appState = useAppSelector((state) => state);
+export default function Home({
+  navigation
+}: StackScreenProps<RootStackParamList, 'Home'>) {
   const [characters, setCharacters] = useState<Array<Character>>([]);
 
   useEffect(() => {
-    getAllCharacters();
+    refreshCharacters();
   }, []);
 
-  const getAllCharacters = async () => {
+  const refreshCharacters = async () => {
     const allCharacters = (await Storage.getAll()) as Character[];
     setCharacters(allCharacters);
   };
@@ -25,28 +37,21 @@ export default function Home() {
   return (
     <View style={styles.container}>
       <StatusBar style={'light'} />
-      <CharacterGrid characters={characters} />
-      <View style={styles.footer}>
-        <Button
-          title={'Ingest Example Data'}
-          onPress={() => {
-            Storage.ingestExampleData(appState);
-            getAllCharacters();
-          }}
-        />
-        <Button
-          title={'Clear Data'}
-          onPress={async () => {
-            await Storage.clearAllData();
-            getAllCharacters();
-          }}
-        />
-      </View>
+      <CharacterGrid
+        characters={characters}
+        navigation={navigation}
+        refreshCharacters={refreshCharacters}
+      />
+      <DevTools refreshCharacters={refreshCharacters} />
     </View>
   );
 }
 
-function CharacterGrid({ characters }: CharacterGridProps) {
+function CharacterGrid({
+  characters,
+  refreshCharacters,
+  navigation
+}: CharacterGridProps) {
   if (!characters?.length) return <View style={styles.table} />;
 
   const renderItem = ({ item, index }: ListRenderItemInfo<Character>) => {
@@ -55,7 +60,41 @@ function CharacterGrid({ characters }: CharacterGridProps) {
     const color2 = Color.TYPE[type2];
     const types = type1 + (type2 ? ` / ${type2}` : '');
     return (
-      <View style={styles.cell} key={index}>
+      <TouchableOpacity
+        style={styles.cell}
+        activeOpacity={0.6}
+        key={index}
+        onLongPress={() => {
+          ActionSheetIOS.showActionSheetWithOptions(
+            {
+              options: ['Cancel', 'Edit', 'Delete'],
+              cancelButtonIndex: 0,
+              destructiveButtonIndex: 2
+            },
+            (buttonIndex) => {
+              if (buttonIndex === 1) {
+                navigation.navigate('Form', {
+                  character: item,
+                  isEdit: true
+                });
+              } else if (buttonIndex === 2) {
+                ActionSheetIOS.showActionSheetWithOptions(
+                  {
+                    options: ['No', 'Yes'],
+                    cancelButtonIndex: 0,
+                    destructiveButtonIndex: 1
+                  },
+                  async (buttonIndex) => {
+                    if (buttonIndex === 1) {
+                      await Storage.remove(item.id);
+                      refreshCharacters();
+                    }
+                  }
+                );
+              }
+            }
+          );
+        }}>
         <LinearGradient
           colors={[color1, color2]}
           locations={[0.85, 1]}
@@ -64,7 +103,7 @@ function CharacterGrid({ characters }: CharacterGridProps) {
           <Text style={styles.metadata}>{types}</Text>
           <Text style={styles.metadata}>{universe}</Text>
         </LinearGradient>
-      </View>
+      </TouchableOpacity>
     );
   };
   return (
@@ -79,6 +118,36 @@ function CharacterGrid({ characters }: CharacterGridProps) {
   );
 }
 
+function DevTools({ refreshCharacters }: DevToolsProps) {
+  if (!Settings.showDevTools) return null;
+
+  const appState = useAppSelector((state) => state);
+  return (
+    <View style={styles.footer}>
+      <Button
+        title={'Ingest Example Data'}
+        onPress={() => {
+          Storage.ingestExampleData(appState);
+          refreshCharacters();
+        }}
+      />
+      <Button
+        title={'Clear Data'}
+        onPress={async () => {
+          await Storage.clearAllData();
+          refreshCharacters();
+        }}
+      />
+    </View>
+  );
+}
+
 type CharacterGridProps = {
   characters: Character[];
+  refreshCharacters: () => void;
+  navigation: StackNavigationProp<RootStackParamList, 'Home'>;
+};
+
+type DevToolsProps = {
+  refreshCharacters: () => void;
 };

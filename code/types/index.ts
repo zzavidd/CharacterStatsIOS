@@ -1,3 +1,4 @@
+import { Character } from './classes';
 import { Type } from './enums';
 
 export type AppState = {
@@ -8,8 +9,15 @@ export type AppState = {
 };
 
 export type RootStackParamList = {
-  Home: undefined;
-  Form: undefined;
+  Home: {
+    characters: Character[];
+    refreshCharacters: () => void;
+  };
+  Form: {
+    character: Character;
+    isEdit: boolean;
+    refreshCharacters?: () => void;
+  };
 };
 
 export type GenericListItem = PokeType | PokeAbility | PokeMove;
