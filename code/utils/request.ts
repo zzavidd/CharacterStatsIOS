@@ -30,8 +30,17 @@ export const Queries = {
       effects: pokemon_v2_abilityeffecttexts(where: {language_id: {_eq: 9}}) {
         effect
       }
+      candidates: pokemon_v2_pokemonabilities {
+        pokemon: pokemon_v2_pokemon {
+          types: pokemon_v2_pokemontypes {
+            type: pokemon_v2_type {
+              name
+            }
+          }
+        }
+      }
     }
-  }
+  }  
   `,
   MOVE: `
   {

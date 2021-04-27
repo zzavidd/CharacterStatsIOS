@@ -51,6 +51,17 @@ export type ResponseAbility = {
   effects: {
     effect: string;
   };
+  candidates: [
+    {
+      pokemon: {
+        types: [
+          type: {
+            name: string;
+          }
+        ];
+      };
+    }
+  ];
 };
 
 export type ResponseMove = {

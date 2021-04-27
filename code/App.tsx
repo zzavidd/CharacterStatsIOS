@@ -71,7 +71,19 @@ function Index() {
     request(Queries.ABILITY, (data) => {
       const abilityList = data.abilities.map(
         (responseAbility: ResponseAbility) => {
-          const { id, generation } = responseAbility;
+          const { id, generation, candidates } = responseAbility;
+
+          const types: string[] = [];
+
+          candidates.forEach((candidate) => {
+            candidate.pokemon.types.forEach((type) => {
+              console.log(type);
+              types.push(type.name);
+            });
+          });
+
+          // console.log(types);
+
           const marshaledAbility: PokeAbility = {
             id,
             generation,

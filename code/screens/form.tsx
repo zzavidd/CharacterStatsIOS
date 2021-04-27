@@ -48,7 +48,7 @@ export default function Form({
    * @param value The value to set.
    * @param property The character property to set the value to.
    */
-  const setCharacterMeta = (value: any, property: keyof Character) => {
+  const setCharacterProperty = (value: any, property: keyof Character) => {
     setCharacter((character) => ({ ...character, [property]: value }));
   };
 
@@ -102,7 +102,7 @@ export default function Form({
   };
 
   const commonProps = {
-    setCharacterMeta,
+    setCharacterProperty,
     setDisplayedListItems,
     setFocusedField
   };
@@ -192,7 +192,7 @@ export default function Form({
           <DisplayedList
             items={displayedListItems}
             field={focusedField}
-            characterMethods={{ addToCharacterLearnset, setCharacterMeta }}
+            characterMethods={{ addToCharacterLearnset, setCharacterProperty }}
           />
         </KeyboardAvoidingView>
       </View>
@@ -347,14 +347,14 @@ function CharacterLearnsetForm({
 }
 
 function DisplayedList({ items, field, characterMethods }: DisplayedListProps) {
-  const { addToCharacterLearnset, setCharacterMeta } = characterMethods;
+  const { addToCharacterLearnset, setCharacterProperty } = characterMethods;
 
   const renderItem = ({ item, index }: ListRenderItemInfo<GenericListItem>) => {
     let onPress;
     if (field === 'learnset') {
       onPress = () => addToCharacterLearnset(item as PokeMove);
     } else {
-      onPress = () => setCharacterMeta(item.name, field);
+      onPress = () => setCharacterProperty(item.name, field);
     }
     return <DisplayedListItem item={item} index={index} onPress={onPress} />;
   };
@@ -405,7 +405,7 @@ type DisplayedListProps = {
   field: keyof Character;
   characterMethods: {
     addToCharacterLearnset: (move: PokeMove) => void;
-    setCharacterMeta: (value: any, property: keyof Character) => void;
+    setCharacterProperty: (value: any, property: keyof Character) => void;
   };
 };
 

@@ -12,9 +12,9 @@ import { Character, CharacterStats } from '../types/classes';
 import { useAppSelector } from '../utils/reducers';
 
 export function TextInput(props: TextInputProps) {
-  const { name, setCharacterMeta } = props;
+  const { name, setCharacterProperty } = props;
   return (
-    <Input {...props} onChangeText={(text) => setCharacterMeta(text, name)} />
+    <Input {...props} onChangeText={(text) => setCharacterProperty(text, name)} />
   );
 }
 
@@ -33,24 +33,24 @@ export function StatInput(props: NumberInputProps) {
 
 export function TypeSelect(props: TypeSelectProps) {
   const { types } = useAppSelector((state) => state);
-  const { name, setCharacterMeta } = props;
+  const { name, setCharacterProperty } = props;
   return (
     <Select
       {...props}
       items={types}
-      onChangeText={(text) => setCharacterMeta(text, name)}
+      onChangeText={(text) => setCharacterProperty(text, name)}
     />
   );
 }
 
 export function AbilitySelect(props: AbilitySelectProps) {
   const { abilities } = useAppSelector((state) => state);
-  const { name, setCharacterMeta } = props;
+  const { name, setCharacterProperty } = props;
   return (
     <Select
       {...props}
       items={abilities}
-      onChangeText={(text) => setCharacterMeta(text, name)}
+      onChangeText={(text) => setCharacterProperty(text, name)}
     />
   );
 }
@@ -103,7 +103,7 @@ interface InputProps extends DefaultInputProps {
 
 interface TextInputProps extends InputProps {
   name: keyof Character;
-  setCharacterMeta: SetCharacterMetaType;
+  setCharacterProperty: SetCharacterMetaType;
 }
 
 interface NumberInputProps {
@@ -126,12 +126,12 @@ interface SelectProps<T> extends ScopedSelectProps {
 
 interface TypeSelectProps extends ScopedSelectProps {
   name: keyof Character;
-  setCharacterMeta: SetCharacterMetaType;
+  setCharacterProperty: SetCharacterMetaType;
 }
 
 interface AbilitySelectProps extends ScopedSelectProps {
   name: keyof Character;
-  setCharacterMeta: SetCharacterMetaType;
+  setCharacterProperty: SetCharacterMetaType;
 }
 
 type SetCharacterMetaType = (value: any, property: keyof Character) => void;
