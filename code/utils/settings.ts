@@ -1,3 +1,5 @@
+import Constants from "expo-constants";
+
 export default {
-  showDevTools: true
+  showDevTools: Constants?.manifest?.extra?.hideDevTools,
 };

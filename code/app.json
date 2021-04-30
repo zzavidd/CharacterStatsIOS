@@ -26,6 +26,9 @@
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "userInterfaceStyle": "dark"
+    "userInterfaceStyle": "dark",
+    "extra": {
+      "hideDevTools": true
+    }
   }
 }
