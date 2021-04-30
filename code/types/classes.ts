@@ -31,7 +31,7 @@ export class Character {
 
     const character = new Character();
     character.name = faker.name.firstName();
-    character.universe = Universes[randomNumber(1, 3)].name;
+    character.universe = Universes[faker.datatype.number({ min: 0, max: 2, precision: 1 })].name;
     character.type1 = types[randomNumber(types.length - 1)];
 
     if (addSecondType) {

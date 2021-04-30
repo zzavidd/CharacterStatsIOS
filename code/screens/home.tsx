@@ -16,6 +16,7 @@ import Color from '../constants/colors';
 import styles from '../styles/Home.styles';
 import { RootStackParamList } from '../types';
 import { Character } from '../types/classes';
+import { organiseCharacters } from '../utils/helper';
 import {
   setCharacters,
   useAppDispatch,
@@ -35,7 +36,8 @@ export default function Home({
   }, []);
 
   const refreshCharacters = async () => {
-    const allCharacters = (await Storage.getAll()) as Character[];
+    const data = (await Storage.getAll()) as Character[];
+    const allCharacters = organiseCharacters(data);
     dispatch(setCharacters(allCharacters));
   };
 
@@ -47,6 +49,7 @@ export default function Home({
         navigation={navigation}
         refreshCharacters={refreshCharacters}
       />
+      <CharacterToolbar />
       <DevTools refreshCharacters={refreshCharacters} />
     </View>
   );
@@ -69,37 +72,7 @@ function CharacterGrid({
         style={styles.cell}
         activeOpacity={0.6}
         key={index}
-        onLongPress={() => {
-          ActionSheetIOS.showActionSheetWithOptions(
-            {
-              options: ['Cancel', 'Edit', 'Delete'],
-              cancelButtonIndex: 0,
-              destructiveButtonIndex: 2
-            },
-            (buttonIndex) => {
-              if (buttonIndex === 1) {
-                navigation.navigate('Form', {
-                  character: item,
-                  isEdit: true
-                });
-              } else if (buttonIndex === 2) {
-                ActionSheetIOS.showActionSheetWithOptions(
-                  {
-                    options: ['No', 'Yes'],
-                    cancelButtonIndex: 0,
-                    destructiveButtonIndex: 1
-                  },
-                  async (buttonIndex) => {
-                    if (buttonIndex === 1) {
-                      await Storage.remove(item.id);
-                      refreshCharacters();
-                    }
-                  }
-                );
-              }
-            }
-          );
-        }}>
+        onLongPress={() => showLongPressOptions(item)}>
         <LinearGradient
           colors={[color1, color2]}
           locations={[0.85, 0.85]}
@@ -113,6 +86,43 @@ function CharacterGrid({
       </TouchableOpacity>
     );
   };
+
+  const showLongPressOptions = (character: Character) => {
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: ['Cancel', 'Edit', 'Delete'],
+        cancelButtonIndex: 0,
+        destructiveButtonIndex: 2
+      },
+      (buttonIndex) => {
+        if (buttonIndex === 1) {
+          navigation.navigate('Form', {
+            character,
+            isEdit: true
+          });
+        } else if (buttonIndex === 2) {
+          promptConfirmation(character);
+        }
+      }
+    );
+  };
+
+  const promptConfirmation = (character: Character) => {
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: ['No', 'Yes'],
+        cancelButtonIndex: 0,
+        destructiveButtonIndex: 1
+      },
+      async (buttonIndex) => {
+        if (buttonIndex === 1) {
+          await Storage.remove(character.id);
+          refreshCharacters();
+        }
+      }
+    );
+  };
+
   return (
     <View style={styles.table}>
       <FlatList
@@ -120,6 +130,41 @@ function CharacterGrid({
         keyExtractor={(item) => item.id}
         numColumns={3}
         renderItem={renderItem}
+      />
+    </View>
+  );
+}
+
+function CharacterToolbar() {
+  const { characters } = useAppSelector((state) => state);
+  const dispatch = useAppDispatch();
+
+  const sortCharacters = (sortId: number) => {
+    const allCharacters = organiseCharacters(characters, { sortId });
+    dispatch(setCharacters(allCharacters));
+  };
+
+  return (
+    <View style={styles.footer}>
+      <Button
+        title={'Sort'}
+        onPress={() => {
+          ActionSheetIOS.showActionSheetWithOptions(
+            {
+              options: [
+                'Cancel',
+                'Sort By Name (Ascending)',
+                'Sort By Name (Descending)',
+                'Sort By Type (Ascending)',
+                'Sort By Type (Descending)'
+              ],
+              cancelButtonIndex: 0
+            },
+            (buttonIndex) => {
+              sortCharacters(buttonIndex);
+            }
+          );
+        }}
       />
     </View>
   );
@@ -153,6 +198,10 @@ type CharacterGridProps = {
   characters: Character[];
   refreshCharacters: () => void;
   navigation: StackNavigationProp<RootStackParamList, 'Home'>;
+};
+
+type CharacterToolbarProps = {
+  refreshCharacters: () => void;
 };
 
 type DevToolsProps = {
