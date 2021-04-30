@@ -344,7 +344,7 @@ function CharacterLearnsetForm({
   const moveUp = (item: number, index: number) => {
     if (index === 0) return;
 
-    const { learnset } = character;
+    const learnset = character.learnset.slice();
     learnset.splice(index, 1);
     learnset.splice(index - 1, 0, item);
     setCharacter((character) => ({
@@ -354,7 +354,7 @@ function CharacterLearnsetForm({
   };
 
   const moveDown = (item: number, index: number) => {
-    const { learnset } = character;
+    const learnset = character.learnset.slice();
     if (index === learnset.length - 1) return;
 
     learnset.splice(index, 1);
