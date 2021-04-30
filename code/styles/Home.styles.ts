@@ -22,11 +22,49 @@ export default StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold'
   },
-  metadata: {
+  types: {
     color: Color.WHITE,
-    fontSize: 11
+    fontSize: 11,
+    paddingTop: 2
   },
-
+  universe: {
+    color: Color.WHITE,
+    fontSize: 9,
+    fontStyle: 'italic'
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingTop: 5
+  },
+  statsBlockLeft: {
+    flex: 0.45,
+    paddingRight: 5
+  },
+  statsBlockRight: {
+    flex: 0.55,
+    paddingLeft: 5
+  },
+  statEntry: {
+    flexDirection: 'row'
+  },
+  statLabel: {
+    color: Color.WHITE,
+    flex: 1,
+    fontSize: 7
+  },
+  statValue: {
+    color: Color.WHITE,
+    fontSize: 7,
+    textAlign: 'right'
+  },
+  bst: {
+    color: Color.WHITE,
+    fontSize: 7,
+    fontWeight: 'bold',
+    paddingTop: 5,
+    textAlign: 'right'
+  },
   table: {
     flex: 9,
     paddingVertical: 8

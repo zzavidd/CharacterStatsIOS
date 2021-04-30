@@ -24,6 +24,16 @@ export class Character {
     this.stats = {};
   }
 
+  static calculateBST(character: Character) {
+    let bst = 0;
+    Object.values(character.stats).forEach((value: unknown) => {
+      if (value) {
+        bst += parseInt(value as string);
+      }
+    });
+    return bst;
+  }
+
   static buildRandomCharacter({ abilities, moves }: AppState) {
     const types = Object.values(Type);
     const addSecondType = faker.datatype.boolean();
@@ -31,7 +41,8 @@ export class Character {
 
     const character = new Character();
     character.name = faker.name.firstName();
-    character.universe = Universes[faker.datatype.number({ min: 0, max: 2, precision: 1 })].name;
+    character.universe =
+      Universes[faker.datatype.number({ min: 0, max: 2, precision: 1 })].name;
     character.type1 = types[randomNumber(types.length - 1)];
 
     if (addSecondType) {

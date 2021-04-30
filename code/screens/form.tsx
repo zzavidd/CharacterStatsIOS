@@ -59,12 +59,7 @@ export default function Form({
   }, []);
 
   useEffect(() => {
-    let bst = 0;
-    Object.values(character.stats).forEach((value: unknown) => {
-      if (value) {
-        bst += parseInt(value as string);
-      }
-    });
+    const bst = Character.calculateBST(character);
     setBaseStatTotal(bst);
   }, [JSON.stringify(character)]);
 
