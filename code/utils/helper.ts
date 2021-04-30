@@ -58,6 +58,8 @@ export function organiseCharacters(
 ) {
   const { sortId = 1 } = opts;
 
+  if (!sortId) return characters;
+
   const [property, order] = SortOptions[sortId];
   return characters.slice().sort((a, b) => {
     if (order === 'ascending') {
