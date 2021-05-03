@@ -31,12 +31,24 @@ export default StyleSheet.create({
     paddingRight: 8,
     paddingVertical: 8
   },
+  formOrigin: {
+    flexDirection: 'row'
+  },
+  formOriginField:{
+    flex: 1
+  },
   formTypes: {
     display: 'flex',
     flexDirection: 'row'
   },
   formTypesField: {
     flex: 1
+  },
+  formTypesFieldSelected: {
+    borderBottomWidth: 0,
+    borderRadius: 8,
+    flex: 1,
+    paddingHorizontal: 8
   },
   formStats: {
     display: 'flex',
@@ -70,7 +82,7 @@ export default StyleSheet.create({
   },
   learnsetMoveText: {
     color: Color.WHITE,
-    fontSize: 13,
+    fontSize: 13
   },
   learnsetDamage: {
     borderRadius: 10

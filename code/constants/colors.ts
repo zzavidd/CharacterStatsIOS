@@ -1,5 +1,3 @@
-import Color from 'color';
-
 import { Generation, Stat, Type } from '../types/enums';
 
 const GENERAL = {

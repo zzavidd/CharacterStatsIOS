@@ -20,6 +20,7 @@ import {
   TextInput,
   TypeSelect
 } from '../../components/input';
+import Colors from '../../constants/colors';
 import { Universes } from '../../constants/fields';
 import styles from '../../styles/Form.styles';
 import { GenericListItem, PokeMove, RootStackParamList } from '../../types';
@@ -181,10 +182,12 @@ export default function Form({
             keyboardVerticalOffset={headerHeight}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View>
+              <View style={styles.formOrigin}>
                 <TextInput
                   name={'name'}
                   value={character.name}
                   placeholder={'Enter character name...'}
+                  style={styles.formOriginField}
                   {...commonProps}
                 />
                 <Select
@@ -192,21 +195,29 @@ export default function Form({
                   value={character.universe}
                   items={Universes}
                   placeholder={'Select origin universe...'}
+                  style={styles.formOriginField}
                   {...commonProps}
                 />
+                </View>
                 <View style={styles.formTypes}>
                   <TypeSelect
                     name={'type1'}
                     value={character.type1}
                     placeholder={'First type...'}
-                    style={styles.formTypesField}
+                    style={[
+                      character.type1 ? styles.formTypesFieldSelected : styles.formTypesField,
+                      { backgroundColor: Colors.TYPE[character.type1] }
+                    ]}
                     {...commonProps}
                   />
                   <TypeSelect
                     name={'type2'}
                     value={character.type2}
                     placeholder={'Second type...'}
-                    style={styles.formTypesField}
+                    style={[
+                      character.type2 ? styles.formTypesFieldSelected : styles.formTypesField,
+                      { backgroundColor: Colors.TYPE[character.type2] }
+                    ]}
                     {...commonProps}
                   />
                 </View>
