@@ -1,10 +1,8 @@
-import { StackNavigationProp, StackScreenProps } from '@react-navigation/stack';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { LinearGradient } from 'expo-linear-gradient';
-import { StatusBar } from 'expo-status-bar';
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   ActionSheetIOS,
-  Button,
   FlatList,
   ListRenderItemInfo,
   Text,
@@ -12,50 +10,13 @@ import {
   View
 } from 'react-native';
 
-import Color from '../constants/colors';
-import styles from '../styles/Home.styles';
-import { RootStackParamList } from '../types';
-import { Character } from '../types/classes';
-import { organiseCharacters } from '../utils/helper';
-import {
-  setCharacters,
-  useAppDispatch,
-  useAppSelector
-} from '../utils/reducers';
-import Settings from '../utils/settings';
-import * as Storage from '../utils/storage';
+import Color from '../../constants/colors';
+import styles from '../../styles/Home.styles';
+import { RootStackParamList } from '../../types';
+import { Character } from '../../types/classes';
+import * as Storage from '../../utils/storage';
 
-export default function Home({
-  navigation
-}: StackScreenProps<RootStackParamList, 'Home'>) {
-  const { characters } = useAppSelector((state) => state);
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    refreshCharacters();
-  }, []);
-
-  const refreshCharacters = async () => {
-    const data = (await Storage.getAll()) as Character[];
-    const allCharacters = organiseCharacters(data);
-    dispatch(setCharacters(allCharacters));
-  };
-
-  return (
-    <View style={styles.container}>
-      <StatusBar style={'light'} />
-      <CharacterGrid
-        characters={characters}
-        navigation={navigation}
-        refreshCharacters={refreshCharacters}
-      />
-      <CharacterToolbar />
-      <DevTools refreshCharacters={refreshCharacters} />
-    </View>
-  );
-}
-
-function CharacterGrid({
+export default function CharacterGrid({
   characters,
   refreshCharacters,
   navigation
@@ -158,80 +119,13 @@ function CharacterGrid({
   );
 }
 
-function CharacterToolbar() {
-  const { characters } = useAppSelector((state) => state);
-  const dispatch = useAppDispatch();
-
-  const sortCharacters = (sortId: number) => {
-    const allCharacters = organiseCharacters(characters, { sortId });
-    dispatch(setCharacters(allCharacters));
-  };
-
-  return (
-    <View style={styles.footer}>
-      <Button
-        title={'Sort By...'}
-        onPress={() => {
-          ActionSheetIOS.showActionSheetWithOptions(
-            {
-              options: [
-                'Cancel',
-                'Sort By Name (Ascending)',
-                'Sort By Name (Descending)',
-                'Sort By Type (Ascending)',
-                'Sort By Type (Descending)'
-              ],
-              cancelButtonIndex: 0
-            },
-            (buttonIndex) => {
-              sortCharacters(buttonIndex);
-            }
-          );
-        }}
-      />
-    </View>
-  );
-}
-
-function DevTools({ refreshCharacters }: DevToolsProps) {
-  if (!Settings.showDevTools) return null;
-
-  const appState = useAppSelector((state) => state);
-  return (
-    <View style={styles.footer}>
-      <Button
-        title={'Ingest Example Data'}
-        onPress={() => {
-          Storage.ingestExampleData(appState);
-          refreshCharacters();
-        }}
-      />
-      <Button
-        title={'Clear Data'}
-        onPress={async () => {
-          await Storage.clearAllData();
-          refreshCharacters();
-        }}
-      />
-    </View>
-  );
-}
-
 type CharacterGridProps = {
   characters: Character[];
   refreshCharacters: () => void;
   navigation: StackNavigationProp<RootStackParamList, 'Home'>;
 };
 
-type CharacterToolbarProps = {
-  refreshCharacters: () => void;
-};
-
 type StatEntryProps = {
   label: string;
   value?: number;
-};
-
-type DevToolsProps = {
-  refreshCharacters: () => void;
 };

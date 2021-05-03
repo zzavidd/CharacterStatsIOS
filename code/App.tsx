@@ -150,13 +150,16 @@ function Index() {
           name={'Characters'}
           component={Home}
           options={({ navigation }) => ({
-            headerRight: () => (
-              <TouchableOpacity
-                onPress={() => navigation.navigate('Form')}
-                style={styles.headerButton}>
-                <AntDesign name={'plus'} size={24} color={Color.WHITE} />
-              </TouchableOpacity>
-            )
+            headerRight: () => {
+              if (loading) return null;
+              return (
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Form')}
+                  style={styles.headerButton}>
+                  <AntDesign name={'plus'} size={24} color={Color.WHITE} />
+                </TouchableOpacity>
+              );
+            }
           })}
         />
         <Stack.Screen
