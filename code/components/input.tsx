@@ -29,6 +29,7 @@ export function StatInput(props: NumberInputProps) {
       value={value?.toString()}
       onChangeText={(text) => setCharacterStat(text, name)}
       keyboardType={'number-pad'}
+      maxLength={3}
     />
   );
 }
@@ -66,7 +67,6 @@ export function MoveSelect(props: ScopedSelectProps) {
   return (
     <Input
       {...props}
-      clearButtonMode={'always'}
       returnKeyLabel={'Add'}
       onFocus={() => {
         setDisplayedListItems(moves);
@@ -96,8 +96,9 @@ function Input(props: InputProps) {
       {...props}
       placeholderTextColor={Color.PLACEHOLDER_TEXT_COLOR}
       style={[styles.textInput, props.style]}
-      keyboardAppearance={'dark'}
       autoCompleteType={'off'}
+      clearButtonMode={'always'}
+      keyboardAppearance={'dark'}
     />
   );
 }

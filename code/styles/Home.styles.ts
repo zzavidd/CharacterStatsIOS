@@ -6,7 +6,8 @@ export default StyleSheet.create({
   container: {
     backgroundColor: Color.DARK,
     flex: 1,
-    flexDirection: 'column'
+    flexDirection: 'column',
+    paddingHorizontal: 5
   },
   cell: {
     flex: 1 / 3
@@ -19,17 +20,17 @@ export default StyleSheet.create({
   },
   name: {
     color: Color.WHITE,
-    fontSize: 15,
+    fontSize: 13,
     fontWeight: 'bold'
   },
   types: {
     color: Color.WHITE,
-    fontSize: 11,
-    paddingTop: 2
+    fontSize: 9,
+    paddingVertical: 2
   },
   universe: {
     color: Color.WHITE,
-    fontSize: 9,
+    fontSize: 7,
     fontStyle: 'italic'
   },
   statsContainer: {

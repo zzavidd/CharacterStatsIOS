@@ -361,13 +361,15 @@ function CharacterLearnsetForm({
   };
 
   const deleteMove = (index: number) => {
-    const { learnset } = character;
+    const learnset = character.learnset.slice();
     learnset.splice(index, 1);
     setCharacter((character) => ({
       ...character,
       learnset
     }));
   };
+
+  if (!character.learnset?.length) return null;
 
   return (
     <>

@@ -89,9 +89,9 @@ function CharacterGrid({
           start={[0, 1]}
           end={[1, 0]}
           style={styles.cellLinGrad}>
+          <Text style={styles.universe}>{universe}</Text>
           <Text style={styles.name}>{name}</Text>
           <Text style={styles.types}>{types}</Text>
-          <Text style={styles.universe}>{universe}</Text>
           <View style={styles.statsContainer}>
             <View style={styles.statsBlockLeft}>
               <StatEntry label={'HP'} value={stats.hp} />
