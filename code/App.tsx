@@ -86,7 +86,7 @@ function Index() {
           commonType,
           name: capitalCase(responseAbility.name),
           color: Color.TYPE[commonType!],
-          effect: responseAbility.effects.effect
+          effect: responseAbility.effects[0]?.effect
         };
         return marshaledAbility;
       }

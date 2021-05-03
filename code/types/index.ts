@@ -60,9 +60,11 @@ export type ResponseAbility = {
   id: number;
   name: string;
   generation: number;
-  effects: {
-    effect: string;
-  };
+  effects: [
+    {
+      effect: string;
+    }
+  ];
   candidates: [
     {
       pokemon: {

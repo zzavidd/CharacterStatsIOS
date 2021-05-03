@@ -70,7 +70,7 @@ export default StyleSheet.create({
   },
   learnsetMoveText: {
     color: Color.WHITE,
-    fontSize: 12,
+    fontSize: 13,
   },
   learnsetDamage: {
     borderRadius: 10

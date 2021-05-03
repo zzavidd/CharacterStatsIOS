@@ -97,7 +97,7 @@ function Input(props: InputProps) {
       placeholderTextColor={Color.PLACEHOLDER_TEXT_COLOR}
       style={[styles.textInput, props.style]}
       autoCompleteType={'off'}
-      clearButtonMode={'always'}
+      clearButtonMode={'while-editing'}
       keyboardAppearance={'dark'}
     />
   );

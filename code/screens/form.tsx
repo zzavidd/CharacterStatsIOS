@@ -2,6 +2,7 @@ import { StackScreenProps, useHeaderHeight } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {
+  ActionSheetIOS,
   Button,
   FlatList,
   Keyboard,
@@ -25,7 +26,12 @@ import {
 import { Universes } from '../constants/fields';
 import Colors from '../constants/colors';
 import styles from '../styles/Form.styles';
-import { GenericListItem, PokeMove, RootStackParamList } from '../types';
+import {
+  GenericListItem,
+  PokeAbility,
+  PokeMove,
+  RootStackParamList
+} from '../types';
 import { Character, CharacterStats } from '../types/classes';
 import { Stat } from '../types/enums';
 import { findMoveById } from '../utils/helper';
@@ -444,13 +450,36 @@ function DisplayedList({ items, field, characterMethods }: DisplayedListProps) {
   const { addToCharacterLearnset, setCharacterProperty } = characterMethods;
 
   const renderItem = ({ item, index }: ListRenderItemInfo<GenericListItem>) => {
-    let onPress;
+    let onPress, onLongPress;
     if (field === 'learnset') {
       onPress = () => addToCharacterLearnset(item as PokeMove);
     } else {
       onPress = () => setCharacterProperty(item.name, field);
     }
-    return <DisplayedListItem item={item} index={index} onPress={onPress} />;
+
+    if (field !== 'type1' && field !== 'type2') {
+      onLongPress = () => {
+        ActionSheetIOS.showActionSheetWithOptions(
+          {
+            title: item.name,
+            message: (item as PokeAbility | PokeMove).effect,
+            options: ['Close'],
+            cancelButtonIndex: 0
+          },
+          () => {
+            return;
+          }
+        );
+      };
+    }
+    return (
+      <DisplayedListItem
+        item={item}
+        index={index}
+        onPress={onPress}
+        onLongPress={onLongPress}
+      />
+    );
   };
 
   return (
@@ -466,13 +495,13 @@ function DisplayedList({ items, field, characterMethods }: DisplayedListProps) {
 }
 
 const DisplayedListItem = React.memo((props: DisplayedListItemProps) => {
-  const { item, index, onPress } = props;
+  const { item, index, onPress, onLongPress } = props;
   const itemStyle = {
     backgroundColor: item.color
   };
 
   return (
-    <TouchableOpacity onPress={onPress} key={index}>
+    <TouchableOpacity onPress={onPress} onLongPress={onLongPress} key={index}>
       <Text style={[styles.listItem, itemStyle]}>{item.name}</Text>
     </TouchableOpacity>
   );
@@ -508,4 +537,5 @@ type DisplayedListItemProps = {
   item: GenericListItem;
   index: number;
   onPress: any;
+  onLongPress: any;
 };
