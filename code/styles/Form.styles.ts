@@ -55,18 +55,29 @@ export default StyleSheet.create({
     flexDirection: 'row'
   },
   learnsetRowArrow: {
-    padding: 10
+    padding: 8
   },
   learnsetRowArrowText: {
     color: Color.WHITE
   },
   learnsetMove: {
+    alignItems: 'center',
     borderRadius: 4,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     marginVertical: 2,
     padding: 8
   },
   learnsetMoveText: {
-    color: Color.WHITE
+    color: Color.WHITE,
+    fontSize: 12,
+  },
+  learnsetDamage: {
+    borderRadius: 10
+  },
+  learnsetDamageText: {
+    fontSize: 6,
+    padding: 5
   },
   moveSelect: {
     marginVertical: 10,

@@ -50,19 +50,26 @@ const GENERATION = {
   [Generation.GALAR]: '#702467'
 };
 
-const CLASS = {
+const CLASS: ClassColor = {
   Physical: {
-    BG: '#82150b',
-    TEXT: '#F67A1A'
+    bg: '#82150b',
+    text: '#F67A1A'
   },
   Special: {
-    BG: '#333948',
-    TEXT: '#FFFFFF'
+    bg: '#333948',
+    text: '#FFFFFF'
   },
   Status: {
-    BG: '#5b585b',
-    TEXT: '#F7F7F7'
+    bg: '#5b585b',
+    text: '#F7F7F7'
   }
 };
 
 export default { ...GENERAL, GENERATION, STAT, TYPE, CLASS };
+
+type ClassColor = {
+  [key: string]: {
+    bg: string;
+    text: string;
+  };
+};

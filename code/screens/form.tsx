@@ -23,6 +23,7 @@ import {
   TypeSelect
 } from '../components/input';
 import { Universes } from '../constants/fields';
+import Colors from '../constants/colors';
 import styles from '../styles/Form.styles';
 import { GenericListItem, PokeMove, RootStackParamList } from '../types';
 import { Character, CharacterStats } from '../types/classes';
@@ -34,6 +35,7 @@ import {
   useAppSelector
 } from '../utils/reducers';
 import * as Storage from '../utils/storage';
+import { capitalCase } from 'capital-case';
 
 export default function Form({
   route,
@@ -369,8 +371,6 @@ function CharacterLearnsetForm({
     }));
   };
 
-  if (!character.learnset?.length) return null;
-
   return (
     <>
       <Text style={styles.label}>Learnset:</Text>
@@ -378,6 +378,9 @@ function CharacterLearnsetForm({
         {character.learnset.map((item, key) => {
           const move = findMoveById(item, allMoves);
           if (!move) return null;
+
+          const damageClass = capitalCase(move.damageClass);
+          const damageStyle = Colors.CLASS[damageClass];
 
           const style = { backgroundColor: move.color };
           return (
@@ -394,6 +397,19 @@ function CharacterLearnsetForm({
                 style={{ flex: 1 }}>
                 <View style={[styles.learnsetMove, style]}>
                   <Text style={styles.learnsetMoveText}>{move.name}</Text>
+                  <View
+                    style={[
+                      styles.learnsetDamage,
+                      { backgroundColor: damageStyle.bg }
+                    ]}>
+                    <Text
+                      style={[
+                        styles.learnsetDamageText,
+                        { color: damageStyle.text }
+                      ]}>
+                      {damageClass}
+                    </Text>
+                  </View>
                 </View>
               </TouchableOpacity>
               <TouchableOpacity
