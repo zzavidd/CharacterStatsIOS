@@ -34,11 +34,11 @@ export type PokeMove = {
   name: string;
   color: string;
   accuracy: number;
+  description: string;
   power: number;
   pp: number;
   type: Type;
   damageClass: string;
-  effect: string;
 };
 
 export type PokeAbility = {
@@ -46,7 +46,7 @@ export type PokeAbility = {
   name: string;
   color: string;
   generation: number;
-  effect: string;
+  description: string;
   commonType: Type;
 };
 
@@ -60,9 +60,9 @@ export type ResponseAbility = {
   id: number;
   name: string;
   generation: number;
-  effects: [
+  description: [
     {
-      effect: string;
+      text: string;
     }
   ];
   candidates: [
@@ -92,13 +92,11 @@ export type ResponseMove = {
   damageClass: {
     name: string;
   };
-  effect: {
-    texts: [
-      {
-        text: string;
-      }
-    ];
-  };
+  description: [
+    {
+      text: string;
+    }
+  ];
 };
 
 export type ResponseType = {

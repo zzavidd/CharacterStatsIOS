@@ -86,7 +86,7 @@ function Index() {
           commonType,
           name: capitalCase(responseAbility.name),
           color: Color.TYPE[commonType!],
-          effect: responseAbility.effects[0]?.effect
+          description: responseAbility.description[0]?.text
         };
         return marshaledAbility;
       }
@@ -111,7 +111,7 @@ function Index() {
         name: capitalCase(responseMove.name),
         color: Color.TYPE[type],
         damageClass: responseMove.damageClass.name,
-        effect: responseMove.effect?.texts[0].text
+        description: responseMove.description[0]?.text
       };
       return marshaledMove;
     });

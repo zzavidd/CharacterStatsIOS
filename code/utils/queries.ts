@@ -10,10 +10,12 @@ export default gql`
       id
       name
       generation: generation_id
-      effects: pokemon_v2_abilityeffecttexts(
+      description: pokemon_v2_abilityflavortexts(
         where: { language_id: { _eq: 9 } }
+        order_by: { version_group_id: desc }
+        limit: 1
       ) {
-        effect
+        text: flavor_text
       }
       candidates: pokemon_v2_pokemonabilities {
         pokemon: pokemon_v2_pokemon {
@@ -40,10 +42,12 @@ export default gql`
       damageClass: pokemon_v2_movedamageclass {
         name
       }
-      effect: pokemon_v2_moveeffect {
-        texts: pokemon_v2_moveeffecteffecttexts {
-          text: effect
-        }
+      description: pokemon_v2_moveflavortexts(
+        where: { language_id: { _eq: 9 } }
+        order_by: { version_group_id: desc }
+        limit: 1
+      ) {
+        text: flavor_text
       }
     }
     types: pokemon_v2_type(

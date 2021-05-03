@@ -462,7 +462,7 @@ function DisplayedList({ items, field, characterMethods }: DisplayedListProps) {
         ActionSheetIOS.showActionSheetWithOptions(
           {
             title: item.name,
-            message: (item as PokeAbility | PokeMove).effect,
+            message: (item as PokeAbility | PokeMove).description,
             options: ['Close'],
             cancelButtonIndex: 0
           },
