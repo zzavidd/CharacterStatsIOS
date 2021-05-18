@@ -1,6 +1,8 @@
 import { capitalCase } from 'capital-case';
 import * as faker from 'faker';
 
+import store from './reducers';
+
 import { PokeMove, ResponseAbility } from '../types';
 import { Character } from '../types/classes';
 import { Type } from '../types/enums';
@@ -52,15 +54,12 @@ export function findMostCommonType(ability: ResponseAbility) {
   return mostCommonType;
 }
 
-export function organiseCharacters(
-  characters: Character[],
-  opts: OrganiseOptions = {}
-) {
-  const { sortId = 1 } = opts;
+export function organiseCharacters(characters: Character[]) {
+  const { sortValue } = store.getState();
 
-  if (!sortId) return characters;
+  if (!sortValue) return characters;
 
-  const [property, order] = SortOptions[sortId];
+  const [property, order] = SortOptions[sortValue];
   return characters.slice().sort((a, b) => {
     if (order === 'ascending') {
       if (a[property] < b[property]) return -1;
@@ -101,9 +100,6 @@ function groupCharacters(characters: Character[]) {
 }
 
 type GroupedCharacter = { title: string; data: Character[] };
-type OrganiseOptions = {
-  sortId?: number;
-};
 
 type SortOptions = {
   [key: number]: [keyof Character, 'ascending' | 'descending'];

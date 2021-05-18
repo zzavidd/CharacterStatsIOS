@@ -9,7 +9,8 @@ const initialState: AppState = {
   abilities: [],
   moves: [],
   types: [],
-  sortValue: 1
+  sortValue: 1,
+  groupValue: 1
 };
 
 const appSlice = createSlice({
@@ -30,6 +31,9 @@ const appSlice = createSlice({
     },
     setSortValue: (state, action) => {
       state.sortValue = action.payload;
+    },
+    setGroupValue: (state, action) => {
+      state.groupValue = action.payload;
     }
   }
 });
@@ -44,7 +48,8 @@ export const {
   setAbilities,
   setMoves,
   setCharacters,
-  setSortValue
+  setSortValue,
+  setGroupValue
 } = appSlice.actions;
 export const useAppDispatch = () => useDispatch<typeof store.dispatch>();
 export const useAppSelector: TypedUseSelectorHook<

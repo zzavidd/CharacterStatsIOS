@@ -162,7 +162,7 @@ export default function Form({
       await Storage.insert(character);
     }
     const allCharacters = (await Storage.getAll()) as Character[];
-    const organisedCharacters = organiseCharacters(allCharacters, { sortId: sortValue });
+    const organisedCharacters = organiseCharacters(allCharacters);
     dispatch(setCharacters(organisedCharacters));
     navigation.goBack();
   };

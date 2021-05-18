@@ -20,7 +20,7 @@ import * as Storage from '../../utils/storage';
 export default function Home({
   navigation
 }: StackScreenProps<RootStackParamList, 'Home'>) {
-  const { characters, sortValue } = useAppSelector((state) => state);
+  const { characters } = useAppSelector((state) => state);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -29,7 +29,7 @@ export default function Home({
 
   const refreshCharacters = async () => {
     const data = (await Storage.getAll()) as Character[];
-    const allCharacters = organiseCharacters(data, { sortId: sortValue});
+    const allCharacters = organiseCharacters(data);
     dispatch(setCharacters(allCharacters));
   };
 

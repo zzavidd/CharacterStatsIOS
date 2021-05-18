@@ -17,33 +17,49 @@ export function CharacterToolbar() {
   const dispatch = useAppDispatch();
 
   const sortCharacters = (sortId: number) => {
-    const allCharacters = organiseCharacters(characters, { sortId });
     dispatch(setSortValue(sortId));
+    const allCharacters = organiseCharacters(characters);
     dispatch(setCharacters(allCharacters));
+  };
+
+  const showSortSheet = () => {
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: [
+          'Cancel',
+          'Sort By Name (Ascending)',
+          'Sort By Name (Descending)',
+          'Sort By Type (Ascending)',
+          'Sort By Type (Descending)'
+        ],
+        cancelButtonIndex: 0
+      },
+      (buttonIndex) => {
+        sortCharacters(buttonIndex);
+      }
+    );
+  };
+
+  const showGroupSheet = () => {
+    ActionSheetIOS.showActionSheetWithOptions(
+      {
+        options: [
+          'Cancel',
+          'No Grouping',
+          'Group By Universe'
+        ],
+        cancelButtonIndex: 0
+      },
+      (buttonIndex) => {
+        sortCharacters(buttonIndex);
+      }
+    );
   };
 
   return (
     <View style={styles.footer}>
-      <Button
-        title={'Sort By...'}
-        onPress={() => {
-          ActionSheetIOS.showActionSheetWithOptions(
-            {
-              options: [
-                'Cancel',
-                'Sort By Name (Ascending)',
-                'Sort By Name (Descending)',
-                'Sort By Type (Ascending)',
-                'Sort By Type (Descending)'
-              ],
-              cancelButtonIndex: 0
-            },
-            (buttonIndex) => {
-              sortCharacters(buttonIndex);
-            }
-          );
-        }}
-      />
+      <Button title={'Sort By...'} onPress={showSortSheet} />
+      <Button title={'Group By...'} onPress={showGroupSheet} />
     </View>
   );
 }

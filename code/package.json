@@ -3,8 +3,6 @@
   "prettier": "@zzavidd/prettier-config",
   "scripts": {
     "start": "expo start",
-    "ios": "expo start --ios",
-    "web": "expo start --web",
     "eject": "expo eject",
     "eslint": "eslint --ext .ts,.tsx ."
   },
