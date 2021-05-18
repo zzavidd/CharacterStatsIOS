@@ -7,6 +7,7 @@ export type AppState = {
   abilities: PokeAbility[];
   moves: PokeMove[];
   types: PokeType[];
+  sortValue: number
 };
 
 export type RootStackParamList = {

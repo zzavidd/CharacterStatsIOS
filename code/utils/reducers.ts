@@ -8,10 +8,11 @@ const initialState: AppState = {
   characters: [],
   abilities: [],
   moves: [],
-  types: []
+  types: [],
+  sortValue: 1
 };
 
-const typeSlice = createSlice({
+const appSlice = createSlice({
   name: 'app',
   initialState,
   reducers: {
@@ -26,16 +27,25 @@ const typeSlice = createSlice({
     },
     setCharacters: (state, action) => {
       state.characters = action.payload;
+    },
+    setSortValue: (state, action) => {
+      state.sortValue = action.payload;
     }
   }
 });
 
 const store = configureStore({
-  reducer: typeSlice.reducer
+  reducer: appSlice.reducer
 });
 
 export default store;
-export const { setTypes, setAbilities, setMoves, setCharacters } = typeSlice.actions;
+export const {
+  setTypes,
+  setAbilities,
+  setMoves,
+  setCharacters,
+  setSortValue
+} = appSlice.actions;
 export const useAppDispatch = () => useDispatch<typeof store.dispatch>();
 export const useAppSelector: TypedUseSelectorHook<
   ReturnType<typeof store.getState>

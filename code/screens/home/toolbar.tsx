@@ -5,6 +5,7 @@ import styles from '../../styles/Home.styles';
 import { organiseCharacters } from '../../utils/helper';
 import {
   setCharacters,
+  setSortValue,
   useAppDispatch,
   useAppSelector
 } from '../../utils/reducers';
@@ -17,6 +18,7 @@ export function CharacterToolbar() {
 
   const sortCharacters = (sortId: number) => {
     const allCharacters = organiseCharacters(characters, { sortId });
+    dispatch(setSortValue(sortId));
     dispatch(setCharacters(allCharacters));
   };
 
