@@ -26,8 +26,6 @@ export default function CharacterLearnsetForm({
    * @param targetIndex The item's current index.
    */
    const moveItem = (item: number, currentIndex: number, targetIndex: number) => {
-    if (currentIndex === 0) return;
-
     const learnset = character.learnset.slice();
     learnset.splice(currentIndex, 1);
     learnset.splice(targetIndex, 0, item);
