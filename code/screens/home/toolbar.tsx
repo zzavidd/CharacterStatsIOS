@@ -2,9 +2,10 @@ import React from 'react';
 import { ActionSheetIOS, Button, View } from 'react-native';
 
 import styles from '../../styles/Home.styles';
-import { organiseCharacters } from '../../utils/helper';
+import { sortCharacters } from '../../utils/helper';
 import {
   setCharacters,
+  setGroupValue,
   setSortValue,
   useAppDispatch,
   useAppSelector
@@ -16,42 +17,44 @@ export function CharacterToolbar() {
   const { characters } = useAppSelector((state) => state);
   const dispatch = useAppDispatch();
 
-  const sortCharacters = (sortId: number) => {
-    dispatch(setSortValue(sortId));
-    const allCharacters = organiseCharacters(characters);
-    dispatch(setCharacters(allCharacters));
-  };
-
+  /**
+   * Displays the sheet of sort options.
+   */
   const showSortSheet = () => {
     ActionSheetIOS.showActionSheetWithOptions(
       {
         options: [
           'Cancel',
-          'Sort By Name (Ascending)',
-          'Sort By Name (Descending)',
-          'Sort By Type (Ascending)',
-          'Sort By Type (Descending)'
+          'Sort By Name',
+          'Sort By Type',
+          'Sort By BST',
         ],
         cancelButtonIndex: 0
       },
-      (buttonIndex) => {
-        sortCharacters(buttonIndex);
+      (sortId) => {
+        dispatch(setSortValue(sortId));
+        const allCharacters = sortCharacters(characters);
+        dispatch(setCharacters(allCharacters));
       }
     );
   };
 
+  /**
+   * Displays the sheet of grouping options.
+   */
   const showGroupSheet = () => {
     ActionSheetIOS.showActionSheetWithOptions(
       {
         options: [
           'Cancel',
           'No Grouping',
+          'Group By Type',
           'Group By Universe'
         ],
         cancelButtonIndex: 0
       },
-      (buttonIndex) => {
-        sortCharacters(buttonIndex);
+      (groupId) => {
+        dispatch(setGroupValue(groupId));
       }
     );
   };

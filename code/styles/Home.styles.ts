@@ -6,8 +6,17 @@ export default StyleSheet.create({
   container: {
     backgroundColor: Color.DARK,
     flex: 1,
-    flexDirection: 'column',
-    paddingHorizontal: 5
+    flexDirection: 'column'
+  },
+  section: {
+    padding: 5
+  },
+  sectionHeader: {
+    backgroundColor: Color.DARK,
+    padding: 8
+  },
+  sectionHeaderTitle: {
+    color: Color.WHITE,
   },
   cell: {
     flex: 1 / 3

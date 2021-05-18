@@ -3,8 +3,7 @@ import * as faker from 'faker';
 import { Stat, Type } from './enums';
 
 import { AppState, PokeMove } from '.';
-import { Universes } from '../constants/fields';
-import { randomNumber } from '../utils/helper';
+import { Universes } from '../constants/options';
 
 export class Character {
   id: string;
@@ -84,6 +83,16 @@ export class Character {
     }
     return learnset;
   }
+}
+
+/**
+ * Generate a random number between specified bounds;
+ * @param max The upper bound.
+ * @param min The lower bound.
+ * @returns The random number.
+ */
+function randomNumber(max: number, min = 0) {
+  return faker.datatype.number({ min, max });
 }
 
 export type CharacterStats = {

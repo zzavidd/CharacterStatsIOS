@@ -1,21 +1,11 @@
 import { capitalCase } from 'capital-case';
-import * as faker from 'faker';
 
 import store from './reducers';
 
+import { GroupOptions, SortOptions } from '../constants/options';
 import { PokeMove, ResponseAbility } from '../types';
 import { Character } from '../types/classes';
 import { Type } from '../types/enums';
-
-/**
- * Generate a random number between specified bounds;
- * @param max The upper bound.
- * @param min The lower bound.
- * @returns The random number.
- */
-export function randomNumber(max: number, min = 0) {
-  return faker.datatype.number({ min, max });
-}
 
 /**
  * Finds a move in the total list of moves by a specified ID.
@@ -54,53 +44,58 @@ export function findMostCommonType(ability: ResponseAbility) {
   return mostCommonType;
 }
 
-export function organiseCharacters(characters: Character[]) {
+/**
+ * Sort characters by the sort value in memory.
+ * @param characters The current list of characters.
+ * @returns The sorted list of characters.
+ */
+export function sortCharacters(characters: Character[]) {
   const { sortValue } = store.getState();
 
   if (!sortValue) return characters;
 
-  const [property, order] = SortOptions[sortValue];
+  const property = SortOptions[sortValue];
   return characters.slice().sort((a, b) => {
-    if (order === 'ascending') {
+    if (property !== 'bst') {
       if (a[property] < b[property]) return -1;
       if (a[property] > b[property]) return 1;
       return 0;
     } else {
-      if (a[property] < b[property]) return 1;
-      if (a[property] > b[property]) return -1;
-      return 0;
+      const aBST = Character.calculateBST(a);
+      const bBST = Character.calculateBST(b);
+      return aBST - bBST;
     }
   });
 }
 
-const SortOptions: SortOptions = {
-  1: ['name', 'ascending'],
-  2: ['name', 'descending'],
-  3: ['type1', 'ascending'],
-  4: ['type1', 'descending']
-};
+/**
+ * Group characters by a specified property.
+ * @param characters The list of characters.
+ * @returns The map of characters grouped by property.
+ */
+export function groupCharacters(characters: Character[]): CharacterGroup[] {
+  const { groupValue } = store.getState();
 
-function groupCharacters(characters: Character[]) {
-  const groupedCharacters: Array<GroupedCharacter> = [];
-  const property = 'universe';
+  const groups: Array<CharacterGroup> = [];
+  const groupOption = GroupOptions[groupValue];
+  if (!groupOption) return groups;
+
+  const [property] = groupOption;
 
   characters.forEach((character) => {
     const key = character[property];
-    const pos = groupedCharacters.findIndex(
-      (item: GroupedCharacter) => item.title == key
-    );
-    if (pos >= 0) {
-      groupedCharacters[pos].data.push(character);
-    } else {
-      groupedCharacters.push({ title: key, data: [character] });
-    }
-  }, {});
+    if (!key) return;
 
-  return groupedCharacters;
+    const index = groups.findIndex((item) => item.title == key);
+
+    if (index >= 0) {
+      groups[index].data[0].push(character);
+    } else {
+      groups.push({ title: key, data: [[character]] });
+    }
+  });
+
+  return groups;
 }
 
-type GroupedCharacter = { title: string; data: Character[] };
-
-type SortOptions = {
-  [key: number]: [keyof Character, 'ascending' | 'descending'];
-};
+export type CharacterGroup = { title: unknown; data: Character[][] };

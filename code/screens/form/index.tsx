@@ -21,11 +21,11 @@ import {
   TypeSelect
 } from '../../components/input';
 import Colors from '../../constants/colors';
-import { Universes } from '../../constants/fields';
+import { Universes } from '../../constants/options';
 import styles from '../../styles/Form.styles';
 import { GenericListItem, PokeMove, RootStackParamList } from '../../types';
 import { Character, CharacterStats } from '../../types/classes';
-import { organiseCharacters } from '../../utils/helper';
+import { sortCharacters } from '../../utils/helper';
 import {
   setCharacters,
   useAppDispatch,
@@ -37,7 +37,7 @@ export default function Form({
   route,
   navigation
 }: StackScreenProps<RootStackParamList, 'Form'>) {
-  const { moves, abilities, sortValue } = useAppSelector((state) => state);
+  const { moves, abilities } = useAppSelector((state) => state);
 
   const [character, setCharacter] = useState<Character>(new Character());
   const [baseStatTotal, setBaseStatTotal] = useState(0);
@@ -162,7 +162,7 @@ export default function Form({
       await Storage.insert(character);
     }
     const allCharacters = (await Storage.getAll()) as Character[];
-    const organisedCharacters = organiseCharacters(allCharacters);
+    const organisedCharacters = sortCharacters(allCharacters);
     dispatch(setCharacters(organisedCharacters));
     navigation.goBack();
   };

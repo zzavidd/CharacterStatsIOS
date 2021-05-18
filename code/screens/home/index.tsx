@@ -9,7 +9,7 @@ import { CharacterToolbar, DevToolbar } from './toolbar';
 import styles from '../../styles/Home.styles';
 import { RootStackParamList } from '../../types';
 import { Character } from '../../types/classes';
-import { organiseCharacters } from '../../utils/helper';
+import { sortCharacters } from '../../utils/helper';
 import {
   setCharacters,
   useAppDispatch,
@@ -29,7 +29,7 @@ export default function Home({
 
   const refreshCharacters = async () => {
     const data = (await Storage.getAll()) as Character[];
-    const allCharacters = organiseCharacters(data);
+    const allCharacters = sortCharacters(data);
     dispatch(setCharacters(allCharacters));
   };
 
