@@ -23,12 +23,7 @@ export function CharacterToolbar() {
   const showSortSheet = () => {
     ActionSheetIOS.showActionSheetWithOptions(
       {
-        options: [
-          'Cancel',
-          'Sort By Name',
-          'Sort By Type',
-          'Sort By BST',
-        ],
+        options: ['Cancel', 'Sort By Name', 'Sort By Type', 'Sort By BST'],
         cancelButtonIndex: 0
       },
       (sortId) => {
@@ -54,7 +49,9 @@ export function CharacterToolbar() {
         cancelButtonIndex: 0
       },
       (groupId) => {
-        dispatch(setGroupValue(groupId));
+        if (groupId > 0) {
+          dispatch(setGroupValue(groupId));
+        }
       }
     );
   };
