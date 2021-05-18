@@ -19,30 +19,62 @@ export default function CharacterLearnsetForm({
   const [character, setCharacter] = useCharacterState;
   const [value, setValue] = useState('');
 
-  const moveUp = (item: number, index: number) => {
-    if (index === 0) return;
+  /**
+   * Moves the current move item to another position in the learnset.
+   * @param item The move item.
+   * @param currentIndex The item's current index.
+   * @param targetIndex The item's current index.
+   */
+   const moveItem = (item: number, currentIndex: number, targetIndex: number) => {
+    if (currentIndex === 0) return;
 
     const learnset = character.learnset.slice();
-    learnset.splice(index, 1);
-    learnset.splice(index - 1, 0, item);
+    learnset.splice(currentIndex, 1);
+    learnset.splice(targetIndex, 0, item);
     setCharacter((character) => ({
       ...character,
       learnset
     }));
   };
-
-  const moveDown = (item: number, index: number) => {
-    const learnset = character.learnset.slice();
-    if (index === learnset.length - 1) return;
-
-    learnset.splice(index, 1);
-    learnset.splice(index + 1, 0, item);
-    setCharacter((character) => ({
-      ...character,
-      learnset
-    }));
+  
+  /**
+   * Moves the current move item to the top of the learnset.
+   * @see {moveItem}
+   */
+  const moveToTop = (item: number, currentIndex: number) => {
+    moveItem(item, currentIndex, 0);
   };
 
+  /**
+   * Moves the current move item up a position.
+   * @see {moveItem}
+   */
+  const moveUp = (item: number, currentIndex: number,) => {
+    if (currentIndex === 0) return;
+    moveItem(item, currentIndex, currentIndex - 1);
+  };
+
+  /**
+   * Moves the current move item down a position.
+   * @see {moveItem}
+   */
+  const moveDown = (item: number, currentIndex: number) => {
+    if (currentIndex === character.learnset.length - 1) return;
+    moveItem(item, currentIndex, currentIndex + 1);
+  };
+
+  /**
+   * Moves the current move item to the bottom of the learnset.
+   * @see {moveItem}
+   */
+   const moveToBottom = (item: number, currentIndex: number) => {
+    moveItem(item, currentIndex, character.learnset.length - 1);
+  };
+
+  /**
+   * Deletes a move item from the learnset.
+   * @param index The index of the item to delete.
+   */
   const deleteMove = (index: number) => {
     const learnset = character.learnset.slice();
     learnset.splice(index, 1);
@@ -68,6 +100,7 @@ export default function CharacterLearnsetForm({
             <View style={styles.learnsetRow} key={key}>
               <TouchableOpacity
                 style={styles.learnsetRowArrow}
+                onLongPress={() => moveToTop(item, key)}
                 onPress={() => moveUp(item, key)}>
                 <Text style={[styles.learnsetRowArrowText, { marginRight: 5 }]}>
                   &#9650;
@@ -95,6 +128,7 @@ export default function CharacterLearnsetForm({
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.learnsetRowArrow}
+                onLongPress={() => moveToBottom(item, key)}
                 onPress={() => moveDown(item, key)}>
                 <Text style={[styles.learnsetRowArrowText, { marginLeft: 5 }]}>
                   &#9660;
