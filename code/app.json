@@ -10,25 +10,13 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
     "assetBundlePatterns": ["**/*"],
     "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
+      "supportsTablet": false
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "userInterfaceStyle": "dark",
-    "extra": {
-      "hideDevTools": true
-    }
+    "userInterfaceStyle": "dark"
   }
 }
