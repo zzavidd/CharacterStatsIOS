@@ -74,16 +74,16 @@ export function sortCharacters(characters: Character[]) {
  * @returns The map of characters grouped by property.
  */
 export function groupCharacters(characters: Character[]): CharacterGroup[] {
-  const { groupValue } = store.getState();
+  const { sortValue, groupValue } = store.getState();
 
-  const groups: Array<CharacterGroup> = [];
+  let groups: Array<CharacterGroup> = [];
   const groupOption = GroupOptions[groupValue];
   if (!groupOption) return groups;
 
   const [property] = groupOption;
 
   characters.forEach((character) => {
-    const key = character[property];
+    const key = character[property] as string;
     if (!key) return;
 
     const index = groups.findIndex((item) => item.title == key);
@@ -95,7 +95,22 @@ export function groupCharacters(characters: Character[]): CharacterGroup[] {
     }
   });
 
+  groups = groups.sort((a, b) => {
+    if (a.title < b.title) return -1;
+    if (a.title > b.title) return 1;
+    return 0;
+  });
+
+  if (sortValue) {
+    groups = groups.map(({ title, data }) => {
+      return {
+        title,
+        data: [sortCharacters(data[0])]
+      };
+    });
+  }
+
   return groups;
 }
 
-export type CharacterGroup = { title: unknown; data: Character[][] };
+export type CharacterGroup = { title: string; data: Character[][] };

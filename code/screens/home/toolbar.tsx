@@ -2,9 +2,7 @@ import React from 'react';
 import { ActionSheetIOS, Button, View } from 'react-native';
 
 import styles from '../../styles/Home.styles';
-import { sortCharacters } from '../../utils/helper';
 import {
-  setCharacters,
   setGroupValue,
   setSortValue,
   useAppDispatch,
@@ -14,7 +12,6 @@ import Settings from '../../utils/settings';
 import * as Storage from '../../utils/storage';
 
 export function CharacterToolbar() {
-  const { characters } = useAppSelector((state) => state);
   const dispatch = useAppDispatch();
 
   /**
@@ -27,9 +24,9 @@ export function CharacterToolbar() {
         cancelButtonIndex: 0
       },
       (sortId) => {
-        dispatch(setSortValue(sortId));
-        const allCharacters = sortCharacters(characters);
-        dispatch(setCharacters(allCharacters));
+        if (sortId > 0) {
+          dispatch(setSortValue(sortId));
+        }
       }
     );
   };

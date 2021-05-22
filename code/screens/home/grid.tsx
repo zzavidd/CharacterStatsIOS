@@ -1,5 +1,4 @@
 import { StackNavigationProp } from '@react-navigation/stack';
-import { capitalCase } from 'capital-case';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
 import {
@@ -19,8 +18,8 @@ import { GroupOptions } from '../../constants/options';
 import styles from '../../styles/Home.styles';
 import { RootStackParamList } from '../../types';
 import { Character } from '../../types/classes';
-import { CharacterGroup, groupCharacters } from '../../utils/helper';
-import { useAppSelector } from '../../utils/reducers';
+import { CharacterGroup, groupCharacters, sortCharacters } from '../../utils/helper';
+import { setCharacters, useAppSelector, useAppDispatch } from '../../utils/reducers';
 import * as Storage from '../../utils/storage';
 
 export default function CharacterGrid({
@@ -28,13 +27,19 @@ export default function CharacterGrid({
   refreshCharacters,
   navigation
 }: CharacterGridProps) {
-  const { groupValue } = useAppSelector((state) => state);
+  const { sortValue, groupValue } = useAppSelector((state) => state);
   const [characterGroups, setCharacterGroups] = useState<CharacterGroup[]>([]);
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    const allCharacters = sortCharacters(characters);
+    dispatch(setCharacters(allCharacters));
+  }, [sortValue]);
 
   useEffect(() => {
     const groups = groupCharacters(characters);
     setCharacterGroups(groups);
-  }, [groupValue]);
+  }, [sortValue, groupValue]);
   /**
    * Show action sheet on long-pressing character cell.
    * @param character The subject character.
