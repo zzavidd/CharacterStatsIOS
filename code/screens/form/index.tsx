@@ -1,4 +1,5 @@
-import { StackScreenProps, useHeaderHeight } from '@react-navigation/stack';
+import type { StackScreenProps } from '@react-navigation/stack';
+import { useHeaderHeight } from '@react-navigation/elements';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import {
@@ -10,10 +11,6 @@ import {
   View
 } from 'react-native';
 
-import CharacterLearnsetForm from './learnset';
-import DisplayedList from './list';
-import CharacterStatsForm from './stats';
-
 import {
   AbilitySelect,
   Select,
@@ -23,8 +20,13 @@ import {
 import Colors from '../../constants/colors';
 import { Universes } from '../../constants/options';
 import styles from '../../styles/Form.styles';
-import { GenericListItem, PokeMove, RootStackParamList } from '../../types';
-import { Character, CharacterStats } from '../../types/classes';
+import type {
+  GenericListItem,
+  PokeMove,
+  RootStackParamList
+} from '../../types';
+import type { CharacterStats } from '../../types/classes';
+import { Character } from '../../types/classes';
 import { sortCharacters } from '../../utils/helper';
 import {
   setCharacters,
@@ -32,6 +34,10 @@ import {
   useAppSelector
 } from '../../utils/reducers';
 import * as Storage from '../../utils/storage';
+
+import CharacterLearnsetForm from './learnset';
+import DisplayedList from './list';
+import CharacterStatsForm from './stats';
 
 export default function Form({
   route,
@@ -184,22 +190,22 @@ export default function Form({
             keyboardVerticalOffset={headerHeight}>
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
               <View>
-              <View style={styles.formOrigin}>
-                <TextInput
-                  name={'name'}
-                  value={character.name}
-                  placeholder={'Enter character name...'}
-                  style={styles.formOriginField}
-                  {...commonProps}
-                />
-                <Select
-                  name={'universe'}
-                  value={character.universe}
-                  items={Universes}
-                  placeholder={'Select origin universe...'}
-                  style={styles.formOriginField}
-                  {...commonProps}
-                />
+                <View style={styles.formOrigin}>
+                  <TextInput
+                    name={'name'}
+                    value={character.name}
+                    placeholder={'Enter character name...'}
+                    style={styles.formOriginField}
+                    {...commonProps}
+                  />
+                  <Select
+                    name={'universe'}
+                    value={character.universe}
+                    items={Universes}
+                    placeholder={'Select origin universe...'}
+                    style={styles.formOriginField}
+                    {...commonProps}
+                  />
                 </View>
                 <View style={styles.formTypes}>
                   <TypeSelect
@@ -207,7 +213,9 @@ export default function Form({
                     value={character.type1}
                     placeholder={'First type...'}
                     style={[
-                      character.type1 ? styles.formTypesFieldSelected : styles.formTypesField,
+                      character.type1
+                        ? styles.formTypesFieldSelected
+                        : styles.formTypesField,
                       { backgroundColor: Colors.TYPE[character.type1] }
                     ]}
                     {...commonProps}
@@ -217,7 +225,9 @@ export default function Form({
                     value={character.type2}
                     placeholder={'Second type...'}
                     style={[
-                      character.type2 ? styles.formTypesFieldSelected : styles.formTypesField,
+                      character.type2
+                        ? styles.formTypesFieldSelected
+                        : styles.formTypesField,
                       { backgroundColor: Colors.TYPE[character.type2] }
                     ]}
                     {...commonProps}

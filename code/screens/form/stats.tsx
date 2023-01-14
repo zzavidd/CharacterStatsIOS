@@ -3,7 +3,7 @@ import { Text, View } from 'react-native';
 
 import { StatInput } from '../../components/input';
 import styles from '../../styles/Form.styles';
-import { Character } from '../../types/classes';
+import type { Character } from '../../types/classes';
 import { Stat } from '../../types/enums';
 
 export default function CharacterStatsForm({
@@ -16,7 +16,7 @@ export default function CharacterStatsForm({
     style: styles.formStatsField
   };
   return (
-    <>
+    <React.Fragment>
       <Text style={styles.label}>Stats:</Text>
       <View style={styles.formStats}>
         <StatInput
@@ -59,12 +59,12 @@ export default function CharacterStatsForm({
         />
       </View>
       <Text style={styles.label}>BST: {baseStatTotal}</Text>
-    </>
+    </React.Fragment>
   );
 }
 
-type CharacterStatsFormProps = {
+interface CharacterStatsFormProps {
   character: Character;
   baseStatTotal: number;
   setCharacterStat: (value: string, property: Stat) => void;
-};
+}

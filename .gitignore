@@ -1,2 +1,8 @@
 node_modules/
 .expo/
+
+.eslintcache
+
+**/.yarn/*
+!**/.yarn/plugins
+!**/.yarn/releases

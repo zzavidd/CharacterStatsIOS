@@ -1,9 +1,10 @@
-import * as faker from 'faker';
+import { faker } from '@faker-js/faker';
+
+import { Universes } from '../constants/options';
 
 import { Stat, Type } from './enums';
 
-import { AppState, PokeMove } from '.';
-import { Universes } from '../constants/options';
+import type { AppState, PokeMove } from '.';
 
 export class Character {
   id: string;
@@ -23,7 +24,7 @@ export class Character {
     this.stats = {};
   }
 
-  static calculateBST(character: Character) {
+  public static calculateBST(character: Character) {
     let bst = 0;
     Object.values(character.stats).forEach((value: unknown) => {
       if (value) {
@@ -33,7 +34,7 @@ export class Character {
     return bst;
   }
 
-  static buildRandomCharacter({ abilities, moves }: AppState) {
+  public static buildRandomCharacter({ abilities, moves }: AppState) {
     const types = Object.values(Type);
     const addSecondType = faker.datatype.boolean();
     const addSecondAbility = faker.datatype.boolean();
@@ -63,7 +64,7 @@ export class Character {
     return character;
   }
 
-  static generateStats() {
+  private static generateStats() {
     const stats: CharacterStats = {};
     Object.values(Stat).forEach((property) => {
       stats[property] = faker.datatype.number({
@@ -75,7 +76,7 @@ export class Character {
     return stats;
   }
 
-  static generateLearnset(moveList: PokeMove[]) {
+  private static generateLearnset(moveList: PokeMove[]) {
     const learnset = [];
     for (let i = 0; i < 15; i++) {
       const move = moveList[randomNumber(moveList.length - 1)].id;

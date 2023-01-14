@@ -15,16 +15,17 @@ import { Provider } from 'react-redux';
 import Color from './constants/colors';
 import Form from './screens/form';
 import Home from './screens/home';
-import {
+import type {
   PokeAbility,
   PokeMove,
   PokeType,
   ResponseAbility,
   ResponseData,
   ResponseMove,
-  ResponseType
+  ResponseType,
+  RootStackParamList
 } from './types';
-import { Type } from './types/enums';
+import type { Type } from './types/enums';
 import { findMostCommonType } from './utils/helper';
 import QUERY from './utils/queries';
 import store, {
@@ -35,7 +36,7 @@ import store, {
   useAppSelector
 } from './utils/reducers';
 
-const Stack = createStackNavigator();
+const Stack = createStackNavigator<RootStackParamList>();
 
 const client = new ApolloClient({
   uri: 'https://beta.pokeapi.co/graphql/v1beta',
@@ -57,7 +58,7 @@ function Index() {
   const dispatch = useAppDispatch();
 
   const { data, error, loading } = useQuery<ResponseData>(QUERY, {
-    skip: isInitialised
+    skip: false
   });
 
   useEffect(() => {
@@ -138,8 +139,8 @@ function Index() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        mode={'modal'}
         screenOptions={{
+          headerMode: 'float',
           headerStyle: styles.header,
           headerTitleStyle: {
             color: Color.WHITE,
@@ -147,7 +148,7 @@ function Index() {
           }
         }}>
         <Stack.Screen
-          name={'Characters'}
+          name={'Home'}
           component={Home}
           options={({ navigation }) => ({
             headerRight: () => {

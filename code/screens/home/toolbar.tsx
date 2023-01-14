@@ -85,6 +85,6 @@ export function DevToolbar({ refreshCharacters }: DevToolbarProps) {
   );
 }
 
-type DevToolbarProps = {
+interface DevToolbarProps {
   refreshCharacters: () => void;
-};
+}

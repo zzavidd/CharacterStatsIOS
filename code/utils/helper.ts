@@ -1,11 +1,11 @@
 import { capitalCase } from 'capital-case';
 
-import store from './reducers';
-
 import { GroupOptions, SortOptions } from '../constants/options';
-import { PokeMove, ResponseAbility } from '../types';
+import type { PokeMove, ResponseAbility } from '../types';
 import { Character } from '../types/classes';
-import { Type } from '../types/enums';
+import type { Type } from '../types/enums';
+
+import store from './reducers';
 
 /**
  * Finds a move in the total list of moves by a specified ID.
@@ -13,7 +13,10 @@ import { Type } from '../types/enums';
  * @param moves The total list moves.
  * @returns The move if found.
  */
-export function findMoveById(id: number, moves: PokeMove[]) {
+export function findMoveById(
+  id: number,
+  moves: PokeMove[]
+): PokeMove | undefined {
   for (let i = 0; i < moves.length; i++) {
     const move = moves[i];
     if (move.id === id) return move;
@@ -25,7 +28,7 @@ export function findMoveById(id: number, moves: PokeMove[]) {
  * @param ability The specified ability.
  * @returns The most common type.
  */
-export function findMostCommonType(ability: ResponseAbility) {
+export function findMostCommonType(ability: ResponseAbility): Type | undefined {
   const { candidates } = ability;
   const types: Type[] = [];
 
@@ -49,7 +52,7 @@ export function findMostCommonType(ability: ResponseAbility) {
  * @param characters The current list of characters.
  * @returns The sorted list of characters.
  */
-export function sortCharacters(characters: Character[]) {
+export function sortCharacters(characters: Character[]): Character[] {
   const { sortValue } = store.getState();
 
   if (!sortValue) return characters;
@@ -113,4 +116,7 @@ export function groupCharacters(characters: Character[]): CharacterGroup[] {
   return groups;
 }
 
-export type CharacterGroup = { title: string; data: Character[][] };
+export interface CharacterGroup {
+  title: string;
+  data: Character[][];
+}

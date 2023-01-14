@@ -1,3 +1,5 @@
-export default {
-  showDevTools: false,
+const settings = {
+  showDevTools: false
 };
+
+export default settings;

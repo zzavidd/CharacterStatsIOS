@@ -1,15 +1,16 @@
 import React from 'react';
+import type {
+  ListRenderItemInfo} from 'react-native';
 import {
   ActionSheetIOS,
   FlatList,
-  ListRenderItemInfo,
   Text,
   TouchableOpacity
 } from 'react-native';
 
 import styles from '../../styles/Form.styles';
-import { GenericListItem, PokeAbility, PokeMove } from '../../types';
-import { Character } from '../../types/classes';
+import type { GenericListItem, PokeAbility, PokeMove } from '../../types';
+import type { Character } from '../../types/classes';
 
 export default function DisplayedList({ items, field, characterMethods }: DisplayedListProps) {
   const { addToCharacterLearnset, setCharacterProperty } = characterMethods;
@@ -72,18 +73,18 @@ const DisplayedListItem = React.memo((props: DisplayedListItemProps) => {
   );
 });
 
-type DisplayedListProps = {
+interface DisplayedListProps {
   items: GenericListItem[];
   field: keyof Character;
   characterMethods: {
     addToCharacterLearnset: (move: PokeMove) => void;
     setCharacterProperty: (value: any, property: keyof Character) => void;
   };
-};
+}
 
-type DisplayedListItemProps = {
+interface DisplayedListItemProps {
   item: GenericListItem;
   index: number;
   onPress: any;
   onLongPress: any;
-};
+}

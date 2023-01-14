@@ -1,14 +1,14 @@
 import React from 'react';
-import {
+import type {
   StyleProp,
-  TextInput as DefaultInput,
   TextInputProps as DefaultInputProps,
   TextStyle
 } from 'react-native';
+import { TextInput as DefaultInput } from 'react-native';
 
 import Color from '../constants/colors';
 import styles from '../styles/Form.styles';
-import { Character, CharacterStats } from '../types/classes';
+import type { Character, CharacterStats } from '../types/classes';
 import { useAppSelector } from '../utils/reducers';
 
 export function TextInput(props: TextInputProps) {
@@ -96,7 +96,7 @@ function Input(props: InputProps) {
       {...props}
       placeholderTextColor={Color.PLACEHOLDER_TEXT_COLOR}
       style={[styles.textInput, props.style]}
-      autoCompleteType={'off'}
+      autoComplete={'off'}
       clearButtonMode={'while-editing'}
       keyboardAppearance={'dark'}
     />

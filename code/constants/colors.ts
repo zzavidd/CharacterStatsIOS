@@ -65,9 +65,9 @@ const CLASS: ClassColor = {
 
 export default { ...GENERAL, GENERATION, STAT, TYPE, CLASS };
 
-type ClassColor = {
+interface ClassColor {
   [key: string]: {
     bg: string;
     text: string;
   };
-};
+}

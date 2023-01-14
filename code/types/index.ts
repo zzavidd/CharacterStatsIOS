@@ -1,7 +1,8 @@
-import { Character } from './classes';
-import { Type } from './enums';
+import { ParamListBase } from '@react-navigation/native';
+import type { Character } from './classes';
+import type { Type } from './enums';
 
-export type AppState = {
+export interface AppState {
   isInitialised: boolean;
   characters: Character[];
   abilities: PokeAbility[];
@@ -9,9 +10,9 @@ export type AppState = {
   types: PokeType[];
   sortValue: number;
   groupValue: number;
-};
+}
 
-export type RootStackParamList = {
+export interface RootStackParamList extends ParamListBase {
   Home: {
     characters: Character[];
     refreshCharacters: () => void;
@@ -21,17 +22,20 @@ export type RootStackParamList = {
     isEdit: boolean;
     refreshCharacters?: () => void;
   };
-};
+  Characters: {
+    refreshCharacters: () => void;
+  };
+}
 
 export type GenericListItem = PokeType | PokeAbility | PokeMove;
 
-export type PokeType = {
+export interface PokeType {
   id: number;
   name: Type;
   color: string;
-};
+}
 
-export type PokeMove = {
+export interface PokeMove {
   id: number;
   name: string;
   color: string;
@@ -41,24 +45,24 @@ export type PokeMove = {
   pp: number;
   type: Type;
   damageClass: string;
-};
+}
 
-export type PokeAbility = {
+export interface PokeAbility {
   id: number;
   name: string;
   color: string;
   generation: number;
   description: string;
   commonType: Type;
-};
+}
 
-export type ResponseData = {
+export interface ResponseData {
   abilities: ResponseAbility[];
   moves: ResponseMove[];
   types: ResponseType[];
-};
+}
 
-export type ResponseAbility = {
+export interface ResponseAbility {
   id: number;
   name: string;
   generation: number;
@@ -80,9 +84,9 @@ export type ResponseAbility = {
       };
     }
   ];
-};
+}
 
-export type ResponseMove = {
+export interface ResponseMove {
   id: number;
   name: string;
   accuracy: number;
@@ -99,9 +103,9 @@ export type ResponseMove = {
       text: string;
     }
   ];
-};
+}
 
-export type ResponseType = {
+export interface ResponseType {
   id: number;
   name: string;
-};
+}

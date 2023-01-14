@@ -1,13 +1,14 @@
-import { StackNavigationProp } from '@react-navigation/stack';
+import type { StackNavigationProp } from '@react-navigation/stack';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useEffect, useState } from 'react';
+import type {
+  ListRenderItemInfo,
+  SectionListData,
+  SectionListRenderItemInfo} from 'react-native';
 import {
   ActionSheetIOS,
   FlatList,
-  ListRenderItemInfo,
   SectionList,
-  SectionListData,
-  SectionListRenderItemInfo,
   Text,
   TouchableOpacity,
   View
@@ -16,9 +17,10 @@ import {
 import Color from '../../constants/colors';
 import { GroupOptions } from '../../constants/options';
 import styles from '../../styles/Home.styles';
-import { RootStackParamList } from '../../types';
+import type { RootStackParamList } from '../../types';
 import { Character } from '../../types/classes';
-import { CharacterGroup, groupCharacters, sortCharacters } from '../../utils/helper';
+import type { CharacterGroup} from '../../utils/helper';
+import { groupCharacters, sortCharacters } from '../../utils/helper';
 import { setCharacters, useAppSelector, useAppDispatch } from '../../utils/reducers';
 import * as Storage from '../../utils/storage';
 
@@ -88,14 +90,14 @@ export default function CharacterGrid({
 
   if (!characters?.length) return <View style={styles.table} />;
 
-  const StatEntry = ({ label, value }: StatEntryProps) => {
+  function StatEntry({ label, value }: StatEntryProps) {
     return (
       <View style={styles.statEntry}>
         <Text style={styles.statLabel}>{label}:</Text>
         <Text style={styles.statValue}>{value}</Text>
       </View>
     );
-  };
+  }
 
   const renderSectionHeader = (info: {
     section: SectionListData<Character[], CharacterGroup>;
@@ -185,13 +187,13 @@ export default function CharacterGrid({
   );
 }
 
-type CharacterGridProps = {
+interface CharacterGridProps {
   characters: Character[];
   refreshCharacters: () => void;
   navigation: StackNavigationProp<RootStackParamList, 'Home'>;
-};
+}
 
-type StatEntryProps = {
+interface StatEntryProps {
   label: string;
   value?: number;
-};
+}

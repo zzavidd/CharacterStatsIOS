@@ -1,4 +1,4 @@
-import { Character } from "../types/classes";
+import type { Character } from "../types/classes";
 
 export const Universes = [
   { id: 1, name: 'DC' },
@@ -20,10 +20,10 @@ export const GroupOptions: GroupOptions = {
   3: ['universe', 'Universe']
 };
 
-type SortOptions = {
+interface SortOptions {
   [key: number]: keyof Character | 'bst';
-};
+}
 
-type GroupOptions = {
+interface GroupOptions {
   [key: number]: [keyof Character, string];
-};
+}

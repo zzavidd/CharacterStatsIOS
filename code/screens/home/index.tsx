@@ -1,14 +1,11 @@
-import { StackScreenProps } from '@react-navigation/stack';
+import type { StackScreenProps } from '@react-navigation/stack';
 import { StatusBar } from 'expo-status-bar';
 import React, { useEffect } from 'react';
 import { View } from 'react-native';
 
-import CharacterGrid from './grid';
-import { CharacterToolbar, DevToolbar } from './toolbar';
-
 import styles from '../../styles/Home.styles';
-import { RootStackParamList } from '../../types';
-import { Character } from '../../types/classes';
+import type { RootStackParamList } from '../../types';
+import type { Character } from '../../types/classes';
 import { sortCharacters } from '../../utils/helper';
 import {
   setCharacters,
@@ -16,6 +13,9 @@ import {
   useAppSelector
 } from '../../utils/reducers';
 import * as Storage from '../../utils/storage';
+
+import CharacterGrid from './grid';
+import { CharacterToolbar, DevToolbar } from './toolbar';
 
 export default function Home({
   navigation

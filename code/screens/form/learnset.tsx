@@ -5,8 +5,8 @@ import { Text, TouchableOpacity, View } from 'react-native';
 import { MoveSelect } from '../../components/input';
 import Colors from '../../constants/colors';
 import styles from '../../styles/Form.styles';
-import { PokeMove } from '../../types';
-import { Character } from '../../types/classes';
+import type { PokeMove } from '../../types';
+import type { Character } from '../../types/classes';
 import { findMoveById } from '../../utils/helper';
 
 export default function CharacterLearnsetForm({
@@ -83,7 +83,7 @@ export default function CharacterLearnsetForm({
   };
 
   return (
-    <>
+    <React.Fragment>
       <Text style={styles.label}>Learnset:</Text>
       <View style={styles.learnsetList}>
         {character.learnset.map((item, key) => {
@@ -149,11 +149,11 @@ export default function CharacterLearnsetForm({
         setDisplayedListItems={setDisplayedListItems}
         setFocusedField={setFocusedField}
       />
-    </>
+    </React.Fragment>
   );
 }
 
-type CharacterLearnsetFormProps = {
+interface CharacterLearnsetFormProps {
   allMoves: PokeMove[];
   useCharacterState: [
     Character,
@@ -162,4 +162,4 @@ type CharacterLearnsetFormProps = {
   filterMatchingMoves: (text: string) => void;
   setDisplayedListItems: React.Dispatch<React.SetStateAction<Array<any>>>;
   setFocusedField: React.Dispatch<React.SetStateAction<keyof Character>>;
-};
+}
