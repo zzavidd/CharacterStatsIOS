@@ -10,13 +10,27 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
       "supportsTablet": false
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
-    "userInterfaceStyle": "dark"
+    "userInterfaceStyle": "dark",
+    "extra": {
+      "eas": {
+        "projectId": "f810a988-ff47-49be-ba7a-7b9ad98f8733"
+      }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/f810a988-ff47-49be-ba7a-7b9ad98f8733"
+    },
+    "android": {}
   }
 }
