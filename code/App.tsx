@@ -1,9 +1,10 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { ThemeProvider } from '@rneui/themed';
 import { StatusBar } from 'expo-status-bar';
-import type React from 'react';
+import React from 'react';
 
-import ContextInitialiser from 'src/fragments/ContextInitialiser';
+import ContextInitializer from 'src/fragments/ContextInitializer';
+import FontInitializer from 'src/fragments/FontInitializer';
 
 import HomeScreen from './src/screens/Home';
 import theme from './src/styles/Theme.styles';
@@ -13,15 +14,19 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+// void SplashScreen.preventAutoHideAsync();
+
 export default function App() {
   return (
-    <ApolloProvider client={client}>
-      <ThemeProvider theme={theme}>
-        <ContextInitialiser>
-          <StatusBar style={'auto'} />
-          <HomeScreen />
-        </ContextInitialiser>
-      </ThemeProvider>
-    </ApolloProvider>
+    <FontInitializer>
+      <ApolloProvider client={client}>
+        <ThemeProvider theme={theme}>
+          <ContextInitializer>
+            <StatusBar style={'auto'} />
+            <HomeScreen />
+          </ContextInitializer>
+        </ThemeProvider>
+      </ApolloProvider>
+    </FontInitializer>
   );
 }

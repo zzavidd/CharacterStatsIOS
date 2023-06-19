@@ -5,7 +5,7 @@ import useAbilities from 'src/utils/hooks/useAbilities';
 import useMoves from 'src/utils/hooks/useMoves';
 import useTypes from 'src/utils/hooks/useTypes';
 
-export default function ContextInitialiser({
+export default function ContextInitializer({
   children,
 }: React.PropsWithChildren) {
   const abilitiesResult = useAbilities();

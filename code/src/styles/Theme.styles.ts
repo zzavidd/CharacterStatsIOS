@@ -8,6 +8,11 @@ const theme = createTheme({
         marginVertical: 14,
       },
     },
+    Text: {
+      style: {
+        fontFamily: 'Mulish_500Medium',
+      },
+    },
   },
 });
 
