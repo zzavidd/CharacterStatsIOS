@@ -19,6 +19,9 @@ dependencies:
   expo:
     specifier: ~48.0.18
     version: 48.0.18(@babel/core@7.20.2)
+  expo-image:
+    specifier: ^1.2.3
+    version: 1.2.3(expo@48.0.18)
   expo-linear-gradient:
     specifier: ^12.1.2
     version: 12.1.2(expo@48.0.18)
@@ -5039,6 +5042,14 @@ packages:
     dependencies:
       expo: 48.0.18(@babel/core@7.20.2)
       fontfaceobserver: 2.3.0
+    dev: false
+
+  /expo-image@1.2.3(expo@48.0.18):
+    resolution: {integrity: sha512-+Mnx6rcneWSUGfHkUDV3cQ3R4lVwoIDFs/tcXVqnlxyNJdNxpW2cge9pS2Hpj3UDoZVhZPLR8LHS8E9wEaC0NA==}
+    peerDependencies:
+      expo: '*'
+    dependencies:
+      expo: 48.0.18(@babel/core@7.20.2)
     dev: false
 
   /expo-keep-awake@12.0.1(expo@48.0.18):

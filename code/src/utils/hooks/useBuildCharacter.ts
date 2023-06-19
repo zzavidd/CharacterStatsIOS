@@ -37,6 +37,7 @@ export default function useBuildCharacter(): () => Character {
       abilityX: getRandomAbility(),
       stats: generateStats(),
       learnset: buildLearnset(),
+      createTime: Date.now(),
     });
   }, [abilities, moves, buildLearnset]);
 }

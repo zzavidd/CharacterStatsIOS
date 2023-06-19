@@ -12,7 +12,7 @@ export const zStats = z.object({
 });
 
 export const zCharacter = z.object({
-  id: z.string(),
+  id: z.string().optional(),
   name: z.string(),
   universe: z.string().optional(),
   type1: z.nativeEnum(Type),
@@ -22,5 +22,5 @@ export const zCharacter = z.object({
   abilityX: z.string().nullable(),
   stats: zStats,
   learnset: z.array(z.number()),
-  dateAdded: z.date(),
+  createTime: z.number(),
 });

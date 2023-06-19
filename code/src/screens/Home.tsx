@@ -1,4 +1,5 @@
 import { Button, Card, Text } from '@rneui/themed';
+import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useContext } from 'react';
 import type { ListRenderItemInfo } from 'react-native';
@@ -8,6 +9,7 @@ import { AppContext } from 'App.context';
 import Color from 'src/utils/constants/colors';
 import { StatMap } from 'src/utils/constants/defaults';
 import { Stat } from 'src/utils/constants/enums';
+import PokeIcon from 'src/utils/constants/icons';
 import useBuildCharacter from 'src/utils/hooks/useBuildCharacter';
 import useCreateCharacters from 'src/utils/hooks/useCreateCharacters';
 import useGetCharacters from 'src/utils/hooks/useGetCharacters';
@@ -32,7 +34,7 @@ export default function HomeScreen() {
     <SafeAreaView>
       <FlatList
         data={data}
-        keyExtractor={(item, index) => item.id + index}
+        keyExtractor={(item, index) => item.id! + index}
         renderItem={RenderedItem}
       />
       <Button
@@ -60,16 +62,23 @@ function RenderedItem({
         colors={[color1, color2]}
         locations={[0.85, 0.85]}
         start={[0, 1]}
-        end={[1, 0]}>
+        end={[0.9, 0]}>
         <View style={{ padding: 20 }}>
           <Card.Title style={{ textAlign: 'left' }}>
             <Text h4={true}>{character.name}</Text>
           </Card.Title>
-          <View style={{ flexDirection: 'row', gap: 4 }}>
+          <View style={{ flexDirection: 'row', gap: 4, alignItems: 'center' }}>
+            <Image
+              source={PokeIcon[character.type1]}
+              style={{ width: 20, height: 20 }}
+            />
             <Text>{character.type1}</Text>
             {character.type2 ? (
               <React.Fragment>
-                <Text>/</Text>
+                <Image
+                  source={PokeIcon[character.type2]}
+                  style={{ width: 20, height: 20 }}
+                />
                 <Text>{character.type2}</Text>
               </React.Fragment>
             ) : null}
