@@ -1,18 +1,13 @@
-import type { Character } from 'src/models/Character';
-import type { Stat, Type } from 'src/utils/constants/enums';
+import type { QueryResult } from '@apollo/client';
+import type { FirebaseError } from 'firebase/app';
+import type { z } from 'zod';
+
+import type { Type } from 'src/utils/constants/enums';
+import type { zCharacter, zStats } from 'src/utils/validators';
 
 declare global {
-  export interface AppState {
-    isInitialised: boolean;
-    characters: Character[];
-    abilities: PokeAbility[];
-    moves: PokeMove[];
-    types: PokeType[];
-    sortValue: number;
-    groupValue: number;
-  }
-
-  export type GenericListItem = PokeType | PokeAbility | PokeMove;
+  export type Character = z.infer<typeof zCharacter>;
+  export type Stats = z.infer<typeof zStats>;
 
   export interface PokeType {
     id: number;
@@ -41,15 +36,7 @@ declare global {
     commonType: Type;
   }
 
-  export type Stats = Record<Stat, number>;
-
-  export interface ResponseData {
-    abilities: ResponseAbility[];
-    moves: ResponseMove[];
-    types: ResponseType[];
-  }
-
-  export interface ResponseAbility {
+  export interface RawAbility {
     id: number;
     name: string;
     generation: number;
@@ -73,7 +60,7 @@ declare global {
     ];
   }
 
-  export interface ResponseMove {
+  export interface RawMove {
     id: number;
     name: string;
     accuracy: number;
@@ -92,8 +79,19 @@ declare global {
     ];
   }
 
-  export interface ResponseType {
+  export interface RawType {
     id: number;
     name: string;
   }
+
+  export interface FirestoreResult<T> {
+    data: T;
+    error: FirebaseError | null;
+    loading: boolean;
+  }
+
+  export type ApolloResult<T> = Pick<
+    QueryResult<T>,
+    'data' | 'error' | 'loading'
+  >;
 }

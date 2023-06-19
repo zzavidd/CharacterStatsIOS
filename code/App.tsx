@@ -1,7 +1,9 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { ThemeProvider } from '@rneui/themed';
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import type React from 'react';
+
+import ContextInitialiser from 'src/fragments/ContextInitialiser';
 
 import HomeScreen from './src/screens/Home';
 import theme from './src/styles/Theme.styles';
@@ -15,8 +17,10 @@ export default function App() {
   return (
     <ApolloProvider client={client}>
       <ThemeProvider theme={theme}>
-        <StatusBar style={'auto'} />
-        <HomeScreen />
+        <ContextInitialiser>
+          <StatusBar style={'auto'} />
+          <HomeScreen />
+        </ContextInitialiser>
       </ThemeProvider>
     </ApolloProvider>
   );

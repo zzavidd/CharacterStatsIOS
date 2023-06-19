@@ -1,5 +1,3 @@
-import type { Character } from '../../models/Character';
-
 export const Universes = [
   { id: 1, name: 'DC' },
   { id: 2, name: 'Marvel' },
