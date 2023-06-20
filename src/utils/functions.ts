@@ -1,5 +1,5 @@
-export function calculateBST(character: Character): number {
-  return Object.values(character.stats).reduce((bst, value: unknown) => {
+export function calculateBST(stats: Stats): number {
+  return Object.values(stats).reduce((bst, value: unknown) => {
     if (value) {
       bst += parseInt(value as string);
     }

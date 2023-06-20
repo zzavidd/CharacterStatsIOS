@@ -18,6 +18,7 @@ import Color from 'src/utils/constants/colors';
 import { StatMap } from 'src/utils/constants/defaults';
 import { Stat } from 'src/utils/constants/enums';
 import PokeIcon from 'src/utils/constants/icons';
+import { calculateBST } from 'src/utils/functions';
 import useBuildCharacter from 'src/utils/hooks/useBuildCharacter';
 import useCreateCharacters from 'src/utils/hooks/useCreateCharacters';
 import useDeleteCharacters from 'src/utils/hooks/useDeleteCharacters';
@@ -147,6 +148,10 @@ function RenderedItem({
             </Text>
             <Text>{abilityX}</Text>
           </VStack>
+          <HStack flex={1} alignItems={'flex-end'} space={1}>
+            <Text fontWeight={'light'}>BST:</Text>
+            <Text>{calculateBST(stats)}</Text>
+          </HStack>
         </VStack>
         <VStack space={1}>
           {Object.values(Stat).map((stat) => (
