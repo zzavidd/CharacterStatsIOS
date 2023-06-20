@@ -2,21 +2,25 @@ import { Button, Card, Text } from '@rneui/themed';
 import { Image } from 'expo-image';
 import { LinearGradient } from 'expo-linear-gradient';
 import React, { useContext } from 'react';
-import type { ListRenderItemInfo, ViewProps, ViewStyle } from 'react-native';
+import type { ListRenderItemInfo } from 'react-native';
 import { FlatList, SafeAreaView, View } from 'react-native';
+import invariant from 'tiny-invariant';
 
 import { AppContext } from 'App.context';
+import { Row } from 'src/components/Row';
 import Color from 'src/utils/constants/colors';
 import { StatMap } from 'src/utils/constants/defaults';
 import { Stat } from 'src/utils/constants/enums';
 import PokeIcon from 'src/utils/constants/icons';
 import useBuildCharacter from 'src/utils/hooks/useBuildCharacter';
 import useCreateCharacters from 'src/utils/hooks/useCreateCharacters';
+import useDeleteCharacters from 'src/utils/hooks/useDeleteCharacters';
 import useGetCharacters from 'src/utils/hooks/useGetCharacters';
 
 export default function HomeScreen() {
   const { data, refetch } = useGetCharacters();
   const { mutate: createCharacters } = useCreateCharacters();
+  const { mutate: deleteCharacters } = useDeleteCharacters();
   const buildCharacter = useBuildCharacter();
   const { abilitiesResult, movesResult } = useContext(AppContext);
 
@@ -30,18 +34,30 @@ export default function HomeScreen() {
     void refetch();
   }
 
+  async function deleteAll() {
+    invariant(data, 'No characters to delete.');
+    const ids = data.map(({ id }) => id!);
+    await deleteCharacters(ids);
+    void refetch();
+  }
+
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{ backgroundColor: '#1a1a1a' }}>
+      <Row>
+        <Button
+          onPress={ingest}
+          disabled={!abilitiesResult.data || !movesResult.data}>
+          <Text>Ingest</Text>
+        </Button>
+        <Button onPress={deleteAll}>
+          <Text>Delete</Text>
+        </Button>
+      </Row>
       <FlatList
         data={data}
         keyExtractor={(item, index) => item.id ?? '' + index}
         renderItem={RenderedItem}
       />
-      <Button
-        onPress={ingest}
-        disabled={!abilitiesResult.data || !movesResult.data}>
-        <Text>Ingest</Text>
-      </Button>
     </SafeAreaView>
   );
 }
@@ -145,12 +161,4 @@ function RenderedItem({
       </LinearGradient>
     </Card>
   );
-}
-
-function Row({ style, ...props }: RowProps) {
-  return <View style={{ flexDirection: 'row', ...style }} {...props} />;
-}
-
-interface RowProps extends ViewProps {
-  style?: ViewStyle;
 }

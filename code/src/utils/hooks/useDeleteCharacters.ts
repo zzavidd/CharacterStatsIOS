@@ -5,12 +5,12 @@ import firestore, { characterCollection } from 'firestore';
 import useOperationResult from './useOperationResult';
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default function useCreateCharacters() {
-  return useOperationResult<Character[]>(async (characters) => {
+export default function useDeleteCharacters() {
+  return useOperationResult<string[]>(async (ids: string[]) => {
     const batch = writeBatch(firestore);
-    characters.forEach((character) => {
-      const characterDoc = doc(characterCollection);
-      batch.set(characterDoc, character);
+    ids.forEach((id) => {
+      const characterDoc = doc(characterCollection, id);
+      batch.delete(characterDoc);
     });
     await batch.commit();
   });

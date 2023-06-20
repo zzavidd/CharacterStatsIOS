@@ -22,7 +22,7 @@ export default function App() {
       <ApolloProvider client={client}>
         <ThemeProvider theme={theme}>
           <ContextInitializer>
-            <StatusBar style={'auto'} />
+            <StatusBar style={'light'} />
             <HomeScreen />
           </ContextInitializer>
         </ThemeProvider>
