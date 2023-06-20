@@ -7,9 +7,8 @@ import React from 'react';
 
 import ContextInitializer from 'src/fragments/ContextInitializer';
 import FontInitializer from 'src/fragments/FontInitializer';
+import Navigator from 'src/fragments/Navigator';
 import theme from 'src/styles/Theme.styles';
-
-import HomeScreen from './src/screens/Home';
 
 const client = new ApolloClient({
   uri: 'https://beta.pokeapi.co/graphql/v1beta',
@@ -31,7 +30,7 @@ export default function App() {
         <ContextInitializer>
           <FontInitializer>
             <StatusBar style={'light'} />
-            <HomeScreen />
+            <Navigator />
           </FontInitializer>
         </ContextInitializer>
       </NativeBaseProvider>

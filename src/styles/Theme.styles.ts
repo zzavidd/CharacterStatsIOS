@@ -2,6 +2,19 @@ import { extendTheme } from 'native-base';
 
 const theme = extendTheme({
   components: {
+    Divider: {
+      defaultProps: {
+        bg: 'muted.200',
+      },
+    },
+    Input: {
+      defaultProps: {
+        variant: 'rounded',
+        p: 4,
+        rounded: 'xl',
+        size: 'lg',
+      },
+    },
     Text: {
       baseStyle: {
         color: 'text.200',

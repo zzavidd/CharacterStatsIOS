@@ -1,19 +1,22 @@
+import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import {
   Box,
   Button,
   Divider,
+  Fab,
   FlatList,
   HStack,
+  Icon,
   Text,
   VStack,
-  View,
 } from 'native-base';
 import React, { useContext } from 'react';
 import type { ListRenderItemInfo } from 'react-native';
 import invariant from 'tiny-invariant';
 
 import { AppContext } from 'App.context';
+import { ScreenContainer } from 'src/components/Container';
 import Color from 'src/utils/constants/colors';
 import { StatMap } from 'src/utils/constants/defaults';
 import { Stat } from 'src/utils/constants/enums';
@@ -24,7 +27,7 @@ import useCreateCharacters from 'src/utils/hooks/useCreateCharacters';
 import useDeleteCharacters from 'src/utils/hooks/useDeleteCharacters';
 import useGetCharacters from 'src/utils/hooks/useGetCharacters';
 
-export default function HomeScreen() {
+export default function HomeScreen({ navigation }: ScreenProps<'Home'>) {
   const { data, refetch } = useGetCharacters();
   const { mutate: createCharacters } = useCreateCharacters();
   const { mutate: deleteCharacters } = useDeleteCharacters();
@@ -49,7 +52,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <Box bgColor={'gray.800'} safeArea={true}>
+    <ScreenContainer safeAreaBottom={16}>
       <HStack>
         <Button
           variant={'ghost'}
@@ -66,7 +69,16 @@ export default function HomeScreen() {
         keyExtractor={(item, index) => item.id ?? '' + index}
         renderItem={RenderedItem}
       />
-    </Box>
+      <Fab
+        bgColor={'blue.800'}
+        bottom={75}
+        icon={<Icon as={Ionicons} name={'add'} color={'white'} size={'xl'} />}
+        renderInPortal={false}
+        right={5}
+        shadow={5}
+        onPress={() => navigation.navigate('Form')}
+      />
+    </ScreenContainer>
   );
 }
 
@@ -84,37 +96,28 @@ function RenderedItem({
     type1,
     type2,
   } = character;
-  const color1 = Color.TYPE[type1];
-  const color2 = Color.TYPE[type2 || type1];
+  const color1 = Color.TYPE[type1!] ?? 'transparent';
+  const color2 = Color.TYPE[type2 || type1!] ?? 'transparent';
+  const linearGradient = {
+    colors: [color1, color2],
+    locations: [0.85, 0.85],
+    start: [0.2, -0.8],
+    end: [1.2, 0.8],
+  };
   return (
-    <Box
-      rounded={'2xl'}
-      overflow={'hidden'}
-      mx={3}
-      my={2}
-      p={6}
-      bg={{
-        linearGradient: {
-          colors: [color1, color2],
-          locations: [0.85, 0.85],
-          start: [0.2, -0.8],
-          end: [1.2, 0.8],
-        },
-      }}>
-      <HStack style={{ gap: 4 }}>
+    <Box rounded={'2xl'} mx={4} my={2} p={6} bg={{ linearGradient }}>
+      <HStack>
         <VStack flex={1}>
           <Text bold={true} fontSize={24}>
             {name}
           </Text>
           {universe ? <Text fontWeight={'light'}>{universe}</Text> : null}
         </VStack>
-        <View style={{ gap: 4 }}>
+        <VStack space={1}>
           {[type1, type2].map((type, key) => {
             if (!type) return null;
             return (
-              <HStack
-                style={{ gap: 4, alignItems: 'center' }}
-                key={`${type}-${key}`}>
+              <HStack space={2} alignItems={'center'} key={`${type}-${key}`}>
                 <Image
                   source={PokeIcon[type]}
                   style={{ width: 20, height: 20 }}
@@ -123,7 +126,7 @@ function RenderedItem({
               </HStack>
             );
           })}
-        </View>
+        </VStack>
       </HStack>
       <Divider thickness={2} my={4} />
       <HStack>

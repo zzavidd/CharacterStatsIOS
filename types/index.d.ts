@@ -1,5 +1,6 @@
 import type { QueryResult } from '@apollo/client';
 import type { FirebaseError } from 'firebase/app';
+import type { Dispatch, SetStateAction } from 'react';
 import type { z } from 'zod';
 
 import type { Type } from 'src/utils/constants/enums';
@@ -8,6 +9,8 @@ import type { zCharacter, zStats } from 'src/utils/validators';
 declare global {
   export type Character = z.infer<typeof zCharacter>;
   export type Stats = z.infer<typeof zStats>;
+
+  export type ReactUseState<T> = [T, Dispatch<SetStateAction<T>>];
 
   export interface PokeType {
     id: number;
