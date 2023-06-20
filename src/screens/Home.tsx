@@ -1,13 +1,19 @@
-import { Button, Card, Text } from '@rneui/themed';
 import { Image } from 'expo-image';
-import { LinearGradient } from 'expo-linear-gradient';
+import {
+  Box,
+  Button,
+  Divider,
+  FlatList,
+  HStack,
+  Text,
+  VStack,
+  View,
+} from 'native-base';
 import React, { useContext } from 'react';
 import type { ListRenderItemInfo } from 'react-native';
-import { FlatList, SafeAreaView, View } from 'react-native';
 import invariant from 'tiny-invariant';
 
 import { AppContext } from 'App.context';
-import { Row } from 'src/components/Row';
 import Color from 'src/utils/constants/colors';
 import { StatMap } from 'src/utils/constants/defaults';
 import { Stat } from 'src/utils/constants/enums';
@@ -42,8 +48,8 @@ export default function HomeScreen() {
   }
 
   return (
-    <SafeAreaView style={{ backgroundColor: '#1a1a1a' }}>
-      <Row>
+    <Box bgColor={'gray.800'} safeArea={true}>
+      <HStack>
         <Button
           onPress={ingest}
           disabled={!abilitiesResult.data || !movesResult.data}>
@@ -52,13 +58,13 @@ export default function HomeScreen() {
         <Button onPress={deleteAll}>
           <Text>Delete</Text>
         </Button>
-      </Row>
+      </HStack>
       <FlatList
         data={data}
         keyExtractor={(item, index) => item.id ?? '' + index}
         renderItem={RenderedItem}
       />
-    </SafeAreaView>
+    </Box>
   );
 }
 
@@ -79,86 +85,79 @@ function RenderedItem({
   const color1 = Color.TYPE[type1];
   const color2 = Color.TYPE[type2 || type1];
   return (
-    <Card
-      wrapperStyle={{ borderRadius: 20, overflow: 'hidden' }}
-      containerStyle={{ borderRadius: 20, overflow: 'hidden', padding: 0 }}>
-      <LinearGradient
-        colors={[color1, color2]}
-        locations={[0.85, 0.85]}
-        start={[0.2, -0.8]}
-        end={[1.2, 0.8]}>
-        <View style={{ padding: 24 }}>
-          <Row style={{ gap: 4 }}>
-            <View style={{ flex: 1 }}>
-              <Text
-                h4={true}
-                style={{ fontFamily: 'Mulish_700Bold', marginBottom: 4 }}>
-                {name}
-              </Text>
-              {universe ? (
-                <Text style={{ fontFamily: 'Mulish_300Light_Italic' }}>
-                  {universe}
-                </Text>
-              ) : null}
-            </View>
-            <View style={{ gap: 4 }}>
-              {[type1, type2].map((type, key) => {
-                if (!type) return null;
-                return (
-                  <Row
-                    style={{ gap: 4, alignItems: 'center' }}
-                    key={`${type}-${key}`}>
-                    <Image
-                      source={PokeIcon[type]}
-                      style={{ width: 20, height: 20 }}
-                    />
-                    <Text>{type}</Text>
-                  </Row>
-                );
-              })}
-            </View>
-          </Row>
-          <Card.Divider width={2} />
-          <Row>
-            <View style={{ flex: 1, gap: 12 }}>
-              <View>
-                <Text style={{ fontFamily: 'Mulish_300Light_Italic' }}>
-                  Ability:
-                </Text>
-                <Row style={{ gap: 6 }}>
-                  <Text>{ability1}</Text>
-                  {ability2 ? (
-                    <React.Fragment>
-                      <Text>/</Text>
-                      <Text>{ability2}</Text>
-                    </React.Fragment>
-                  ) : null}
-                </Row>
-              </View>
-              <View>
-                <Text style={{ fontFamily: 'Mulish_300Light_Italic' }}>
-                  Hidden Ability:
-                </Text>
-                <Text>{abilityX}</Text>
-              </View>
-            </View>
-            <View style={{ gap: 4 }}>
-              {Object.values(Stat).map((stat) => (
-                <Row key={`${id}-${stat}`}>
-                  <Text
-                    style={{
-                      fontFamily: 'Mulish_700Bold_Italic',
-                      minWidth: 80,
-                    }}>
-                    {StatMap[stat as Stat]}:
-                  </Text>
-                  <Text>{stats[stat]}</Text>
-                </Row>
-              ))}
-            </View>
-          </Row>
+    <Box
+      borderRadius={10}
+      overflow={'hidden'}
+      mx={3}
+      my={2}
+      p={6}
+      bg={{
+        linearGradient: {
+          colors: [color1, color2],
+          locations: [0.85, 0.85],
+          start: [0.2, -0.8],
+          end: [1.2, 0.8],
+        },
+      }}>
+      <HStack style={{ gap: 4 }}>
+        <VStack flex={1}>
+          <Text bold={true} fontSize={24}>
+            {name}
+          </Text>
+          {universe ? <Text fontWeight={'light'}>{universe}</Text> : null}
+        </VStack>
+        <View style={{ gap: 4 }}>
+          {[type1, type2].map((type, key) => {
+            if (!type) return null;
+            return (
+              <HStack
+                style={{ gap: 4, alignItems: 'center' }}
+                key={`${type}-${key}`}>
+                <Image
+                  source={PokeIcon[type]}
+                  style={{ width: 20, height: 20 }}
+                />
+                <Text>{type}</Text>
+              </HStack>
+            );
+          })}
         </View>
-      </LinearGradient>
-    </Card>
+      </HStack>
+      <Divider thickness={2} my={4} />
+      <HStack>
+        <VStack flex={1} space={3}>
+          <VStack>
+            <Text fontStyle={'italic'} fontWeight={'light'}>
+              Ability:
+            </Text>
+            <HStack space={1}>
+              <Text>{ability1}</Text>
+              {ability2 ? (
+                <React.Fragment>
+                  <Text>/</Text>
+                  <Text>{ability2}</Text>
+                </React.Fragment>
+              ) : null}
+            </HStack>
+          </VStack>
+          <VStack>
+            <Text fontStyle={'italic'} fontWeight={'light'}>
+              Hidden Ability:
+            </Text>
+            <Text>{abilityX}</Text>
+          </VStack>
+        </VStack>
+        <VStack space={1}>
+          {Object.values(Stat).map((stat) => (
+            <HStack key={`${id}-${stat}`}>
+              <Text bold={true} fontStyle={'italic'} minW={20}>
+                {StatMap[stat as Stat]}:
+              </Text>
+              <Text>{stats[stat]}</Text>
+            </HStack>
+          ))}
+        </VStack>
+      </HStack>
+    </Box>
   );
 }
