@@ -1,11 +1,13 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
 import { LinearGradient } from 'expo-linear-gradient';
 import { StatusBar } from 'expo-status-bar';
-import { NativeBaseProvider, theme } from 'native-base';
+import type { INativebaseConfig } from 'native-base';
+import { NativeBaseProvider } from 'native-base';
 import React from 'react';
 
 import ContextInitializer from 'src/fragments/ContextInitializer';
 import FontInitializer from 'src/fragments/FontInitializer';
+import theme from 'src/styles/Theme.styles';
 
 import HomeScreen from './src/screens/Home';
 
@@ -14,7 +16,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-const config = {
+const config: INativebaseConfig = {
   dependencies: {
     'linear-gradient': LinearGradient,
   },

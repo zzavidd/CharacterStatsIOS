@@ -3,10 +3,10 @@ import { extendTheme } from 'native-base';
 const theme = extendTheme({
   components: {
     Text: {
-      baseStyle: () => ({
-        color: 'text.50',
+      baseStyle: {
+        color: 'text.200',
         fontWeight: '500',
-      }),
+      },
     },
   },
   fontConfig: {

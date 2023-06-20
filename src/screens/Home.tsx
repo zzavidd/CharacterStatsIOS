@@ -51,12 +51,13 @@ export default function HomeScreen() {
     <Box bgColor={'gray.800'} safeArea={true}>
       <HStack>
         <Button
+          variant={'ghost'}
           onPress={ingest}
           disabled={!abilitiesResult.data || !movesResult.data}>
           <Text>Ingest</Text>
         </Button>
-        <Button onPress={deleteAll}>
-          <Text>Delete</Text>
+        <Button variant={'ghost'} onPress={deleteAll}>
+          <Text>Delete All</Text>
         </Button>
       </HStack>
       <FlatList
@@ -86,7 +87,7 @@ function RenderedItem({
   const color2 = Color.TYPE[type2 || type1];
   return (
     <Box
-      borderRadius={10}
+      rounded={'2xl'}
       overflow={'hidden'}
       mx={3}
       my={2}
@@ -127,7 +128,7 @@ function RenderedItem({
       <HStack>
         <VStack flex={1} space={3}>
           <VStack>
-            <Text fontStyle={'italic'} fontWeight={'light'}>
+            <Text italic={true} fontWeight={'light'}>
               Ability:
             </Text>
             <HStack space={1}>
@@ -141,7 +142,7 @@ function RenderedItem({
             </HStack>
           </VStack>
           <VStack>
-            <Text fontStyle={'italic'} fontWeight={'light'}>
+            <Text italic={true} fontWeight={'light'}>
               Hidden Ability:
             </Text>
             <Text>{abilityX}</Text>
@@ -150,7 +151,7 @@ function RenderedItem({
         <VStack space={1}>
           {Object.values(Stat).map((stat) => (
             <HStack key={`${id}-${stat}`}>
-              <Text bold={true} fontStyle={'italic'} minW={20}>
+              <Text bold={true} italic={true} minW={20}>
                 {StatMap[stat as Stat]}:
               </Text>
               <Text>{stats[stat]}</Text>
