@@ -1,10 +1,20 @@
 import type { Spec } from 'immutability-helper';
 import immutate from 'immutability-helper';
-import { FormControl, HStack, Input, Text, VStack } from 'native-base';
+import {
+  AddIcon,
+  Button,
+  FormControl,
+  HStack,
+  Input,
+  Text,
+  VStack,
+} from 'native-base';
 import React, { useContext } from 'react';
 
 import { ScreenContainer } from 'src/components/Container';
-import { AbilitySelect, TypeSelect } from 'src/components/Select';
+import AbilitySelect from 'src/components/Select/AbilitySelect';
+import MoveSelect from 'src/components/Select/MoveSelect';
+import TypeSelect from 'src/components/Select/TypeSelect';
 import type { Type } from 'src/utils/constants/enums';
 
 import CharacterFormContext from './CharacterForm.context';
@@ -61,8 +71,37 @@ export default function CharacterForm() {
             />
           </FormControl>
         ))}
+        <FormControl>
+          <FormControl.Label>
+            <Text>Learnset:</Text>
+          </FormControl.Label>
+          <Button startIcon={<AddIcon />}>
+            <Text>Add Move</Text>
+          </Button>
+          {Object.entries(context.character.learnset).map(
+            ([level, moveIds]) => {
+              console.log(level, moveIds);
+              return (
+                <MoveField level={level} moveIds={moveIds} key={moveIds[0]} />
+              );
+            },
+          )}
+        </FormControl>
       </VStack>
     </ScreenContainer>
+  );
+}
+
+function MoveField({ level, moveIds }: MovieFieldProps) {
+  return (
+    <React.Fragment>
+      {moveIds.map((moveId) => (
+        <HStack key={moveId}>
+          <Input value={level} />
+          <MoveSelect value={String(moveId)} placeholder={'Select move...'} />
+        </HStack>
+      ))}
+    </React.Fragment>
   );
 }
 
@@ -114,4 +153,9 @@ interface TypeField extends Field {
 
 interface AbilityField extends Field {
   value: string | null;
+}
+
+interface MovieFieldProps {
+  level: string;
+  moveIds: number[];
 }

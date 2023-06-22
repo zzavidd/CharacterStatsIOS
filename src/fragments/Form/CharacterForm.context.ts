@@ -12,7 +12,7 @@ export const InitialCharacterFormState: CharacterFormState = {
     ability2: null,
     abilityX: null,
     stats: DEFAULT_STATS,
-    learnset: [],
+    learnset: {},
   },
 };
 

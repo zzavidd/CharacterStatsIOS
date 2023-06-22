@@ -21,6 +21,6 @@ export const zCharacter = z.object({
   ability2: z.string().nullable(),
   abilityX: z.string().nullable(),
   stats: zStats,
-  learnset: z.array(z.number()),
+  learnset: z.record(z.string(), z.number().array()),
   createTime: z.number(),
 });

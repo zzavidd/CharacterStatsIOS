@@ -5,6 +5,7 @@ import {
   Button,
   Divider,
   FlatList,
+  Flex,
   HStack,
   Text,
   VStack,
@@ -79,6 +80,11 @@ export default function HomeScreen({ navigation }: ScreenProps<'Home'>) {
         data={data}
         keyExtractor={(item, index) => item.id ?? '' + index}
         renderItem={RenderedItem}
+        ListEmptyComponent={
+          <Flex justifyContent={'center'} alignItems={'center'}>
+            <Text>No characters.</Text>
+          </Flex>
+        }
       />
     </ScreenContainer>
   );

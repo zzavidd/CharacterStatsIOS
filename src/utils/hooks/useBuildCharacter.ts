@@ -53,18 +53,32 @@ function generateStats(): Stats {
   return stats;
 }
 
-function useBuildLearnset(): () => number[] {
+function useBuildLearnset(): () => Record<string, number[]> {
   const { movesResult } = useContext(AppContext);
   const { data: moves } = movesResult;
 
   return useCallback(() => {
     invariant(moves, 'Could not retrieve moves.');
-    const quantity = faker.number.int({ min: 8, max: 18 });
-    return Array(quantity)
-      .fill(null)
-      .map(() => {
-        const index = faker.number.int({ max: 0 });
-        return moves[index].id;
-      });
+    const startQuantity = faker.number.int({ min: 1, max: 4 });
+    const moveQuantity = faker.number.int({ min: 8, max: 18 });
+
+    const learnset: Record<string, number[]> = {};
+    const addRandomMove = (level: number): void => {
+      const index = faker.number.int({ min: 0, max: moves.length });
+      const moveId = moves[index].id;
+      learnset[level] = learnset[level]?.length
+        ? [...learnset[level], moveId]
+        : [moveId];
+    };
+
+    for (let i = 0; i < startQuantity; i++) {
+      addRandomMove(1);
+    }
+
+    for (let i = 0; i < moveQuantity; i++) {
+      const level = faker.number.int({ min: 1, max: 100 });
+      addRandomMove(level);
+    }
+    return learnset;
   }, [moves]);
 }
