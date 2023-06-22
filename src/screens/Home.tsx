@@ -1,17 +1,15 @@
-import { Ionicons } from '@expo/vector-icons';
 import { Image } from 'expo-image';
 import {
+  AddIcon,
   Box,
   Button,
   Divider,
-  Fab,
   FlatList,
   HStack,
-  Icon,
   Text,
   VStack,
 } from 'native-base';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import type { ListRenderItemInfo } from 'react-native';
 import invariant from 'tiny-invariant';
 
@@ -33,6 +31,19 @@ export default function HomeScreen({ navigation }: ScreenProps<'Home'>) {
   const { mutate: deleteCharacters } = useDeleteCharacters();
   const buildCharacter = useBuildCharacter();
   const { abilitiesResult, movesResult } = useContext(AppContext);
+
+  useEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <Button
+          variant={'ghost'}
+          onPress={() => navigation.navigate('Form')}
+          startIcon={<AddIcon />}>
+          Add
+        </Button>
+      ),
+    });
+  }, []);
 
   if (!data) {
     return null;
@@ -68,15 +79,6 @@ export default function HomeScreen({ navigation }: ScreenProps<'Home'>) {
         data={data}
         keyExtractor={(item, index) => item.id ?? '' + index}
         renderItem={RenderedItem}
-      />
-      <Fab
-        bgColor={'blue.800'}
-        bottom={75}
-        icon={<Icon as={Ionicons} name={'add'} color={'white'} size={'xl'} />}
-        renderInPortal={false}
-        right={5}
-        shadow={5}
-        onPress={() => navigation.navigate('Form')}
       />
     </ScreenContainer>
   );

@@ -1,5 +1,6 @@
+import type { Spec } from 'immutability-helper';
 import immutate from 'immutability-helper';
-import { Input, VStack } from 'native-base';
+import { FormControl, HStack, Input, Text, VStack } from 'native-base';
 import React, { useContext } from 'react';
 
 import { ScreenContainer } from 'src/components/Container';
@@ -13,45 +14,52 @@ export default function CharacterForm() {
   const typeFields = useTypeFields();
   const abilityFields = useAbilityFields();
 
+  function onChange(spec: Spec<Omit<Character, 'createTime'>>) {
+    setContext((s) => immutate(s, { character: spec }));
+  }
+
   return (
-    <ScreenContainer height={'full'}>
-      <VStack space={3}>
-        <Input
-          value={context.character.name}
-          placeholder={'Enter name'}
-          onChangeText={(value) =>
-            setContext((s) =>
-              immutate(s, { character: { name: { $set: value } } }),
-            )
-          }
-        />
-        {typeFields.map(({ key, value, placeholder }) => (
-          <TypeSelect
-            selectedValue={value ?? undefined}
-            placeholder={placeholder}
-            onValueChange={(value) =>
-              setContext((s) =>
-                immutate(s, {
-                  character: { [key]: { $set: value as Type } },
-                }),
-              )
-            }
-            key={key}
+    <ScreenContainer p={4} flex={1}>
+      <VStack space={3} flex={1}>
+        <FormControl>
+          <FormControl.Label>
+            <Text>Name:</Text>
+          </FormControl.Label>
+          <Input
+            value={context.character.name}
+            placeholder={'Enter name...'}
+            onChangeText={(value) => onChange({ name: { $set: value } })}
+            returnKeyType={'done'}
           />
-        ))}
-        {abilityFields.map(({ key, value, placeholder }) => (
-          <AbilitySelect
-            selectedValue={value ?? undefined}
-            placeholder={placeholder}
-            onValueChange={(value) =>
-              setContext((s) =>
-                immutate(s, {
-                  character: { [key]: { $set: value } },
-                }),
-              )
-            }
-            key={key}
-          />
+        </FormControl>
+        <HStack space={5}>
+          {typeFields.map(({ key, label, value }) => (
+            <FormControl flex={1} key={key}>
+              <FormControl.Label>
+                <Text>{label}:</Text>
+              </FormControl.Label>
+              <TypeSelect
+                value={value ?? undefined}
+                placeholder={'Select type...'}
+                onChangeText={(value) =>
+                  onChange({ [key]: { $set: value as Type } })
+                }
+              />
+            </FormControl>
+          ))}
+        </HStack>
+        {abilityFields.map(({ key, label, value }) => (
+          <FormControl key={key}>
+            <FormControl.Label>
+              <Text>{label}:</Text>
+            </FormControl.Label>
+            <AbilitySelect
+              value={value ?? undefined}
+              placeholder={'Select ability...'}
+              onChangeText={(value) => onChange({ [key]: { $set: value } })}
+              key={key}
+            />
+          </FormControl>
         ))}
       </VStack>
     </ScreenContainer>
@@ -63,13 +71,13 @@ function useTypeFields(): TypeField[] {
   return [
     {
       key: 'type1',
+      label: 'Type 1',
       value: context.character.type1,
-      placeholder: 'Select first type...',
     },
     {
       key: 'type2',
+      label: 'Type 2',
       value: context.character.type2,
-      placeholder: 'Select second type...',
     },
   ];
 }
@@ -79,30 +87,31 @@ function useAbilityFields(): AbilityField[] {
   return [
     {
       key: 'ability1',
+      label: 'First Ability',
       value: context.character.ability1,
-      placeholder: 'Select first ability...',
     },
     {
       key: 'ability2',
+      label: 'Second Ability',
       value: context.character.ability2,
-      placeholder: 'Select second ability...',
     },
     {
       key: 'abilityX',
+      label: 'Hidden Ability',
       value: context.character.abilityX,
-      placeholder: 'Select hidden ability...',
     },
   ];
 }
 
-interface TypeField {
+interface Field {
   key: keyof Character;
-  value: Type | null;
-  placeholder: string;
+  label: string;
 }
 
-interface AbilityField {
-  key: keyof Character;
+interface TypeField extends Field {
+  value: Type | null;
+}
+
+interface AbilityField extends Field {
   value: string | null;
-  placeholder: string;
 }

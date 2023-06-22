@@ -2,6 +2,11 @@ import { extendTheme } from 'native-base';
 
 const theme = extendTheme({
   components: {
+    Button: {
+      defaultProps: {
+        variant: 'ghost',
+      },
+    },
     Divider: {
       defaultProps: {
         bg: 'muted.200',
@@ -10,6 +15,8 @@ const theme = extendTheme({
     Input: {
       defaultProps: {
         variant: 'rounded',
+        fontFamily: 'body',
+        keyboardAppearance: 'dark',
         p: 4,
         rounded: 'xl',
         size: 'lg',
