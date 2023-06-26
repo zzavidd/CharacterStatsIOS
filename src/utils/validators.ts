@@ -23,4 +23,7 @@ export const zCharacter = z.object({
   stats: zStats,
   learnset: z.record(z.string(), z.number().array()),
   createTime: z.number(),
+  lastModified: z.number().optional(),
 });
+
+export const zCharacterUpdateInput = zCharacter.omit({ createTime: true });

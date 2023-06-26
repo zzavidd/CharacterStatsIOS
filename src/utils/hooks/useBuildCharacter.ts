@@ -38,6 +38,7 @@ export default function useBuildCharacter(): () => Character {
       stats: generateStats(),
       learnset: buildLearnset(),
       createTime: Date.now(),
+      lastModified: Date.now(),
     });
   }, [abilities, moves, buildLearnset]);
 }
@@ -55,7 +56,7 @@ function generateStats(): Stats {
 
 function useBuildLearnset(): () => Record<string, number[]> {
   const { movesResult } = useContext(QueriesContext);
-  const { data: moves } = movesResult;
+  const { data: moves = {} } = movesResult;
 
   return useCallback(() => {
     invariant(moves, 'Could not retrieve moves.');
@@ -64,7 +65,10 @@ function useBuildLearnset(): () => Record<string, number[]> {
 
     const learnset: Record<string, number[]> = {};
     const addRandomMove = (level: number): void => {
-      const index = faker.number.int({ min: 0, max: moves.length });
+      const index = faker.number.int({
+        min: 0,
+        max: Object.keys(moves).length,
+      });
       const moveId = moves[index].id;
       learnset[level] = learnset[level]?.length
         ? [...learnset[level], moveId]

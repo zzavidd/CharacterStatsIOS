@@ -1,33 +1,55 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Button, Icon } from 'native-base';
+import immutate from 'immutability-helper';
+import { Button, Icon, Text } from 'native-base';
 import React, { useContext, useEffect, useState } from 'react';
-import { TypeMenu } from 'src/components/Select/TypeSelect';
 
 import { AppContext } from 'App.context';
-import immutate from 'immutability-helper';
 import { AbilityMenu } from 'src/components/Select/AbilitySelect';
 import { MoveMenu } from 'src/components/Select/MoveSelect';
+import { TypeMenu } from 'src/components/Select/TypeSelect';
 import CharacterForm from 'src/fragments/Form/CharacterForm';
 import CharacterFormContext, {
   InitialCharacterFormState,
 } from 'src/fragments/Form/CharacterForm.context';
-import { Type } from 'src/utils/constants/enums';
+import type { Type } from 'src/utils/constants/enums';
+import useCreateCharacters from 'src/utils/hooks/useCreateCharacters';
+import useUpdateCharacters from 'src/utils/hooks/useUpdateCharacters';
 
 export default function FormScreen({ navigation, route }: ScreenProps<'Form'>) {
   const [context] = useContext(AppContext);
   const [state, setState] = useState(InitialCharacterFormState);
+  const { mutate: createCharacters } = useCreateCharacters();
+  const { mutate: updateCharacters } = useUpdateCharacters();
 
   useEffect(() => {
+    const onSave = async () => {
+      const dateNow = Date.now();
+      if (route.params.isEditing) {
+        await updateCharacters([{ ...state.character, lastModified: dateNow }]);
+      } else {
+        await createCharacters([
+          { ...state.character, createTime: dateNow, lastModified: dateNow },
+        ]);
+      }
+      navigation.navigate('Home');
+    };
+
     navigation.setOptions({
       headerRight: () => (
         <Button
-          onPress={() => navigation.navigate('Home')}
+          onPress={onSave}
           startIcon={<Icon as={Ionicons} name={'save'} />}>
-          Save
+          <Text>Save</Text>
         </Button>
       ),
     });
-  }, []);
+  }, [
+    navigation,
+    route.params.isEditing,
+    state.character,
+    createCharacters,
+    updateCharacters,
+  ]);
 
   useEffect(() => {
     const { isEditing, selectedCharacter } = route.params;
@@ -35,8 +57,6 @@ export default function FormScreen({ navigation, route }: ScreenProps<'Form'>) {
       setState((s) => ({ ...s, character: selectedCharacter }));
     }
   }, [route.params]);
-
-  function onSave() {}
 
   function onAbilityChange(ability: PokeAbility) {
     setState((s) =>
@@ -48,8 +68,6 @@ export default function FormScreen({ navigation, route }: ScreenProps<'Form'>) {
 
   function onMoveChange(moveId: number) {
     const { level, selectedMoveIndex } = context.move;
-    const moveIds = state.character.learnset[level];
-
     setState((s) =>
       immutate(s, {
         character: {

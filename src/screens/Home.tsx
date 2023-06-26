@@ -31,7 +31,7 @@ import useDeleteCharacters from 'src/utils/hooks/useDeleteCharacters';
 import useGetCharacters from 'src/utils/hooks/useGetCharacters';
 
 export default function HomeScreen({ navigation }: ScreenProps<'Home'>) {
-  const { data, refetch } = useGetCharacters();
+  const { data } = useGetCharacters();
   const { mutate: createCharacters } = useCreateCharacters();
   const { mutate: deleteCharacters } = useDeleteCharacters();
   const buildCharacter = useBuildCharacter();
@@ -64,14 +64,12 @@ export default function HomeScreen({ navigation }: ScreenProps<'Home'>) {
   async function ingest() {
     const characters = Array(5).fill(null).map(buildCharacter);
     await createCharacters(characters);
-    void refetch();
   }
 
   async function deleteAll() {
     invariant(data, 'No characters to delete.');
     const ids = data.map(({ id }) => id!);
     await deleteCharacters(ids);
-    void refetch();
   }
 
   function onActionSheetClose() {

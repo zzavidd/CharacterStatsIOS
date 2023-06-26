@@ -4,10 +4,15 @@ import type { Dispatch, SetStateAction } from 'react';
 import type { z } from 'zod';
 
 import type { Type } from 'src/utils/constants/enums';
-import type { zCharacter, zStats } from 'src/utils/validators';
+import type {
+  zCharacter,
+  zCharacterUpdateInput,
+  zStats,
+} from 'src/utils/validators';
 
 declare global {
   export type Character = z.infer<typeof zCharacter>;
+  export type CharacterUpdateInput = z.infer<typeof zCharacterUpdateInput>;
   export type Stats = z.infer<typeof zStats>;
 
   export type ReactUseState<T> = [T, Dispatch<SetStateAction<T>>];
