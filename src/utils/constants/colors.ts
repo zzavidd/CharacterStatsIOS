@@ -49,7 +49,7 @@ namespace Color {
     [Generation.GALAR]: '#702467',
   };
 
-  export const CLASS: ClassColor = {
+  export const MOVE_CLASS: MoveClassColor = {
     Physical: {
       bg: '#82150b',
       text: '#F67A1A',
@@ -67,7 +67,7 @@ namespace Color {
 
 export default Color;
 
-interface ClassColor {
+interface MoveClassColor {
   [key: string]: {
     bg: string;
     text: string;

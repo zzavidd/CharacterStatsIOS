@@ -1,3 +1,4 @@
+import immutate from 'immutability-helper';
 import type { IInputProps } from 'native-base';
 import {
   Actionsheet,
@@ -15,32 +16,83 @@ import {
 import React, { useContext, useMemo, useState } from 'react';
 import { VirtualizedList } from 'react-native';
 
-import { AppContext } from 'App.context';
+import { AppContext, QueriesContext } from 'App.context';
 import PokeIcon from 'src/utils/constants/icons';
 
-export default function MoveSelect(props: IInputProps) {
-  const [state, setState] = useState({
-    isMoveListShown: false,
-    searchTerm: '',
-  });
-  const { movesResult } = useContext(AppContext);
-  const { data: moves = [] } = movesResult;
+export default function MoveSelect({
+  name,
+  value,
+  index,
+  ...props
+}: MoveSelectProps) {
+  const { movesResult } = useContext(QueriesContext);
+  const { data: moveMap = {} } = movesResult;
+  const [, setContext] = useContext(AppContext);
 
-  function showMoveList() {
-    setState((s) => ({ ...s, isMoveListShown: true }));
+  function showAbilityMenu() {
+    setContext((c) =>
+      immutate(c, {
+        move: {
+          $set: {
+            isMenuOpen: true,
+            level: name,
+            selectedMoveIndex: index,
+            selectedValue: Number(value),
+          },
+        },
+      }),
+    );
   }
 
-  function hideMoveList() {
-    setState((s) => ({ ...s, isMoveListShown: false, searchTerm: '' }));
+  return (
+    <Input
+      {...props}
+      value={value ? moveMap[value].name : undefined}
+      pl={value ? 2 : undefined}
+      isReadOnly={true}
+      InputLeftElement={
+        value ? (
+          <Image
+            source={PokeIcon[moveMap[value].type]}
+            alt={value}
+            width={6}
+            height={6}
+            key={value}
+            ml={3}
+          />
+        ) : undefined
+      }
+      InputRightElement={
+        <Button onPress={showAbilityMenu}>
+          <ChevronDownIcon />
+        </Button>
+      }
+    />
+  );
+}
+
+export function MoveMenu({ onChange }: MoveMenuProps) {
+  const [state, setState] = useState({ searchTerm: '' });
+  const [context, setContext] = useContext(AppContext);
+  const { movesResult } = useContext(QueriesContext);
+  const { data: moveMap = {} } = movesResult;
+
+  const moves = Object.values(moveMap);
+
+  function hideMoveMenu() {
+    setContext((c) =>
+      immutate(c, {
+        move: {
+          isMenuOpen: { $set: false },
+          selectedValue: { $set: undefined },
+        },
+      }),
+    );
+    setState((s) => ({ ...s, searchTerm: '' }));
   }
 
   function clearSearchField() {
     setState((s) => ({ ...s, searchTerm: '' }));
-  }
-
-  function onSelect(move: PokeMove) {
-    props.onChangeText?.(move.name);
-    hideMoveList();
   }
 
   const filteredMoves = useMemo(() => {
@@ -53,72 +105,71 @@ export default function MoveSelect(props: IInputProps) {
   }, [moves, state.searchTerm]);
 
   return (
-    <React.Fragment>
-      <VStack>
-        <Input
-          {...props}
-          isReadOnly={true}
-          InputRightElement={
-            <Button onPress={showMoveList}>
-              <ChevronDownIcon />
-            </Button>
-          }
-        />
-      </VStack>
-      <Actionsheet isOpen={state.isMoveListShown} onClose={hideMoveList}>
-        <Actionsheet.Content>
-          <Box h={'full'} w={'full'}>
-            <Input
-              value={state.searchTerm}
-              onChangeText={(value) =>
-                setState((s) => ({ ...s, searchTerm: value }))
-              }
-              px={3}
-              placeholder={'Filter moves...'}
-              InputLeftElement={<SearchIcon ml={3} size={5} />}
-              InputRightElement={
-                state.searchTerm ? (
-                  <Button onPress={clearSearchField}>
-                    <CloseIcon />
-                  </Button>
-                ) : undefined
-              }
-            />
-            <VirtualizedList<PokeMove>
-              data={filteredMoves}
-              getItem={(data, index) => data[index]}
-              getItemCount={() => filteredMoves.length}
-              keyExtractor={(item) => String(item.id)}
-              maxToRenderPerBatch={20}
-              initialNumToRender={20}
-              style={{ width: '100%' }}
-              renderItem={({ item: move }) => (
-                <Actionsheet.Item
-                  onPress={() => onSelect(move)}
-                  _pressed={{ bgColor: 'primary.800' }}
-                  p={3}>
-                  <HStack alignItems={'flex-start'} space={4}>
-                    <Image
-                      source={PokeIcon[move.type]}
-                      alt={move.type}
-                      width={8}
-                      height={8}
-                    />
-                    <VStack>
-                      <Text fontSize={20}>{move.name}</Text>
-                      {move.description ? (
-                        <Text fontSize={12} fontWeight={'light'}>
-                          {move.description}
-                        </Text>
-                      ) : null}
-                    </VStack>
-                  </HStack>
-                </Actionsheet.Item>
-              )}
-            />
-          </Box>
-        </Actionsheet.Content>
-      </Actionsheet>
-    </React.Fragment>
+    <Actionsheet isOpen={context.move.isMenuOpen} onClose={hideMoveMenu}>
+      <Actionsheet.Content>
+        <Box h={'full'} w={'full'}>
+          <Input
+            value={state.searchTerm}
+            onChangeText={(value) =>
+              setState((s) => ({ ...s, searchTerm: value }))
+            }
+            px={3}
+            placeholder={'Filter moves...'}
+            InputLeftElement={<SearchIcon ml={3} size={5} />}
+            InputRightElement={
+              state.searchTerm ? (
+                <Button onPress={clearSearchField}>
+                  <CloseIcon />
+                </Button>
+              ) : undefined
+            }
+          />
+          <VirtualizedList<PokeMove>
+            data={filteredMoves}
+            getItem={(data, index) => data[index]}
+            getItemCount={() => filteredMoves.length}
+            keyExtractor={(item) => String(item.id)}
+            maxToRenderPerBatch={20}
+            initialNumToRender={20}
+            style={{ width: '100%' }}
+            renderItem={({ item: move }) => (
+              <Actionsheet.Item
+                onPress={() => {
+                  onChange(move.id);
+                  hideMoveMenu();
+                }}
+                _pressed={{ bgColor: 'primary.800' }}
+                p={3}>
+                <HStack alignItems={'flex-start'} space={4}>
+                  <Image
+                    source={PokeIcon[move.type]}
+                    alt={move.type}
+                    width={8}
+                    height={8}
+                  />
+                  <VStack>
+                    <Text fontSize={20}>{move.name}</Text>
+                    {move.description ? (
+                      <Text fontSize={12} fontWeight={'light'}>
+                        {move.description}
+                      </Text>
+                    ) : null}
+                  </VStack>
+                </HStack>
+              </Actionsheet.Item>
+            )}
+          />
+        </Box>
+      </Actionsheet.Content>
+    </Actionsheet>
   );
+}
+
+interface MoveSelectProps extends IInputProps {
+  name: string;
+  index: number;
+}
+
+interface MoveMenuProps {
+  onChange: (moveId: number) => void;
 }

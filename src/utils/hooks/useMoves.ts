@@ -6,11 +6,11 @@ import Color from '../constants/colors';
 import type { Type } from '../constants/enums';
 import { QUERY_MOVES } from '../queries';
 
-export default function useMoves(): ApolloResult<PokeMove[]> {
+export default function useMoves(): ApolloResult<PokeMoveMap> {
   const { data, error, loading } = useQuery<{ moves: RawMove[] }>(QUERY_MOVES);
 
   const moves = useMemo(() => {
-    return data?.moves.map((rawMove) => {
+    return data?.moves.reduce<PokeMoveMap>((acc, rawMove) => {
       const { id, accuracy, power, pp } = rawMove;
       const type = capitalCase(rawMove.type.name) as Type;
       const marshaledMove: PokeMove = {
@@ -24,8 +24,9 @@ export default function useMoves(): ApolloResult<PokeMove[]> {
         damageClass: rawMove.damageClass.name,
         description: rawMove.description[0]?.text,
       };
-      return marshaledMove;
-    });
+      acc[id] = marshaledMove;
+      return acc;
+    }, {});
   }, [data]);
 
   return { data: moves, error, loading };

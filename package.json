@@ -5,7 +5,7 @@
   "prettier": "@zzavidd/prettier-config",
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
-    "dev": "expo start --ios",
+    "dev": "expo start",
     "tsc": "tsc --skipLibCheck"
   },
   "dependencies": {

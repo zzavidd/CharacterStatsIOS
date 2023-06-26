@@ -1,3 +1,4 @@
+import immutate from 'immutability-helper';
 import type { IInputProps } from 'native-base';
 import {
   Actionsheet,
@@ -10,88 +11,116 @@ import {
   Input,
   Pressable,
   Text,
-  VStack,
 } from 'native-base';
-import React, { useState } from 'react';
+import React, { useContext } from 'react';
 
+import { AppContext } from 'App.context';
 import { Type } from 'src/utils/constants/enums';
 import PokeIcon from 'src/utils/constants/icons';
 
-export default function TypeSelect(props: IInputProps) {
-  const { value, onChangeText } = props;
-  const [state, setState] = useState({ isTypeListShown: false });
+export default function TypeSelect({ name, ...props }: TypeSelectProps) {
+  const { value } = props;
+  const [, setContext] = useContext(AppContext);
 
-  function toggleTypeList(visible: boolean) {
-    setState((s) => ({ ...s, isTypeListShown: visible }));
-  }
-
-  function onSelect(type: Type) {
-    onChangeText?.(type);
-    toggleTypeList(false);
+  function showTypeMenu() {
+    setContext((c) =>
+      immutate(c, {
+        type: {
+          $set: {
+            isMenuOpen: true,
+            key: name,
+            selectedValue: value as Type,
+          },
+        },
+      }),
+    );
   }
 
   return (
-    <React.Fragment>
-      <VStack>
-        <Input
-          {...props}
-          pl={value ? 1 : undefined}
-          isReadOnly={true}
-          InputLeftElement={
-            value ? (
-              <Image
-                source={PokeIcon[value as Type]}
-                alt={value}
-                width={6}
-                height={6}
-                key={value}
-                ml={3}
-              />
-            ) : undefined
-          }
-          InputRightElement={
-            <Button onPress={() => toggleTypeList(true)}>
-              <ChevronDownIcon />
-            </Button>
-          }
-        />
-      </VStack>
-      <Actionsheet
-        isOpen={state.isTypeListShown}
-        onClose={() => toggleTypeList(false)}>
-        <Actionsheet.Content>
-          <FlatList
-            data={Object.values(Type)}
-            keyExtractor={(item) => item}
-            maxToRenderPerBatch={20}
-            initialNumToRender={20}
-            numColumns={2}
-            key={'1'}
-            w={'full'}
-            renderItem={({ item: type }) => {
-              const selected = value === type;
-              return (
-                <Pressable
-                  bgColor={selected ? 'primary.900' : undefined}
-                  onPress={() => onSelect(type)}
-                  _pressed={{ bgColor: 'gray.900' }}
-                  flex={1}>
-                  <HStack alignItems={'center'} space={4} p={3}>
-                    <Image
-                      source={PokeIcon[type]}
-                      alt={type}
-                      width={30}
-                      height={30}
-                    />
-                    <Text fontSize={20}>{type}</Text>
-                    {selected ? <CheckIcon size={'5'} /> : null}
-                  </HStack>
-                </Pressable>
-              );
-            }}
+    <Input
+      {...props}
+      pl={value ? 2 : undefined}
+      isReadOnly={true}
+      InputLeftElement={
+        value ? (
+          <Image
+            source={PokeIcon[value as Type]}
+            alt={value}
+            width={6}
+            height={6}
+            key={value}
+            ml={3}
           />
-        </Actionsheet.Content>
-      </Actionsheet>
-    </React.Fragment>
+        ) : undefined
+      }
+      InputRightElement={
+        <Button onPress={showTypeMenu}>
+          <ChevronDownIcon />
+        </Button>
+      }
+    />
   );
+}
+
+export function TypeMenu({ onChange }: TypeMenuProps) {
+  const [context, setContext] = useContext(AppContext);
+
+  function hideTypeMenu() {
+    setContext((c) =>
+      immutate(c, {
+        type: {
+          isMenuOpen: { $set: false },
+          selectedValue: { $set: undefined },
+        },
+      }),
+    );
+  }
+
+  return (
+    <Actionsheet isOpen={context.type.isMenuOpen} onClose={hideTypeMenu}>
+      <Actionsheet.Content>
+        <FlatList
+          data={Object.values(Type)}
+          keyExtractor={(item) => item}
+          maxToRenderPerBatch={20}
+          initialNumToRender={20}
+          numColumns={2}
+          key={'1'}
+          w={'full'}
+          renderItem={({ item: type }) => {
+            const selected = context.type.selectedValue === type;
+            return (
+              <Pressable
+                bgColor={selected ? 'primary.900' : undefined}
+                onPress={() => {
+                  onChange(type);
+                  hideTypeMenu();
+                }}
+                _pressed={{ bgColor: 'gray.900' }}
+                flex={1}>
+                <HStack alignItems={'center'} space={4} p={3}>
+                  <Image
+                    source={PokeIcon[type]}
+                    alt={type}
+                    width={30}
+                    height={30}
+                  />
+                  <Text fontSize={20}>{type}</Text>
+                  {selected ? <CheckIcon size={'5'} /> : null}
+                </HStack>
+              </Pressable>
+            );
+          }}
+        />
+      </Actionsheet.Content>
+    </Actionsheet>
+  );
+}
+
+interface TypeSelectProps extends IInputProps {
+  name: TypeKey;
+}
+
+interface TypeMenuProps {
+  onChange: (type: Type) => void;
 }

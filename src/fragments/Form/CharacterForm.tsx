@@ -6,6 +6,7 @@ import {
   FormControl,
   HStack,
   Input,
+  ScrollView,
   Text,
   VStack,
 } from 'native-base';
@@ -30,75 +31,96 @@ export default function CharacterForm() {
 
   return (
     <ScreenContainer p={4} flex={1}>
-      <VStack space={3} flex={1}>
-        <FormControl>
-          <FormControl.Label>
-            <Text>Name:</Text>
-          </FormControl.Label>
-          <Input
-            value={context.character.name}
-            placeholder={'Enter name...'}
-            onChangeText={(value) => onChange({ name: { $set: value } })}
-            returnKeyType={'done'}
-          />
-        </FormControl>
-        <HStack space={5}>
-          {typeFields.map(({ key, label, value }) => (
-            <FormControl flex={1} key={key}>
+      <ScrollView>
+        <VStack space={3} flex={1}>
+          <FormControl>
+            <FormControl.Label>
+              <Text>Name:</Text>
+            </FormControl.Label>
+            <Input
+              value={context.character.name}
+              placeholder={'Enter name...'}
+              onChangeText={(value) => onChange({ name: { $set: value } })}
+              returnKeyType={'done'}
+            />
+          </FormControl>
+          <HStack space={5}>
+            {typeFields.map(({ key, label, value }) => (
+              <FormControl flex={1} key={key}>
+                <FormControl.Label>
+                  <Text>{label}:</Text>
+                </FormControl.Label>
+                <TypeSelect
+                  name={key}
+                  value={value ?? undefined}
+                  placeholder={'Select type...'}
+                  onChangeText={(value) =>
+                    onChange({ [key]: { $set: value as Type } })
+                  }
+                />
+              </FormControl>
+            ))}
+          </HStack>
+          {abilityFields.map(({ key, label, value }) => (
+            <FormControl key={key}>
               <FormControl.Label>
                 <Text>{label}:</Text>
               </FormControl.Label>
-              <TypeSelect
+              <AbilitySelect
+                name={key}
                 value={value ?? undefined}
-                placeholder={'Select type...'}
-                onChangeText={(value) =>
-                  onChange({ [key]: { $set: value as Type } })
-                }
+                placeholder={'Select ability...'}
+                onChangeText={(value) => onChange({ [key]: { $set: value } })}
+                key={key}
               />
             </FormControl>
           ))}
-        </HStack>
-        {abilityFields.map(({ key, label, value }) => (
-          <FormControl key={key}>
+          <FormControl>
             <FormControl.Label>
-              <Text>{label}:</Text>
+              <Text>Learnset:</Text>
             </FormControl.Label>
-            <AbilitySelect
-              value={value ?? undefined}
-              placeholder={'Select ability...'}
-              onChangeText={(value) => onChange({ [key]: { $set: value } })}
-              key={key}
-            />
+            <Button variant={'outline'} startIcon={<AddIcon />} mb={5}>
+              <Text>Add Move</Text>
+            </Button>
+            <VStack space={2}>
+              {Object.entries(context.character.learnset).map(
+                ([level, moveIds]) => {
+                  return (
+                    <MoveField
+                      level={level}
+                      moveIds={moveIds}
+                      key={moveIds[0]}
+                    />
+                  );
+                },
+              )}
+            </VStack>
           </FormControl>
-        ))}
-        <FormControl>
-          <FormControl.Label>
-            <Text>Learnset:</Text>
-          </FormControl.Label>
-          <Button startIcon={<AddIcon />}>
-            <Text>Add Move</Text>
-          </Button>
-          {Object.entries(context.character.learnset).map(
-            ([level, moveIds]) => {
-              console.log(level, moveIds);
-              return (
-                <MoveField level={level} moveIds={moveIds} key={moveIds[0]} />
-              );
-            },
-          )}
-        </FormControl>
-      </VStack>
+        </VStack>
+      </ScrollView>
     </ScreenContainer>
   );
 }
 
-function MoveField({ level, moveIds }: MovieFieldProps) {
+function MoveField({ level, moveIds }: MoveFieldProps) {
   return (
     <React.Fragment>
-      {moveIds.map((moveId) => (
-        <HStack key={moveId}>
-          <Input value={level} />
-          <MoveSelect value={String(moveId)} placeholder={'Select move...'} />
+      {moveIds.map((moveId, index) => (
+        <HStack key={`${level}-${moveId}`} space={3}>
+          <Input
+            value={level}
+            isReadOnly={true}
+            w={'16'}
+            variant={'filled'}
+            textAlign={'right'}
+          />
+          <MoveSelect
+            name={level}
+            index={index}
+            value={String(moveId)}
+            placeholder={'Select move...'}
+            flex={1}
+          />
         </HStack>
       ))}
     </React.Fragment>
@@ -143,19 +165,20 @@ function useAbilityFields(): AbilityField[] {
 }
 
 interface Field {
-  key: keyof Character;
   label: string;
 }
 
-interface TypeField extends Field {
-  value: Type | null;
-}
-
 interface AbilityField extends Field {
+  key: AbilityKey;
   value: string | null;
 }
 
-interface MovieFieldProps {
+interface TypeField extends Field {
+  key: TypeKey;
+  value: Type | null;
+}
+
+interface MoveFieldProps {
   level: string;
   moveIds: number[];
 }

@@ -1,20 +1,24 @@
 import { Image } from 'expo-image';
 import {
+  Actionsheet,
   AddIcon,
   Box,
   Button,
+  DeleteIcon,
   Divider,
   FlatList,
   Flex,
   HStack,
+  Icon,
   Text,
   VStack,
 } from 'native-base';
 import React, { useContext, useEffect } from 'react';
-import type { ListRenderItemInfo } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import invariant from 'tiny-invariant';
 
-import { AppContext } from 'App.context';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { AppContext, QueriesContext } from 'App.context';
 import { ScreenContainer } from 'src/components/Container';
 import Color from 'src/utils/constants/colors';
 import { StatMap } from 'src/utils/constants/defaults';
@@ -31,14 +35,21 @@ export default function HomeScreen({ navigation }: ScreenProps<'Home'>) {
   const { mutate: createCharacters } = useCreateCharacters();
   const { mutate: deleteCharacters } = useDeleteCharacters();
   const buildCharacter = useBuildCharacter();
-  const { abilitiesResult, movesResult } = useContext(AppContext);
+
+  const [context, setContext] = useContext(AppContext);
+  const { abilitiesResult, movesResult } = useContext(QueriesContext);
 
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <Button
           variant={'ghost'}
-          onPress={() => navigation.navigate('Form')}
+          onPress={() =>
+            navigation.navigate('Form', {
+              isEditing: false,
+              selectedCharacter: null,
+            })
+          }
           startIcon={<AddIcon />}>
           Add
         </Button>
@@ -63,36 +74,77 @@ export default function HomeScreen({ navigation }: ScreenProps<'Home'>) {
     void refetch();
   }
 
+  function onActionSheetClose() {
+    setContext((s) => ({ ...s, selectedCharacter: null }));
+  }
+
+  function onLongPress(character: Character) {
+    setContext((s) => ({ ...s, selectedCharacter: character }));
+  }
+
+  function onEditPress() {
+    navigation.navigate('Form', {
+      isEditing: true,
+      selectedCharacter: context.selectedCharacter,
+    });
+    onActionSheetClose();
+  }
+
   return (
-    <ScreenContainer safeAreaBottom={16}>
-      <HStack>
-        <Button
-          variant={'ghost'}
-          onPress={ingest}
-          disabled={!abilitiesResult.data || !movesResult.data}>
-          <Text>Ingest</Text>
-        </Button>
-        <Button variant={'ghost'} onPress={deleteAll}>
-          <Text>Delete All</Text>
-        </Button>
-      </HStack>
-      <FlatList
-        data={data}
-        keyExtractor={(item, index) => item.id ?? '' + index}
-        renderItem={RenderedItem}
-        ListEmptyComponent={
-          <Flex justifyContent={'center'} alignItems={'center'}>
-            <Text>No characters.</Text>
-          </Flex>
-        }
-      />
-    </ScreenContainer>
+    <>
+      <ScreenContainer safeAreaBottom={16}>
+        <HStack>
+          <Button
+            variant={'ghost'}
+            onPress={ingest}
+            disabled={!abilitiesResult.data || !movesResult.data}>
+            <Text>Ingest</Text>
+          </Button>
+          <Button variant={'ghost'} onPress={deleteAll}>
+            <Text>Delete All</Text>
+          </Button>
+        </HStack>
+        <FlatList
+          data={data}
+          keyExtractor={(item, index) => item.id ?? '' + index}
+          renderItem={({ item: character }) => (
+            <TouchableOpacity
+              activeOpacity={0.85}
+              onLongPress={() => onLongPress(character)}>
+              <RenderedItem character={character} />
+            </TouchableOpacity>
+          )}
+          ListEmptyComponent={
+            <Flex justifyContent={'center'} alignItems={'center'}>
+              <Text>No characters.</Text>
+            </Flex>
+          }
+        />
+      </ScreenContainer>
+      <Actionsheet
+        isOpen={!!context.selectedCharacter}
+        onClose={onActionSheetClose}>
+        <Actionsheet.Content>
+          <Actionsheet.Item>
+            <Text>Do what with "{context.selectedCharacter?.name}"?</Text>
+          </Actionsheet.Item>
+          <Actionsheet.Item
+            onPress={onEditPress}
+            startIcon={
+              <Icon as={MaterialIcons} name={'edit'} alignSelf={'center'} />
+            }>
+            Edit
+          </Actionsheet.Item>
+          <Actionsheet.Item startIcon={<DeleteIcon alignSelf={'center'} />}>
+            Delete
+          </Actionsheet.Item>
+        </Actionsheet.Content>
+      </Actionsheet>
+    </>
   );
 }
 
-function RenderedItem({
-  item: character,
-}: ListRenderItemInfo<Character>): React.ReactElement | null {
+function RenderedItem({ character }: CharacterItemProps) {
   const {
     id,
     name,
@@ -177,4 +229,8 @@ function RenderedItem({
       </HStack>
     </Box>
   );
+}
+
+interface CharacterItemProps {
+  character: Character;
 }

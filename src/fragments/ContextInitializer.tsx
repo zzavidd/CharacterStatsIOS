@@ -1,6 +1,7 @@
 import type React from 'react';
+import { useState } from 'react';
 
-import { AppContext } from 'App.context';
+import { AppContext, InitialAppState, QueriesContext } from 'App.context';
 import useAbilities from 'src/utils/hooks/useAbilities';
 import useMoves from 'src/utils/hooks/useMoves';
 import useTypes from 'src/utils/hooks/useTypes';
@@ -8,6 +9,8 @@ import useTypes from 'src/utils/hooks/useTypes';
 export default function ContextInitializer({
   children,
 }: React.PropsWithChildren) {
+  const appContext = useState(InitialAppState);
+
   const abilitiesResult = useAbilities();
   const movesResult = useMoves();
   const typesResult = useTypes();
@@ -17,15 +20,17 @@ export default function ContextInitializer({
   const isSuccess = collection.every(({ data }) => !!data);
 
   return (
-    <AppContext.Provider
-      value={{
-        abilitiesResult,
-        movesResult,
-        typesResult,
-        isLoading,
-        isSuccess,
-      }}>
-      {children}
+    <AppContext.Provider value={appContext}>
+      <QueriesContext.Provider
+        value={{
+          abilitiesResult,
+          movesResult,
+          typesResult,
+          isLoading,
+          isSuccess,
+        }}>
+        {children}
+      </QueriesContext.Provider>
     </AppContext.Provider>
   );
 }

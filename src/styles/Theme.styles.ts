@@ -5,11 +5,17 @@ const theme = extendTheme({
     Button: {
       defaultProps: {
         variant: 'ghost',
+        borderRadius: 10,
       },
     },
     Divider: {
       defaultProps: {
         bg: 'muted.200',
+      },
+    },
+    FormControlLabel: {
+      defaultProps: {
+        mb: 2,
       },
     },
     Input: {

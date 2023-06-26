@@ -8,7 +8,6 @@ import { QUERY_TYPES } from '../queries';
 
 export default function useTypes(): ApolloResult<PokeType[]> {
   const { data, error, loading } = useQuery<{ types: RawType[] }>(QUERY_TYPES);
-
   const types = useMemo(() => {
     return data?.types.map((rawtype) => {
       const typeName = capitalCase(rawtype.name) as Type;

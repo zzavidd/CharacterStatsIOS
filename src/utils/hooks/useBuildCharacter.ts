@@ -2,14 +2,14 @@ import { faker } from '@faker-js/faker/locale/en_GB';
 import { useCallback, useContext } from 'react';
 import invariant from 'tiny-invariant';
 
-import { AppContext } from 'App.context';
+import { QueriesContext } from 'App.context';
 
 import { Stat, Type } from '../constants/enums';
 import { Universes } from '../constants/options';
 import { zCharacter } from '../validators';
 
 export default function useBuildCharacter(): () => Character {
-  const { abilitiesResult, movesResult } = useContext(AppContext);
+  const { abilitiesResult, movesResult } = useContext(QueriesContext);
   const { data: abilities } = abilitiesResult;
   const { data: moves } = movesResult;
   const buildLearnset = useBuildLearnset();
@@ -54,7 +54,7 @@ function generateStats(): Stats {
 }
 
 function useBuildLearnset(): () => Record<string, number[]> {
-  const { movesResult } = useContext(AppContext);
+  const { movesResult } = useContext(QueriesContext);
   const { data: moves } = movesResult;
 
   return useCallback(() => {

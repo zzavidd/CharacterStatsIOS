@@ -12,6 +12,11 @@ declare global {
 
   export type ReactUseState<T> = [T, Dispatch<SetStateAction<T>>];
 
+  export type AbilityKey = 'ability1' | 'ability2' | 'abilityX';
+  export type TypeKey = 'type1' | 'type2';
+
+  export type PokeMoveMap = Record<string, PokeMove>;
+
   export interface PokeType {
     id: number;
     name: Type;

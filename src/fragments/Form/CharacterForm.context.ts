@@ -14,6 +14,7 @@ export const InitialCharacterFormState: CharacterFormState = {
     stats: DEFAULT_STATS,
     learnset: {},
   },
+  isAddingMove: false,
 };
 
 const CharacterFormContext = React.createContext<
@@ -24,4 +25,5 @@ export default CharacterFormContext;
 
 interface CharacterFormState {
   character: Omit<Character, 'createTime'>;
+  isAddingMove: boolean;
 }
