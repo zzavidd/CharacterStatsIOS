@@ -96,8 +96,9 @@ export function MoveMenu({ onChange }: MoveMenuProps) {
   }
 
   const filteredMoves = useMemo(() => {
-    if (!state.searchTerm) return moves;
-    return moves.filter(({ name, type }) => {
+    const sortedMoves = moves.sort((a, b) => a.name.localeCompare(b.name));
+    if (!state.searchTerm) return sortedMoves;
+    return sortedMoves.filter(({ name, type }) => {
       return [name, type].some((value) =>
         value.toLowerCase().includes(state.searchTerm.toLowerCase()),
       );
