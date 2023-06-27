@@ -89,26 +89,12 @@ export function TypeMenu({ onChange }: TypeMenuProps) {
           w={'full'}
           renderItem={({ item: type }) => {
             const selected = context.type.selectedValue === type;
+            const onPress = () => {
+              onChange(type);
+              hideTypeMenu();
+            };
             return (
-              <Pressable
-                bgColor={selected ? 'primary.900' : undefined}
-                onPress={() => {
-                  onChange(type);
-                  hideTypeMenu();
-                }}
-                _pressed={{ bgColor: 'gray.900' }}
-                flex={1}>
-                <HStack alignItems={'center'} space={4} p={3}>
-                  <Image
-                    source={PokeIcon[type]}
-                    alt={type}
-                    width={30}
-                    height={30}
-                  />
-                  <Text fontSize={20}>{type}</Text>
-                  {selected ? <CheckIcon size={'5'} /> : null}
-                </HStack>
-              </Pressable>
+              <TypeEntry type={type} selected={selected} onPress={onPress} />
             );
           }}
         />
@@ -117,10 +103,35 @@ export function TypeMenu({ onChange }: TypeMenuProps) {
   );
 }
 
+const TypeEntry = React.memo(
+  function TypeEntry({ type, selected, onPress }: TypeEntryProps) {
+    return (
+      <Pressable
+        bgColor={selected ? 'primary.900' : undefined}
+        onPress={onPress}
+        _pressed={{ bgColor: 'gray.900' }}
+        flex={1}>
+        <HStack alignItems={'center'} space={4} p={3}>
+          <Image source={PokeIcon[type]} alt={type} width={30} height={30} />
+          <Text fontSize={20}>{type}</Text>
+          {selected ? <CheckIcon size={'5'} /> : null}
+        </HStack>
+      </Pressable>
+    );
+  },
+  (a, b) => a.type === b.type,
+);
+
 interface TypeSelectProps extends IInputProps {
   name: TypeKey;
 }
 
 interface TypeMenuProps {
   onChange: (type: Type) => void;
+}
+
+interface TypeEntryProps {
+  type: Type;
+  selected: boolean;
+  onPress: () => void;
 }

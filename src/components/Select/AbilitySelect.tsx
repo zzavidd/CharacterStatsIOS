@@ -109,32 +109,13 @@ export function AbilityMenu({ onChange }: AbilityMenuProps) {
             maxToRenderPerBatch={20}
             initialNumToRender={20}
             style={{ width: '100%' }}
-            renderItem={({ item: ability }) => (
-              <Actionsheet.Item
-                onPress={() => {
-                  onChange(ability);
-                  hideAbilityMenu();
-                }}
-                _pressed={{ bgColor: 'primary.800' }}
-                p={3}>
-                <HStack alignItems={'flex-start'} space={4}>
-                  <Image
-                    source={PokeIcon[ability.commonType]}
-                    alt={ability.commonType}
-                    width={8}
-                    height={8}
-                  />
-                  <VStack>
-                    <Text fontSize={20}>{ability.name}</Text>
-                    {ability.description ? (
-                      <Text fontSize={12} fontWeight={'light'}>
-                        {ability.description}
-                      </Text>
-                    ) : null}
-                  </VStack>
-                </HStack>
-              </Actionsheet.Item>
-            )}
+            renderItem={({ item: ability }) => {
+              const onPress = () => {
+                onChange(ability);
+                hideAbilityMenu();
+              };
+              return <AbilityEntry ability={ability} onPress={onPress} />;
+            }}
           />
         </Box>
       </Actionsheet.Content>
@@ -142,10 +123,44 @@ export function AbilityMenu({ onChange }: AbilityMenuProps) {
   );
 }
 
+const AbilityEntry = React.memo(
+  function AbilityEntry({ ability, onPress }: AbilityEntryProps) {
+    return (
+      <Actionsheet.Item
+        onPress={onPress}
+        _pressed={{ bgColor: 'primary.800' }}
+        p={3}>
+        <HStack alignItems={'flex-start'} space={4}>
+          <Image
+            source={PokeIcon[ability.commonType]}
+            alt={ability.commonType}
+            width={8}
+            height={8}
+          />
+          <VStack>
+            <Text fontSize={20}>{ability.name}</Text>
+            {ability.description ? (
+              <Text fontSize={12} fontWeight={'light'}>
+                {ability.description}
+              </Text>
+            ) : null}
+          </VStack>
+        </HStack>
+      </Actionsheet.Item>
+    );
+  },
+  (a, b) => a.ability.id === b.ability.id,
+);
+
 interface AbilitySelectProps extends IInputProps {
   name: AbilityKey;
 }
 
 interface AbilityMenuProps {
   onChange: (ability: PokeAbility) => void;
+}
+
+interface AbilityEntryProps {
+  ability: PokeAbility;
+  onPress: () => void;
 }

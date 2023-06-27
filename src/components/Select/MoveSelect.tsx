@@ -132,38 +132,48 @@ export function MoveMenu({ onChange }: MoveMenuProps) {
             maxToRenderPerBatch={20}
             initialNumToRender={20}
             style={{ width: '100%' }}
-            renderItem={({ item: move }) => (
-              <Actionsheet.Item
-                onPress={() => {
-                  onChange(move.id);
-                  hideMoveMenu();
-                }}
-                _pressed={{ bgColor: 'primary.800' }}
-                p={3}>
-                <HStack alignItems={'flex-start'} space={4}>
-                  <Image
-                    source={PokeIcon[move.type]}
-                    alt={move.type}
-                    width={8}
-                    height={8}
-                  />
-                  <VStack>
-                    <Text fontSize={20}>{move.name}</Text>
-                    {move.description ? (
-                      <Text fontSize={12} fontWeight={'light'}>
-                        {move.description}
-                      </Text>
-                    ) : null}
-                  </VStack>
-                </HStack>
-              </Actionsheet.Item>
-            )}
+            renderItem={({ item: move }) => {
+              const onPress = () => {
+                onChange(move.id);
+                hideMoveMenu();
+              };
+              return <MoveEntry move={move} onPress={onPress} />;
+            }}
           />
         </Box>
       </Actionsheet.Content>
     </Actionsheet>
   );
 }
+
+const MoveEntry = React.memo(
+  function MoveEntry({ move, onPress }: MoveEntryProps) {
+    return (
+      <Actionsheet.Item
+        onPress={onPress}
+        _pressed={{ bgColor: 'primary.800' }}
+        p={3}>
+        <HStack alignItems={'flex-start'} space={4}>
+          <Image
+            source={PokeIcon[move.type]}
+            alt={move.type}
+            width={8}
+            height={8}
+          />
+          <VStack>
+            <Text fontSize={20}>{move.name}</Text>
+            {move.description ? (
+              <Text fontSize={12} fontWeight={'light'}>
+                {move.description}
+              </Text>
+            ) : null}
+          </VStack>
+        </HStack>
+      </Actionsheet.Item>
+    );
+  },
+  (a, b) => a.move.id === b.move.id,
+);
 
 interface MoveSelectProps extends IInputProps {
   name: string;
@@ -172,4 +182,9 @@ interface MoveSelectProps extends IInputProps {
 
 interface MoveMenuProps {
   onChange: (moveId: number) => void;
+}
+
+interface MoveEntryProps {
+  move: PokeMove;
+  onPress: () => void;
 }
