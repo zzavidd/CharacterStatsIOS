@@ -16,6 +16,7 @@ export default function Navigator() {
     animation: 'fade_from_bottom',
     headerTitleStyle: {
       fontFamily: fontConfig.Mulish[500].normal,
+      fontSize: 14,
     },
   };
 

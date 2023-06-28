@@ -65,7 +65,7 @@ export function AbilityMenu({ onChange }: AbilityMenuProps) {
         },
       }),
     );
-    setState((s) => ({ ...s, searchTerm: '' }));
+    clearSearchField();
   }
 
   function clearSearchField() {

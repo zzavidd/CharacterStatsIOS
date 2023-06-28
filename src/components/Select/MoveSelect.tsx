@@ -88,7 +88,7 @@ export function MoveMenu({ onChange }: MoveMenuProps) {
         },
       }),
     );
-    setState((s) => ({ ...s, searchTerm: '' }));
+    clearSearchField();
   }
 
   function clearSearchField() {

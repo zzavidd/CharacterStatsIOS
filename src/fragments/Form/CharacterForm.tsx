@@ -86,11 +86,26 @@ export default function CharacterForm() {
               {Object.entries(context.character.learnset).map(
                 ([level, moveIds]) => {
                   return (
-                    <MoveField
-                      level={level}
-                      moveIds={moveIds}
-                      key={moveIds[0]}
-                    />
+                    <React.Fragment key={level}>
+                      {moveIds.map((moveId, index) => (
+                        <HStack key={`${level}-${moveId}`} space={3}>
+                          <Input
+                            value={level}
+                            isReadOnly={true}
+                            variant={'filled'}
+                            textAlign={'right'}
+                            w={'16'}
+                          />
+                          <MoveSelect
+                            name={level}
+                            index={index}
+                            value={String(moveId)}
+                            placeholder={'Select move...'}
+                            flex={1}
+                          />
+                        </HStack>
+                      ))}
+                    </React.Fragment>
                   );
                 },
               )}
@@ -99,31 +114,6 @@ export default function CharacterForm() {
         </VStack>
       </ScrollView>
     </ScreenContainer>
-  );
-}
-
-function MoveField({ level, moveIds }: MoveFieldProps) {
-  return (
-    <React.Fragment>
-      {moveIds.map((moveId, index) => (
-        <HStack key={`${level}-${moveId}`} space={3}>
-          <Input
-            value={level}
-            isReadOnly={true}
-            w={'16'}
-            variant={'filled'}
-            textAlign={'right'}
-          />
-          <MoveSelect
-            name={level}
-            index={index}
-            value={String(moveId)}
-            placeholder={'Select move...'}
-            flex={1}
-          />
-        </HStack>
-      ))}
-    </React.Fragment>
   );
 }
 
@@ -176,9 +166,4 @@ interface AbilityField extends Field {
 interface TypeField extends Field {
   key: TypeKey;
   value: Type | null;
-}
-
-interface MoveFieldProps {
-  level: string;
-  moveIds: number[];
 }

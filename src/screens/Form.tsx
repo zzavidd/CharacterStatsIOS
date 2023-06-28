@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import immutate from 'immutability-helper';
-import { Button, Icon, Text } from 'native-base';
+import { Button, ChevronLeftIcon, Icon, Text } from 'native-base';
 import React, { useContext, useEffect, useState } from 'react';
 
 import { AppContext } from 'App.context';
@@ -35,11 +35,20 @@ export default function FormScreen({ navigation, route }: ScreenProps<'Form'>) {
     };
 
     navigation.setOptions({
+      headerLeft: () => (
+        <Button
+          onPress={() => navigation.goBack()}
+          startIcon={<ChevronLeftIcon />}
+          px={1}>
+          <Text color={'primary.300'}>Back</Text>
+        </Button>
+      ),
       headerRight: () => (
         <Button
           onPress={onSave}
-          startIcon={<Icon as={Ionicons} name={'save'} />}>
-          <Text>Save</Text>
+          startIcon={<Icon as={Ionicons} name={'save'} />}
+          px={1}>
+          <Text color={'primary.300'}>Save</Text>
         </Button>
       ),
     });
