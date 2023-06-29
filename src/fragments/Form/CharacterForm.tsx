@@ -29,6 +29,18 @@ export default function CharacterForm() {
     setContext((s) => immutate(s, { character: spec }));
   }
 
+  function onAddMovePress() {
+    setContext((s) =>
+      immutate(s, {
+        character: {
+          learnset: {
+            '0': (levelMoveIds = []) => [...levelMoveIds, 1],
+          },
+        },
+      }),
+    );
+  }
+
   return (
     <ScreenContainer p={4} flex={1}>
       <ScrollView
@@ -81,7 +93,11 @@ export default function CharacterForm() {
             <FormControl.Label>
               <Text>Learnset:</Text>
             </FormControl.Label>
-            <Button variant={'outline'} startIcon={<AddIcon />} mb={5}>
+            <Button
+              onPress={onAddMovePress}
+              variant={'outline'}
+              startIcon={<AddIcon />}
+              mb={5}>
               <Text>Add Move</Text>
             </Button>
             <VStack space={2}>
@@ -90,7 +106,7 @@ export default function CharacterForm() {
                   return (
                     <React.Fragment key={level}>
                       {moveIds.map((moveId, index) => (
-                        <HStack key={`${level}-${moveId}`} space={3}>
+                        <HStack key={`${level}-${moveId}-${index}`} space={3}>
                           <LevelSelect
                             level={level}
                             currentMoveId={moveId}

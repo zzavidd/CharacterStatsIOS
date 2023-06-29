@@ -87,14 +87,12 @@ export function LevelSelect({
   function onSubmitEditing() {
     if (state.value === level) return;
 
+    const newLevel = Math.min(100, Number(state.value));
     setContext((s) =>
       immutate(s, {
         character: {
           learnset: {
-            [state.value]: (levelMoveIds = []) => [
-              ...levelMoveIds,
-              currentMoveId,
-            ],
+            [newLevel]: (levelMoveIds = []) => [...levelMoveIds, currentMoveId],
             [level]: { $splice: [[moveIndex, 1]] },
           },
         },

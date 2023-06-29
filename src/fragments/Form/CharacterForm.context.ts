@@ -15,7 +15,6 @@ export const InitialCharacterFormState: CharacterFormState = {
     stats: DEFAULT_STATS,
     learnset: {},
   },
-  isAddingMove: false,
   selectedAbility: {
     isMenuOpen: false,
     key: 'ability1',
@@ -42,7 +41,6 @@ export default CharacterFormContext;
 
 export interface CharacterFormState {
   character: Omit<Character, 'createTime'>;
-  isAddingMove: boolean;
   selectedAbility: PropertyWithKey<string, AbilityKey>;
   selectedMove: MoveProperty;
   selectedType: PropertyWithKey<Type, TypeKey>;
