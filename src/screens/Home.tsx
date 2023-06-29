@@ -24,6 +24,7 @@ import Color from 'src/utils/constants/colors';
 import { StatMap } from 'src/utils/constants/defaults';
 import { Stat } from 'src/utils/constants/enums';
 import PokeIcon from 'src/utils/constants/icons';
+import { Universes } from 'src/utils/constants/options';
 import { calculateBST } from 'src/utils/functions';
 import useBuildCharacter from 'src/utils/hooks/useBuildCharacter';
 import useCreateCharacters from 'src/utils/hooks/useCreateCharacters';
@@ -175,7 +176,9 @@ function RenderedItem({ character }: CharacterItemProps) {
           <Text bold={true} fontSize={24}>
             {name}
           </Text>
-          {universe ? <Text fontWeight={'light'}>{universe}</Text> : null}
+          {universe ? (
+            <Text fontWeight={'light'}>{Universes[universe]}</Text>
+          ) : null}
         </VStack>
         <VStack space={1}>
           {[type1, type2].map((type, key) => {

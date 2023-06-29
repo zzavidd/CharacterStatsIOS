@@ -14,7 +14,7 @@ export const zStats = z.object({
 export const zCharacter = z.object({
   id: z.string().optional(),
   name: z.string(),
-  universe: z.string().optional(),
+  universe: z.number().optional(),
   type1: z.nativeEnum(Type).nullable(),
   type2: z.nativeEnum(Type).nullable(),
   ability1: z.string(),

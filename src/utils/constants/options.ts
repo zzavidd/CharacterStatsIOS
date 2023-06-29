@@ -1,11 +1,11 @@
-export const Universes = [
-  { id: 1, name: 'DC' },
-  { id: 2, name: 'Marvel' },
-  { id: 3, name: 'Smash' },
-  { id: 4, name: 'Sonic' },
-  { id: 5, name: 'Ben 10' },
-  { id: 6, name: 'Gyvenimas' },
-];
+export const Universes: Record<number, string> = {
+  1: 'DC',
+  2: 'Marvel',
+  3: 'Smash',
+  4: 'Sonic',
+  5: 'Ben 10',
+  6: 'Gyvenimas',
+};
 
 export const SortOptions: SortOptions = {
   1: 'name',

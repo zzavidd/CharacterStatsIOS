@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { AbilityMenu } from 'src/components/Select/AbilitySelect';
 import { MoveMenu } from 'src/components/Select/MoveSelect';
 import { TypeMenu } from 'src/components/Select/TypeSelect';
+import { UniverseMenu } from 'src/components/Select/UniverseSelect';
 import CharacterForm from 'src/fragments/Form/CharacterForm';
 import CharacterFormContext, {
   InitialCharacterFormState,
@@ -92,12 +93,21 @@ export default function FormScreen({ navigation, route }: ScreenProps<'Form'>) {
     );
   }
 
+  function onUniverseChange(universeId: number) {
+    setState((s) =>
+      immutate(s, {
+        character: { universe: { $set: universeId } },
+      }),
+    );
+  }
+
   return (
     <CharacterFormContext.Provider value={[state, setState]}>
       <CharacterForm />
       <AbilityMenu onChange={onAbilityChange} />
       <MoveMenu onChange={onMoveChange} />
       <TypeMenu onChange={onTypeChange} />
+      <UniverseMenu onChange={onUniverseChange} />
     </CharacterFormContext.Provider>
   );
 }

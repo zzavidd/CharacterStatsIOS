@@ -16,7 +16,9 @@ import { ScreenContainer } from 'src/components/Container';
 import AbilitySelect from 'src/components/Select/AbilitySelect';
 import MoveSelect, { LevelSelect } from 'src/components/Select/MoveSelect';
 import TypeSelect from 'src/components/Select/TypeSelect';
+import UniverseSelect from 'src/components/Select/UniverseSelect';
 import type { Type } from 'src/utils/constants/enums';
+import { Universes } from 'src/utils/constants/options';
 
 import CharacterFormContext from './CharacterForm.context';
 
@@ -47,17 +49,31 @@ export default function CharacterForm() {
         automaticallyAdjustKeyboardInsets={true}
         contentInset={{ bottom: 50 }}>
         <VStack space={3} flex={1}>
-          <FormControl>
-            <FormControl.Label>
-              <Text>Name:</Text>
-            </FormControl.Label>
-            <Input
-              value={context.character.name}
-              placeholder={'Enter name...'}
-              onChangeText={(value) => onChange({ name: { $set: value } })}
-              returnKeyType={'done'}
-            />
-          </FormControl>
+          <HStack space={5}>
+            <FormControl flex={1}>
+              <FormControl.Label>
+                <Text>Name:</Text>
+              </FormControl.Label>
+              <Input
+                value={context.character.name}
+                placeholder={'Enter name...'}
+                onChangeText={(value) => onChange({ name: { $set: value } })}
+                returnKeyType={'done'}
+              />
+            </FormControl>
+            <FormControl flex={1}>
+              <FormControl.Label>
+                <Text>Universe:</Text>
+              </FormControl.Label>
+              <UniverseSelect
+                value={Universes[context.character.universe!]}
+                placeholder={'Select universe...'}
+                onChangeText={(value) =>
+                  onChange({ universe: { $set: Number(value) } })
+                }
+              />
+            </FormControl>
+          </HStack>
           <HStack space={5}>
             {typeFields.map(({ key, label, value }) => (
               <FormControl flex={1} key={key}>

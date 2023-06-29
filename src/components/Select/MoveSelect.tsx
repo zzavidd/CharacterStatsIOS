@@ -48,7 +48,7 @@ export default function MoveSelect({
   return (
     <Input
       {...props}
-      value={value ? moveMap[value].name : undefined}
+      value={value ? moveMap[value]?.name : undefined}
       pl={value ? 2 : undefined}
       isReadOnly={true}
       InputLeftElement={

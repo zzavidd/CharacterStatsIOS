@@ -31,6 +31,10 @@ export const InitialCharacterFormState: CharacterFormState = {
     key: 'type1',
     selectedValue: undefined,
   },
+  selectedUniverse: {
+    isMenuOpen: false,
+    selectedValue: undefined,
+  },
 };
 
 const CharacterFormContext = React.createContext<
@@ -44,6 +48,7 @@ export interface CharacterFormState {
   selectedAbility: PropertyWithKey<string, AbilityKey>;
   selectedMove: MoveProperty;
   selectedType: PropertyWithKey<Type, TypeKey>;
+  selectedUniverse: Property<number>;
 }
 
 interface Property<V> {

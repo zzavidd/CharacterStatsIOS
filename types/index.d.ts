@@ -97,6 +97,11 @@ declare global {
     name: string;
   }
 
+  export interface Universe {
+    id: number;
+    name: string;
+  }
+
   export interface FirestoreResult<T> {
     data: T;
     error: FirebaseError | null;

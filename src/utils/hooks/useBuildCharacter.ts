@@ -5,18 +5,17 @@ import invariant from 'tiny-invariant';
 import { QueriesContext } from 'App.context';
 
 import { Stat, Type } from '../constants/enums';
-import { Universes } from '../constants/options';
 import { zCharacter } from '../validators';
 
 export default function useBuildCharacter(): () => Character {
   const { abilitiesResult, movesResult } = useContext(QueriesContext);
   const { data: abilities } = abilitiesResult;
-  const { data: moves } = movesResult;
+  const { data: moveMap } = movesResult;
   const buildLearnset = useBuildLearnset();
 
   return useCallback(() => {
     invariant(abilities, 'Could not retrieve abilities.');
-    invariant(moves, 'Could not retrieve moves.');
+    invariant(moveMap, 'Could not retrieve moves.');
 
     const types = Object.values(Type);
     const hasSecondType = faker.datatype.boolean();
@@ -29,7 +28,7 @@ export default function useBuildCharacter(): () => Character {
 
     return zCharacter.parse({
       name: faker.person.firstName(),
-      universe: Universes[faker.number.int({ min: 0, max: 2 })].name,
+      universe: faker.number.int({ min: 1, max: 6 }),
       type1: getRandomType(),
       type2: hasSecondType ? getRandomType() : null,
       ability1: getRandomAbility(),
@@ -40,7 +39,7 @@ export default function useBuildCharacter(): () => Character {
       createTime: Date.now(),
       lastModified: Date.now(),
     });
-  }, [abilities, moves, buildLearnset]);
+  }, [abilities, moveMap, buildLearnset]);
 }
 
 function generateStats(): Stats {
@@ -56,23 +55,24 @@ function generateStats(): Stats {
 
 function useBuildLearnset(): () => Record<string, number[]> {
   const { movesResult } = useContext(QueriesContext);
-  const { data: moves = {} } = movesResult;
+  const { data: moveMap } = movesResult;
 
   return useCallback(() => {
-    invariant(moves, 'Could not retrieve moves.');
+    invariant(moveMap, 'Could not retrieve moves.');
     const startQuantity = faker.number.int({ min: 1, max: 4 });
     const moveQuantity = faker.number.int({ min: 8, max: 18 });
 
     const learnset: Record<string, number[]> = {};
     const addRandomMove = (level: number): void => {
-      const index = faker.number.int({
+      const moveId = faker.number.int({
         min: 0,
-        max: Object.keys(moves).length,
+        max: Object.keys(moveMap).length,
       });
-      const moveId = moves[index].id;
-      learnset[level] = learnset[level]?.length
-        ? [...learnset[level], moveId]
-        : [moveId];
+      if (moveMap[moveId]) {
+        learnset[level] = learnset[level]?.length
+          ? [...learnset[level], moveId]
+          : [moveId];
+      }
     };
 
     for (let i = 0; i < startQuantity; i++) {
@@ -84,5 +84,5 @@ function useBuildLearnset(): () => Record<string, number[]> {
       addRandomMove(level);
     }
     return learnset;
-  }, [moves]);
+  }, [moveMap]);
 }
