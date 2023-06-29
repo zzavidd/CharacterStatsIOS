@@ -14,7 +14,7 @@ import React, { useContext } from 'react';
 
 import { ScreenContainer } from 'src/components/Container';
 import AbilitySelect from 'src/components/Select/AbilitySelect';
-import MoveSelect from 'src/components/Select/MoveSelect';
+import MoveSelect, { LevelSelect } from 'src/components/Select/MoveSelect';
 import TypeSelect from 'src/components/Select/TypeSelect';
 import type { Type } from 'src/utils/constants/enums';
 
@@ -31,7 +31,9 @@ export default function CharacterForm() {
 
   return (
     <ScreenContainer p={4} flex={1}>
-      <ScrollView>
+      <ScrollView
+        automaticallyAdjustKeyboardInsets={true}
+        contentInset={{ bottom: 50 }}>
         <VStack space={3} flex={1}>
           <FormControl>
             <FormControl.Label>
@@ -89,12 +91,10 @@ export default function CharacterForm() {
                     <React.Fragment key={level}>
                       {moveIds.map((moveId, index) => (
                         <HStack key={`${level}-${moveId}`} space={3}>
-                          <Input
-                            value={level}
-                            isReadOnly={true}
-                            variant={'filled'}
-                            textAlign={'right'}
-                            w={'16'}
+                          <LevelSelect
+                            level={level}
+                            currentMoveId={moveId}
+                            moveIndex={index}
                           />
                           <MoveSelect
                             name={level}

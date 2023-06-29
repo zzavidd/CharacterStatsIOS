@@ -72,6 +72,51 @@ export default function MoveSelect({
   );
 }
 
+export function LevelSelect({
+  level,
+  currentMoveId,
+  moveIndex,
+}: LevelSelectProps) {
+  const [state, setState] = useState({ value: level });
+  const [, setContext] = useContext(CharacterFormContext);
+
+  function onChangeText(value: string) {
+    setState({ value });
+  }
+
+  function onSubmitEditing() {
+    if (state.value === level) return;
+
+    setContext((s) =>
+      immutate(s, {
+        character: {
+          learnset: {
+            [state.value]: (levelMoveIds = []) => [
+              ...levelMoveIds,
+              currentMoveId,
+            ],
+            [level]: { $splice: [[moveIndex, 1]] },
+          },
+        },
+      }),
+    );
+  }
+
+  return (
+    <Input
+      value={state.value}
+      onChangeText={onChangeText}
+      onSubmitEditing={onSubmitEditing}
+      variant={'filled'}
+      textAlign={'right'}
+      inputMode={'numeric'}
+      returnKeyLabel={'Done'}
+      returnKeyType={'done'}
+      w={'16'}
+    />
+  );
+}
+
 export function MoveMenu({ onChange }: MoveMenuProps) {
   const [state, setState] = useState({ searchTerm: '' });
   const [context, setContext] = useContext(CharacterFormContext);
@@ -182,6 +227,12 @@ const MoveEntry = React.memo(
 interface MoveSelectProps extends IInputProps {
   name: string;
   index: number;
+}
+
+interface LevelSelectProps {
+  currentMoveId: number;
+  level: string;
+  moveIndex: number;
 }
 
 interface MoveMenuProps {
