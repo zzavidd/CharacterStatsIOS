@@ -1,9 +1,8 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import immutate from 'immutability-helper';
 import { Button, ChevronLeftIcon, Icon, Text } from 'native-base';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import { AppContext } from 'App.context';
 import { AbilityMenu } from 'src/components/Select/AbilitySelect';
 import { MoveMenu } from 'src/components/Select/MoveSelect';
 import { TypeMenu } from 'src/components/Select/TypeSelect';
@@ -16,7 +15,6 @@ import useCreateCharacters from 'src/utils/hooks/useCreateCharacters';
 import useUpdateCharacters from 'src/utils/hooks/useUpdateCharacters';
 
 export default function FormScreen({ navigation, route }: ScreenProps<'Form'>) {
-  const [context] = useContext(AppContext);
   const [state, setState] = useState(InitialCharacterFormState);
   const { mutate: createCharacters } = useCreateCharacters();
   const { mutate: updateCharacters } = useUpdateCharacters();
@@ -70,26 +68,26 @@ export default function FormScreen({ navigation, route }: ScreenProps<'Form'>) {
   function onAbilityChange(ability: PokeAbility) {
     setState((s) =>
       immutate(s, {
-        character: { [context.ability.key]: { $set: ability.name } },
+        character: { [s.selectedAbility.key]: { $set: ability.name } },
       }),
     );
   }
 
   function onMoveChange(moveId: number) {
-    const { level, selectedMoveIndex } = context.move;
-    setState((s) =>
-      immutate(s, {
+    setState((s) => {
+      const { level, selectedMoveIndex } = s.selectedMove;
+      return immutate(s, {
         character: {
           learnset: { [level]: { [selectedMoveIndex]: { $set: moveId } } },
         },
-      }),
-    );
+      });
+    });
   }
 
   function onTypeChange(type: Type) {
     setState((s) =>
       immutate(s, {
-        character: { [context.type.key]: { $set: type } },
+        character: { [s.selectedType.key]: { $set: type } },
       }),
     );
   }

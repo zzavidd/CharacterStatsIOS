@@ -13,6 +13,7 @@ import theme from 'src/styles/Theme.styles';
 const client = new ApolloClient({
   uri: 'https://beta.pokeapi.co/graphql/v1beta',
   cache: new InMemoryCache(),
+  assumeImmutableResults: true,
 });
 
 const config: INativebaseConfig = {

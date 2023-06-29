@@ -16,17 +16,18 @@ import {
 import React, { useContext, useMemo, useState } from 'react';
 import { VirtualizedList } from 'react-native';
 
-import { AppContext, QueriesContext } from 'App.context';
+import { QueriesContext } from 'App.context';
+import CharacterFormContext from 'src/fragments/Form/CharacterForm.context';
 import PokeIcon from 'src/utils/constants/icons';
 
 export default function AbilitySelect({ name, ...props }: AbilitySelectProps) {
   const { value } = props;
-  const [, setContext] = useContext(AppContext);
+  const [, setContext] = useContext(CharacterFormContext);
 
   function showAbilityMenu() {
     setContext((c) =>
       immutate(c, {
-        ability: {
+        selectedAbility: {
           $set: {
             isMenuOpen: true,
             key: name,
@@ -52,14 +53,14 @@ export default function AbilitySelect({ name, ...props }: AbilitySelectProps) {
 
 export function AbilityMenu({ onChange }: AbilityMenuProps) {
   const [state, setState] = useState({ searchTerm: '' });
-  const [context, setContext] = useContext(AppContext);
+  const [context, setContext] = useContext(CharacterFormContext);
   const { abilitiesResult } = useContext(QueriesContext);
   const { data: abilities = [] } = abilitiesResult;
 
   function hideAbilityMenu() {
     setContext((c) =>
       immutate(c, {
-        ability: {
+        selectedAbility: {
           isMenuOpen: { $set: false },
           selectedValue: { $set: undefined },
         },
@@ -82,7 +83,9 @@ export function AbilityMenu({ onChange }: AbilityMenuProps) {
   }, [abilities, state.searchTerm]);
 
   return (
-    <Actionsheet isOpen={context.ability.isMenuOpen} onClose={hideAbilityMenu}>
+    <Actionsheet
+      isOpen={context.selectedAbility.isMenuOpen}
+      onClose={hideAbilityMenu}>
       <Actionsheet.Content>
         <Box h={'full'} w={'full'}>
           <Input

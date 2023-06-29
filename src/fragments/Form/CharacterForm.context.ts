@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { DEFAULT_STATS } from 'src/utils/constants/defaults';
+import type { Type } from 'src/utils/constants/enums';
 
 export const InitialCharacterFormState: CharacterFormState = {
   character: {
@@ -15,6 +16,22 @@ export const InitialCharacterFormState: CharacterFormState = {
     learnset: {},
   },
   isAddingMove: false,
+  selectedAbility: {
+    isMenuOpen: false,
+    key: 'ability1',
+    selectedValue: undefined,
+  },
+  selectedMove: {
+    isMenuOpen: false,
+    level: '1',
+    selectedMoveIndex: -1,
+    selectedValue: undefined,
+  },
+  selectedType: {
+    isMenuOpen: false,
+    key: 'type1',
+    selectedValue: undefined,
+  },
 };
 
 const CharacterFormContext = React.createContext<
@@ -23,7 +40,24 @@ const CharacterFormContext = React.createContext<
 
 export default CharacterFormContext;
 
-interface CharacterFormState {
+export interface CharacterFormState {
   character: Omit<Character, 'createTime'>;
   isAddingMove: boolean;
+  selectedAbility: PropertyWithKey<string, AbilityKey>;
+  selectedMove: MoveProperty;
+  selectedType: PropertyWithKey<Type, TypeKey>;
+}
+
+interface Property<V> {
+  isMenuOpen: boolean;
+  selectedValue: V | undefined;
+}
+
+interface PropertyWithKey<V, K> extends Property<V> {
+  key: K;
+}
+
+interface MoveProperty extends Property<number> {
+  level: string;
+  selectedMoveIndex: number;
 }

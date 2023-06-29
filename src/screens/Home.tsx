@@ -13,12 +13,12 @@ import {
   Text,
   VStack,
 } from 'native-base';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { TouchableOpacity } from 'react-native';
 import invariant from 'tiny-invariant';
 
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { AppContext, QueriesContext } from 'App.context';
+import { QueriesContext } from 'App.context';
 import { ScreenContainer } from 'src/components/Container';
 import Color from 'src/utils/constants/colors';
 import { StatMap } from 'src/utils/constants/defaults';
@@ -29,21 +29,15 @@ import useBuildCharacter from 'src/utils/hooks/useBuildCharacter';
 import useCreateCharacters from 'src/utils/hooks/useCreateCharacters';
 import useDeleteCharacters from 'src/utils/hooks/useDeleteCharacters';
 import useGetCharacters from 'src/utils/hooks/useGetCharacters';
+import HomeContext, { InitialHomeState } from './Home.context';
 
 export default function HomeScreen({ navigation }: ScreenProps<'Home'>) {
-  const { data } = useGetCharacters();
-  const { mutate: createCharacters } = useCreateCharacters();
-  const { mutate: deleteCharacters } = useDeleteCharacters();
-  const buildCharacter = useBuildCharacter();
-
-  const [context, setContext] = useContext(AppContext);
-  const { abilitiesResult, movesResult } = useContext(QueriesContext);
+  const [state, setState] = useState(InitialHomeState);
 
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <Button
-          variant={'ghost'}
           onPress={() =>
             navigation.navigate('Form', {
               isEditing: false,
@@ -57,74 +51,27 @@ export default function HomeScreen({ navigation }: ScreenProps<'Home'>) {
     });
   }, []);
 
-  if (!data) {
-    return null;
-  }
-
-  async function ingest() {
-    const characters = Array(5).fill(null).map(buildCharacter);
-    await createCharacters(characters);
-  }
-
-  async function deleteAll() {
-    invariant(data, 'No characters to delete.');
-    const ids = data.map(({ id }) => id!);
-    await deleteCharacters(ids);
-  }
-
   function onActionSheetClose() {
-    setContext((s) => ({ ...s, selectedCharacter: null }));
-  }
-
-  function onLongPress(character: Character) {
-    setContext((s) => ({ ...s, selectedCharacter: character }));
+    setState((s) => ({ ...s, selectedCharacter: null }));
   }
 
   function onEditPress() {
     navigation.navigate('Form', {
       isEditing: true,
-      selectedCharacter: context.selectedCharacter,
+      selectedCharacter: state.selectedCharacter,
     });
     onActionSheetClose();
   }
 
   return (
-    <>
-      <ScreenContainer safeAreaBottom={16}>
-        <HStack>
-          <Button
-            variant={'ghost'}
-            onPress={ingest}
-            disabled={!abilitiesResult.data || !movesResult.data}>
-            <Text>Ingest</Text>
-          </Button>
-          <Button variant={'ghost'} onPress={deleteAll}>
-            <Text>Delete All</Text>
-          </Button>
-        </HStack>
-        <FlatList
-          data={data}
-          keyExtractor={(item, index) => item.id ?? '' + index}
-          renderItem={({ item: character }) => (
-            <TouchableOpacity
-              activeOpacity={0.85}
-              onLongPress={() => onLongPress(character)}>
-              <RenderedItem character={character} />
-            </TouchableOpacity>
-          )}
-          ListEmptyComponent={
-            <Flex justifyContent={'center'} alignItems={'center'}>
-              <Text>No characters.</Text>
-            </Flex>
-          }
-        />
-      </ScreenContainer>
+    <HomeContext.Provider value={[state, setState]}>
+      <CharacterGrid />
       <Actionsheet
-        isOpen={!!context.selectedCharacter}
+        isOpen={!!state.selectedCharacter}
         onClose={onActionSheetClose}>
         <Actionsheet.Content>
           <Actionsheet.Item>
-            <Text>Do what with "{context.selectedCharacter?.name}"?</Text>
+            <Text>Do what with "{state.selectedCharacter?.name}"?</Text>
           </Actionsheet.Item>
           <Actionsheet.Item
             onPress={onEditPress}
@@ -138,7 +85,66 @@ export default function HomeScreen({ navigation }: ScreenProps<'Home'>) {
           </Actionsheet.Item>
         </Actionsheet.Content>
       </Actionsheet>
-    </>
+    </HomeContext.Provider>
+  );
+}
+
+function CharacterGrid() {
+  const [, setContext] = useContext(HomeContext);
+  const { abilitiesResult, movesResult } = useContext(QueriesContext);
+  const { mutate: createCharacters } = useCreateCharacters();
+  const { mutate: deleteCharacters } = useDeleteCharacters();
+  const buildCharacter = useBuildCharacter();
+  const { data } = useGetCharacters();
+
+  if (!data) {
+    return null;
+  }
+
+  function onLongPress(character: Character) {
+    setContext((c) => ({ ...c, selectedCharacter: character }));
+  }
+
+  async function ingest() {
+    const characters = Array(5).fill(null).map(buildCharacter);
+    await createCharacters(characters);
+  }
+
+  async function deleteAll() {
+    invariant(data, 'No characters to delete.');
+    const ids = data.map(({ id }) => id!);
+    await deleteCharacters(ids);
+  }
+
+  return (
+    <ScreenContainer safeAreaBottom={16}>
+      <HStack>
+        <Button
+          onPress={ingest}
+          disabled={!abilitiesResult.data || !movesResult.data}>
+          <Text>Ingest</Text>
+        </Button>
+        <Button variant={'ghost'} onPress={deleteAll}>
+          <Text>Delete All</Text>
+        </Button>
+      </HStack>
+      <FlatList
+        data={data}
+        keyExtractor={(item, index) => item.id ?? '' + index}
+        renderItem={({ item: character }) => (
+          <TouchableOpacity
+            activeOpacity={0.85}
+            onLongPress={() => onLongPress(character)}>
+            <RenderedItem character={character} />
+          </TouchableOpacity>
+        )}
+        ListEmptyComponent={
+          <Flex justifyContent={'center'} alignItems={'center'}>
+            <Text>No characters.</Text>
+          </Flex>
+        }
+      />
+    </ScreenContainer>
   );
 }
 

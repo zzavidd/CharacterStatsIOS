@@ -14,18 +14,18 @@ import {
 } from 'native-base';
 import React, { useContext } from 'react';
 
-import { AppContext } from 'App.context';
+import CharacterFormContext from 'src/fragments/Form/CharacterForm.context';
 import { Type } from 'src/utils/constants/enums';
 import PokeIcon from 'src/utils/constants/icons';
 
 export default function TypeSelect({ name, ...props }: TypeSelectProps) {
   const { value } = props;
-  const [, setContext] = useContext(AppContext);
+  const [, setContext] = useContext(CharacterFormContext);
 
   function showTypeMenu() {
     setContext((c) =>
       immutate(c, {
-        type: {
+        selectedType: {
           $set: {
             isMenuOpen: true,
             key: name,
@@ -63,12 +63,12 @@ export default function TypeSelect({ name, ...props }: TypeSelectProps) {
 }
 
 export function TypeMenu({ onChange }: TypeMenuProps) {
-  const [context, setContext] = useContext(AppContext);
+  const [context, setContext] = useContext(CharacterFormContext);
 
   function hideTypeMenu() {
     setContext((c) =>
       immutate(c, {
-        type: {
+        selectedType: {
           isMenuOpen: { $set: false },
           selectedValue: { $set: undefined },
         },
@@ -77,7 +77,9 @@ export function TypeMenu({ onChange }: TypeMenuProps) {
   }
 
   return (
-    <Actionsheet isOpen={context.type.isMenuOpen} onClose={hideTypeMenu}>
+    <Actionsheet
+      isOpen={context.selectedType.isMenuOpen}
+      onClose={hideTypeMenu}>
       <Actionsheet.Content>
         <FlatList
           data={Object.values(Type)}
@@ -88,7 +90,7 @@ export function TypeMenu({ onChange }: TypeMenuProps) {
           key={'1'}
           w={'full'}
           renderItem={({ item: type }) => {
-            const selected = context.type.selectedValue === type;
+            const selected = context.selectedType.selectedValue === type;
             const onPress = () => {
               onChange(type);
               hideTypeMenu();

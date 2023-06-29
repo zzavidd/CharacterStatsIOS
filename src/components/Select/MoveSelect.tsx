@@ -16,7 +16,8 @@ import {
 import React, { useContext, useMemo, useState } from 'react';
 import { VirtualizedList } from 'react-native';
 
-import { AppContext, QueriesContext } from 'App.context';
+import { QueriesContext } from 'App.context';
+import CharacterFormContext from 'src/fragments/Form/CharacterForm.context';
 import PokeIcon from 'src/utils/constants/icons';
 
 export default function MoveSelect({
@@ -27,12 +28,12 @@ export default function MoveSelect({
 }: MoveSelectProps) {
   const { movesResult } = useContext(QueriesContext);
   const { data: moveMap = {} } = movesResult;
-  const [, setContext] = useContext(AppContext);
+  const [, setContext] = useContext(CharacterFormContext);
 
   function showAbilityMenu() {
     setContext((c) =>
       immutate(c, {
-        move: {
+        selectedMove: {
           $set: {
             isMenuOpen: true,
             level: name,
@@ -73,7 +74,7 @@ export default function MoveSelect({
 
 export function MoveMenu({ onChange }: MoveMenuProps) {
   const [state, setState] = useState({ searchTerm: '' });
-  const [context, setContext] = useContext(AppContext);
+  const [context, setContext] = useContext(CharacterFormContext);
   const { movesResult } = useContext(QueriesContext);
   const { data: moveMap = {} } = movesResult;
 
@@ -82,7 +83,7 @@ export function MoveMenu({ onChange }: MoveMenuProps) {
   function hideMoveMenu() {
     setContext((c) =>
       immutate(c, {
-        move: {
+        selectedMove: {
           isMenuOpen: { $set: false },
           selectedValue: { $set: undefined },
         },
@@ -106,7 +107,9 @@ export function MoveMenu({ onChange }: MoveMenuProps) {
   }, [moves, state.searchTerm]);
 
   return (
-    <Actionsheet isOpen={context.move.isMenuOpen} onClose={hideMoveMenu}>
+    <Actionsheet
+      isOpen={context.selectedMove.isMenuOpen}
+      onClose={hideMoveMenu}>
       <Actionsheet.Content>
         <Box h={'full'} w={'full'}>
           <Input
