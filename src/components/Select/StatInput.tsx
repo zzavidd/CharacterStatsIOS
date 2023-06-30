@@ -17,7 +17,7 @@ export default function StatInput({ stat, value }: StatInputProps) {
     setState({ value: Number(value) });
   }
 
-  function onSubmitEditing() {
+  function onEndEditing() {
     setContext((s) =>
       immutate(s, { character: { stats: { [stat]: { $set: state.value } } } }),
     );
@@ -27,7 +27,7 @@ export default function StatInput({ stat, value }: StatInputProps) {
     <Input
       value={String(state.value)}
       onChangeText={onChangeText}
-      onSubmitEditing={onSubmitEditing}
+      onEndEditing={onEndEditing}
       variant={'filled'}
       textAlign={'right'}
       inputMode={'numeric'}

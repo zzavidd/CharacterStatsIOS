@@ -81,10 +81,10 @@ export function LevelSelect({
   const [, setContext] = useContext(CharacterFormContext);
 
   function onChangeText(value: string) {
-    setState({ value });
+    setState({ value: Number(value) });
   }
 
-  function onSubmitEditing() {
+  function onEndEditing() {
     if (state.value === level) return;
 
     const newLevel = Math.min(100, Number(state.value));
@@ -102,9 +102,9 @@ export function LevelSelect({
 
   return (
     <Input
-      value={state.value}
+      value={String(state.value)}
       onChangeText={onChangeText}
-      onSubmitEditing={onSubmitEditing}
+      onEndEditing={onEndEditing}
       variant={'filled'}
       textAlign={'right'}
       inputMode={'numeric'}
@@ -229,7 +229,7 @@ interface MoveSelectProps extends IInputProps {
 
 interface LevelSelectProps {
   currentMoveId: number;
-  level: string;
+  level: number;
   moveIndex: number;
 }
 

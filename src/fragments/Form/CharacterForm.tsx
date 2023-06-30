@@ -168,7 +168,7 @@ export default function CharacterForm() {
                       {moveIds.map((moveId, index) => (
                         <HStack key={`${level}-${moveId}-${index}`} space={3}>
                           <LevelSelect
-                            level={level}
+                            level={Number(level)}
                             currentMoveId={moveId}
                             moveIndex={index}
                           />
