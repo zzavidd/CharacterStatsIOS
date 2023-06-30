@@ -98,7 +98,7 @@ export default function CharacterForm() {
               </FormControl.Label>
               <AbilitySelect
                 name={key}
-                value={value ?? undefined}
+                value={value ? String(value) : undefined}
                 placeholder={'Select ability...'}
                 onChangeText={(value) => onChange({ [key]: { $set: value } })}
                 key={key}
@@ -192,7 +192,7 @@ interface Field {
 
 interface AbilityField extends Field {
   key: AbilityKey;
-  value: string | null;
+  value: number | null;
 }
 
 interface TypeField extends Field {

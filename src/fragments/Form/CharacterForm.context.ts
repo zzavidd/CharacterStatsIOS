@@ -9,7 +9,7 @@ export const InitialCharacterFormState: CharacterFormState = {
     universe: undefined,
     type1: null,
     type2: null,
-    ability1: '',
+    ability1: null,
     ability2: null,
     abilityX: null,
     stats: DEFAULT_STATS,

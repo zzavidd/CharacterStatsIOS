@@ -97,8 +97,9 @@ function CharacterGrid() {
   const { mutate: deleteCharacters } = useDeleteCharacters();
   const buildCharacter = useBuildCharacter();
   const { data } = useGetCharacters();
+  const { data: abilityMap } = abilitiesResult;
 
-  if (!data) {
+  if (!data || !abilityMap) {
     return null;
   }
 
@@ -136,7 +137,7 @@ function CharacterGrid() {
           <TouchableOpacity
             activeOpacity={0.85}
             onLongPress={() => onLongPress(character)}>
-            <RenderedItem character={character} />
+            <RenderedItem character={character} abilityMap={abilityMap} />
           </TouchableOpacity>
         )}
         ListEmptyComponent={
@@ -149,7 +150,7 @@ function CharacterGrid() {
   );
 }
 
-function RenderedItem({ character }: CharacterItemProps) {
+function RenderedItem({ character, abilityMap }: CharacterItemProps) {
   const {
     id,
     name,
@@ -169,6 +170,7 @@ function RenderedItem({ character }: CharacterItemProps) {
     start: [0.2, -0.8],
     end: [1.2, 0.8],
   };
+
   return (
     <Box rounded={'2xl'} mx={4} my={2} p={6} bg={{ linearGradient }}>
       <HStack>
@@ -203,21 +205,23 @@ function RenderedItem({ character }: CharacterItemProps) {
               Ability:
             </Text>
             <HStack space={1}>
-              <Text>{ability1}</Text>
+              {ability1 ? <Text>{abilityMap[ability1].name}</Text> : null}
               {ability2 ? (
                 <React.Fragment>
                   <Text>/</Text>
-                  <Text>{ability2}</Text>
+                  <Text>{abilityMap[ability2].name}</Text>
                 </React.Fragment>
               ) : null}
             </HStack>
           </VStack>
-          <VStack>
-            <Text italic={true} fontWeight={'light'}>
-              Hidden Ability:
-            </Text>
-            <Text>{abilityX}</Text>
-          </VStack>
+          {abilityX ? (
+            <VStack>
+              <Text italic={true} fontWeight={'light'}>
+                Hidden Ability:
+              </Text>
+              <Text>{abilityMap[abilityX].name}</Text>
+            </VStack>
+          ) : null}
           <HStack flex={1} alignItems={'flex-end'} space={1}>
             <Text fontWeight={'light'}>BST:</Text>
             <Text>{calculateBST(stats)}</Text>
@@ -240,4 +244,5 @@ function RenderedItem({ character }: CharacterItemProps) {
 
 interface CharacterItemProps {
   character: Character;
+  abilityMap: PokeAbilityMap;
 }

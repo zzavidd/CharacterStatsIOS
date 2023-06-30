@@ -9,12 +9,12 @@ import { zCharacter } from '../validators';
 
 export default function useBuildCharacter(): () => Character {
   const { abilitiesResult, movesResult } = useContext(QueriesContext);
-  const { data: abilities } = abilitiesResult;
+  const { data: abilityMap } = abilitiesResult;
   const { data: moveMap } = movesResult;
   const buildLearnset = useBuildLearnset();
 
   return useCallback(() => {
-    invariant(abilities, 'Could not retrieve abilities.');
+    invariant(abilityMap, 'Could not retrieve abilities.');
     invariant(moveMap, 'Could not retrieve moves.');
 
     const types = Object.values(Type);
@@ -23,8 +23,9 @@ export default function useBuildCharacter(): () => Character {
 
     const getRandomType = (): Type =>
       types[faker.number.int({ max: types.length - 1 })];
-    const getRandomAbility = (): string =>
-      abilities[faker.number.int({ max: abilities.length - 1 })].name;
+    const getRandomAbility = (): number =>
+      abilityMap[faker.number.int({ max: Object.keys(abilityMap).length - 1 })]
+        .id;
 
     return zCharacter.parse({
       name: faker.person.firstName(),
@@ -39,7 +40,7 @@ export default function useBuildCharacter(): () => Character {
       createTime: Date.now(),
       lastModified: Date.now(),
     });
-  }, [abilities, moveMap, buildLearnset]);
+  }, [abilityMap, moveMap, buildLearnset]);
 }
 
 function generateStats(): Stats {

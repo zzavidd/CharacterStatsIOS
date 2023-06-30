@@ -9,7 +9,7 @@ export const QueriesContext = React.createContext<QueriesState>({
 });
 
 interface QueriesState {
-  abilitiesResult: ApolloResult<PokeAbility[]>;
+  abilitiesResult: ApolloResult<PokeAbilityMap>;
   movesResult: ApolloResult<PokeMoveMap>;
   typesResult: ApolloResult<PokeType[]>;
   isLoading: boolean;

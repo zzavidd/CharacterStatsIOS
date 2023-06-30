@@ -20,6 +20,7 @@ declare global {
   export type AbilityKey = 'ability1' | 'ability2' | 'abilityX';
   export type TypeKey = 'type1' | 'type2';
 
+  export type PokeAbilityMap = Record<number, PokeAbility>;
   export type PokeMoveMap = Record<string, PokeMove>;
 
   export interface PokeType {

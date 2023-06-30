@@ -19,10 +19,15 @@ import { VirtualizedList } from 'react-native';
 import { QueriesContext } from 'App.context';
 import CharacterFormContext from 'src/fragments/Form/CharacterForm.context';
 import PokeIcon from 'src/utils/constants/icons';
+import useAbilities from 'src/utils/hooks/useAbilities';
 
-export default function AbilitySelect({ name, ...props }: AbilitySelectProps) {
-  const { value } = props;
+export default function AbilitySelect({
+  name,
+  value,
+  ...props
+}: AbilitySelectProps) {
   const [, setContext] = useContext(CharacterFormContext);
+  const { data: abilityMap = {} } = useAbilities();
 
   function showAbilityMenu() {
     setContext((c) =>
@@ -41,6 +46,7 @@ export default function AbilitySelect({ name, ...props }: AbilitySelectProps) {
   return (
     <Input
       {...props}
+      value={value ? abilityMap[Number(value)].name : undefined}
       isReadOnly={true}
       InputRightElement={
         <Button onPress={showAbilityMenu}>
@@ -55,7 +61,9 @@ export function AbilityMenu({ onChange }: AbilityMenuProps) {
   const [state, setState] = useState({ searchTerm: '' });
   const [context, setContext] = useContext(CharacterFormContext);
   const { abilitiesResult } = useContext(QueriesContext);
-  const { data: abilities = [] } = abilitiesResult;
+  const { data: abilityMap = {} } = abilitiesResult;
+
+  const abilities = Object.values(abilityMap);
 
   function hideAbilityMenu() {
     setContext((c) =>
@@ -74,7 +82,10 @@ export function AbilityMenu({ onChange }: AbilityMenuProps) {
   }
 
   const filteredAbilities = useMemo(() => {
-    if (!state.searchTerm) return abilities;
+    const sortedAbilities = abilities.sort((a, b) =>
+      a.name.localeCompare(b.name),
+    );
+    if (!state.searchTerm) return sortedAbilities;
     return abilities.filter(({ name, commonType }) => {
       return [name, commonType].some((value) =>
         value.toLowerCase().includes(state.searchTerm.toLowerCase()),

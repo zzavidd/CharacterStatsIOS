@@ -7,13 +7,13 @@ import Color from '../constants/colors';
 import type { Type } from '../constants/enums';
 import { QUERY_ABILITIES } from '../queries';
 
-export default function useAbilities(): ApolloResult<PokeAbility[]> {
+export default function useAbilities(): ApolloResult<PokeAbilityMap> {
   const { data, error, loading } = useQuery<{ abilities: RawAbility[] }>(
     QUERY_ABILITIES,
   );
 
-  const abilities = useMemo(() => {
-    return data?.abilities.map((rawAbility) => {
+  const abilityMap = useMemo(() => {
+    return data?.abilities.reduce((acc, rawAbility) => {
       const { id, generation } = rawAbility;
       const commonType = determineAbilityType(rawAbility);
       const ability: PokeAbility = {
@@ -24,11 +24,12 @@ export default function useAbilities(): ApolloResult<PokeAbility[]> {
         color: Color.TYPE[commonType],
         description: rawAbility.description[0]?.text,
       };
-      return ability;
-    });
+      acc[id] = ability;
+      return acc;
+    }, {} as Record<number, PokeAbility>);
   }, [data]);
 
-  return { data: abilities, error, loading };
+  return { data: abilityMap, error, loading };
 }
 
 /**
