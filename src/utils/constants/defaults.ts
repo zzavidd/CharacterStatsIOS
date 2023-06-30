@@ -9,7 +9,7 @@ export const DEFAULT_STATS: Stats = {
   [Stat.SPEED]: 0,
 };
 
-export const StatMap = {
+export const StatMap: Record<Stat, string> = {
   [Stat.HP]: 'HP',
   [Stat.ATTACK]: 'Attack',
   [Stat.DEFENCE]: 'Defence',

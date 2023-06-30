@@ -166,8 +166,9 @@ const AbilityEntry = React.memo(
   (a, b) => a.ability.id === b.ability.id,
 );
 
-interface AbilitySelectProps extends IInputProps {
+interface AbilitySelectProps extends Omit<IInputProps, 'value'> {
   name: AbilityKey;
+  value: number | undefined;
 }
 
 interface AbilityMenuProps {

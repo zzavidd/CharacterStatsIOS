@@ -15,9 +15,11 @@ import React, { useContext } from 'react';
 import { ScreenContainer } from 'src/components/Container';
 import AbilitySelect from 'src/components/Select/AbilitySelect';
 import MoveSelect, { LevelSelect } from 'src/components/Select/MoveSelect';
+import StatInput from 'src/components/Select/StatInput';
 import TypeSelect from 'src/components/Select/TypeSelect';
 import UniverseSelect from 'src/components/Select/UniverseSelect';
-import type { Type } from 'src/utils/constants/enums';
+import { StatMap } from 'src/utils/constants/defaults';
+import type { Stat, Type } from 'src/utils/constants/enums';
 import { Universes } from 'src/utils/constants/options';
 
 import CharacterFormContext from './CharacterForm.context';
@@ -91,20 +93,62 @@ export default function CharacterForm() {
               </FormControl>
             ))}
           </HStack>
-          {abilityFields.map(({ key, label, value }) => (
-            <FormControl key={key}>
-              <FormControl.Label>
-                <Text>{label}:</Text>
-              </FormControl.Label>
-              <AbilitySelect
-                name={key}
-                value={value ? String(value) : undefined}
-                placeholder={'Select ability...'}
-                onChangeText={(value) => onChange({ [key]: { $set: value } })}
-                key={key}
-              />
-            </FormControl>
-          ))}
+          <HStack space={5}>
+            <VStack space={3} flex={5}>
+              {abilityFields.map(({ key, label, value }) => (
+                <FormControl key={key}>
+                  <FormControl.Label>
+                    <Text>{label}:</Text>
+                  </FormControl.Label>
+                  <AbilitySelect
+                    name={key}
+                    value={value ?? undefined}
+                    placeholder={'Select ability...'}
+                    onChangeText={(value) =>
+                      onChange({ [key]: { $set: value } })
+                    }
+                    key={key}
+                  />
+                </FormControl>
+              ))}
+            </VStack>
+            <HStack space={4} flex={4}>
+              <VStack space={3}>
+                {Object.entries(StatMap)
+                  .slice(0, 3)
+                  .map(([stat, alias]) => {
+                    return (
+                      <FormControl key={stat}>
+                        <FormControl.Label>
+                          <Text>{alias}:</Text>
+                        </FormControl.Label>
+                        <StatInput
+                          stat={stat as Stat}
+                          value={context.character.stats[stat as Stat]}
+                        />
+                      </FormControl>
+                    );
+                  })}
+              </VStack>
+              <VStack space={3}>
+                {Object.entries(StatMap)
+                  .slice(3)
+                  .map(([stat, alias]) => {
+                    return (
+                      <FormControl key={stat}>
+                        <FormControl.Label>
+                          <Text>{alias}:</Text>
+                        </FormControl.Label>
+                        <StatInput
+                          stat={stat as Stat}
+                          value={context.character.stats[stat as Stat]}
+                        />
+                      </FormControl>
+                    );
+                  })}
+              </VStack>
+            </HStack>
+          </HStack>
           <FormControl>
             <FormControl.Label>
               <Text>Learnset:</Text>

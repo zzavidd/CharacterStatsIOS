@@ -45,7 +45,7 @@ export default CharacterFormContext;
 
 export interface CharacterFormState {
   character: Omit<Character, 'createTime'>;
-  selectedAbility: PropertyWithKey<string, AbilityKey>;
+  selectedAbility: PropertyWithKey<number, AbilityKey>;
   selectedMove: MoveProperty;
   selectedType: PropertyWithKey<Type, TypeKey>;
   selectedUniverse: Property<number>;
