@@ -4,4 +4,4 @@ dist/
 
 .eslintcache
 .tsbuildinfo
-config.json
+.env
