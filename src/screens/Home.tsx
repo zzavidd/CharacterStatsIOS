@@ -120,7 +120,7 @@ function CharacterGrid() {
 
   return (
     <ScreenContainer safeAreaBottom={16}>
-      <HStack>
+      {/* <HStack>
         <Button
           onPress={ingest}
           disabled={!abilitiesResult.data || !movesResult.data}>
@@ -129,7 +129,7 @@ function CharacterGrid() {
         <Button variant={'ghost'} onPress={deleteAll}>
           <Text>Delete All</Text>
         </Button>
-      </HStack>
+      </HStack> */}
       <FlatList
         data={data}
         keyExtractor={(item, index) => item.id ?? '' + index}
