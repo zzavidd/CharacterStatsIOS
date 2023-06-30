@@ -69,7 +69,7 @@ export default function FormScreen({ navigation, route }: ScreenProps<'Form'>) {
   function onAbilityChange(ability: PokeAbility) {
     setState((s) =>
       immutate(s, {
-        character: { [s.selectedAbility.key]: { $set: ability.name } },
+        character: { [s.selectedAbility.key]: { $set: ability.id } },
       }),
     );
   }
