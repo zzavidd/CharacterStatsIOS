@@ -19,7 +19,7 @@ import PokeIcon from 'src/utils/constants/icons';
 import { containsMatch } from 'src/utils/functions';
 import useAbilities from 'src/utils/hooks/useAbilities';
 
-const SORT_LIST: Record<number, keyof PokeAbility> = {
+const SORT_GROUPS: Record<number, keyof PokeAbility> = {
   1: 'name',
   2: 'description',
   3: 'commonType',
@@ -46,7 +46,7 @@ export default function AbilityMenu() {
     setState((s) => ({ ...s, searchTerm: '' }));
   }
 
-  function onChange(ability: PokeAbility) {
+  function onAbilityChange(ability: PokeAbility) {
     setContext((c) =>
       immutate(c, {
         character: { [c.selectedAbility.key]: { $set: ability.id } },
@@ -85,13 +85,12 @@ export default function AbilityMenu() {
             maxToRenderPerBatch={20}
             initialNumToRender={20}
             style={{ width: '100%' }}
-            renderItem={({ item: ability }) => {
-              const onPress = () => {
-                onChange(ability);
-                hideAbilityMenu();
-              };
-              return <AbilityEntry ability={ability} onPress={onPress} />;
-            }}
+            renderItem={({ item: ability }) => (
+              <AbilityEntry
+                ability={ability}
+                onPress={() => onAbilityChange(ability)}
+              />
+            )}
           />
         </Box>
       </Actionsheet.Content>
@@ -138,9 +137,9 @@ function useFilteredAbilities(searchTerm: string) {
     );
     if (!searchTerm) return sortedAbilities;
 
-    const matchingAbilities = abilities
+    return abilities
       .reduce((acc, ability) => {
-        for (const [order, prop] of Object.entries(SORT_LIST)) {
+        for (const [order, prop] of Object.entries(SORT_GROUPS)) {
           if (containsMatch(String(ability[prop]), searchTerm)) {
             return [...acc, { ...ability, order: Number(order) }];
           }
@@ -148,8 +147,6 @@ function useFilteredAbilities(searchTerm: string) {
         return acc;
       }, [] as (PokeAbility & { order: number })[])
       .sort((a, b) => a.order - b.order);
-
-    return matchingAbilities;
   }, [abilities, searchTerm]);
 }
 

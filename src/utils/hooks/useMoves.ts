@@ -3,7 +3,7 @@ import { capitalCase } from 'capital-case';
 import { useMemo } from 'react';
 
 import CSColor from '../constants/colors';
-import type { Type } from '../constants/enums';
+import type { DamageClass, Type } from '../constants/enums';
 import { QUERY_MOVES } from '../queries';
 
 export default function useMoves(): ApolloResult<PokeMoveMap> {
@@ -21,7 +21,7 @@ export default function useMoves(): ApolloResult<PokeMoveMap> {
         type,
         name: capitalCase(rawMove.name),
         color: CSColor.TYPE[type],
-        damageClass: rawMove.damageClass.name,
+        damageClass: rawMove.damageClass.name as DamageClass,
         description: rawMove.description[0]?.text,
       };
       acc[id] = marshaledMove;

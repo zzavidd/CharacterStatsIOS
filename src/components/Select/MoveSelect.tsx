@@ -1,21 +1,8 @@
 import type { Spec } from 'immutability-helper';
 import immutate from 'immutability-helper';
 import type { IInputProps } from 'native-base';
-import {
-  Actionsheet,
-  Box,
-  Button,
-  ChevronDownIcon,
-  CloseIcon,
-  HStack,
-  Image,
-  Input,
-  SearchIcon,
-  Text,
-  VStack,
-} from 'native-base';
-import React, { useContext, useMemo, useState } from 'react';
-import { VirtualizedList } from 'react-native';
+import { Button, ChevronDownIcon, HStack, Image, Input } from 'native-base';
+import React, { useContext, useState } from 'react';
 
 import { QueriesContext } from 'App.context';
 import CharacterFormContext from 'src/fragments/Form/CharacterForm.context';
@@ -140,133 +127,6 @@ export function LevelSelect({
   );
 }
 
-export function MoveMenu({ onChange }: MoveMenuProps) {
-  const [state, setState] = useState({ searchTerm: '' });
-  const [context, setContext] = useContext(CharacterFormContext);
-  const { movesResult } = useContext(QueriesContext);
-  const { data: moveMap = {} } = movesResult;
-
-  const moves = Object.values(moveMap);
-
-  function hideMoveMenu() {
-    setContext((c) =>
-      immutate(c, {
-        selectedMove: {
-          isMenuOpen: { $set: false },
-          selectedValue: { $set: undefined },
-        },
-      }),
-    );
-    clearSearchField();
-  }
-
-  function clearSearchField() {
-    setState((s) => ({ ...s, searchTerm: '' }));
-  }
-
-  const filteredMoves = useMemo(() => {
-    const sortedMoves = moves.sort((a, b) => a.name.localeCompare(b.name));
-    if (!state.searchTerm) return sortedMoves;
-    return sortedMoves.filter(({ name, type }) => {
-      return [name, type].some((value) =>
-        value.toLowerCase().includes(state.searchTerm.toLowerCase()),
-      );
-    });
-  }, [moves, state.searchTerm]);
-
-  return (
-    <Actionsheet
-      isOpen={context.selectedMove.isMenuOpen}
-      onClose={hideMoveMenu}>
-      <Actionsheet.Content>
-        <Box h={'full'} w={'full'}>
-          <Input
-            value={state.searchTerm}
-            onChangeText={(value) =>
-              setState((s) => ({ ...s, searchTerm: value }))
-            }
-            px={3}
-            placeholder={'Filter moves...'}
-            InputLeftElement={<SearchIcon ml={3} size={5} />}
-            InputRightElement={
-              state.searchTerm ? (
-                <Button onPress={clearSearchField}>
-                  <CloseIcon />
-                </Button>
-              ) : undefined
-            }
-          />
-          <VirtualizedList<PokeMove>
-            data={filteredMoves}
-            getItem={(data, index) => data[index]}
-            getItemCount={() => filteredMoves.length}
-            keyExtractor={(item) => String(item.id)}
-            maxToRenderPerBatch={20}
-            initialNumToRender={20}
-            style={{ width: '100%' }}
-            renderItem={({ item: move }) => {
-              const onPress = () => {
-                onChange(move.id);
-                hideMoveMenu();
-              };
-              return <MoveEntry move={move} onPress={onPress} />;
-            }}
-          />
-        </Box>
-      </Actionsheet.Content>
-    </Actionsheet>
-  );
-}
-
-const MoveEntry = React.memo(
-  function MoveEntry({ move, onPress }: MoveEntryProps) {
-    return (
-      <Actionsheet.Item
-        onPress={onPress}
-        _pressed={{ bgColor: 'primary.800' }}
-        p={3}>
-        <HStack alignItems={'flex-start'} space={4}>
-          <Image
-            source={PokeIcon.Types[move.type]}
-            alt={move.type}
-            width={8}
-            height={8}
-          />
-          <VStack space={1}>
-            <Box>
-              <Text fontSize={20}>{move.name}</Text>
-              {move.description ? (
-                <Text fontSize={12} fontWeight={'light'}>
-                  {move.description}
-                </Text>
-              ) : null}
-            </Box>
-            <HStack space={4}>
-              <Image
-                source={PokeIcon.Classes[move.damageClass]}
-                resizeMode={'stretch'}
-                alt={move.damageClass}
-                width={7}
-                height={5}
-              />
-              <Text color={'gray.200'} fontSize={12}>
-                Power: {move.power || '-'}
-              </Text>
-              <Text color={'gray.200'} fontSize={12}>
-                PP: {move.pp || '-'}
-              </Text>
-              <Text color={'gray.200'} fontSize={12}>
-                Acc: {move.accuracy || '-'}
-              </Text>
-            </HStack>
-          </VStack>
-        </HStack>
-      </Actionsheet.Item>
-    );
-  },
-  (a, b) => a.move.id === b.move.id,
-);
-
 interface MoveSelectProps extends IInputProps {
   name: string;
   index: number;
@@ -276,13 +136,4 @@ interface LevelSelectProps {
   currentMoveId: number;
   level: number;
   moveIndex: number;
-}
-
-interface MoveMenuProps {
-  onChange: (moveId: number) => void;
-}
-
-interface MoveEntryProps {
-  move: PokeMove;
-  onPress: () => void;
 }

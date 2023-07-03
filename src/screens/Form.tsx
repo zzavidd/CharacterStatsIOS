@@ -4,7 +4,7 @@ import { Button, ChevronLeftIcon, Icon, Text } from 'native-base';
 import React, { useEffect, useState } from 'react';
 
 import AbilityMenu from 'src/components/Menu/AbilityMenu';
-import { MoveMenu } from 'src/components/Select/MoveSelect';
+import MoveMenu from 'src/components/Menu/MoveMenu';
 import { TypeMenu } from 'src/components/Select/TypeSelect';
 import { UniverseMenu } from 'src/components/Select/UniverseSelect';
 import CharacterForm from 'src/fragments/Form/CharacterForm';
@@ -66,17 +66,6 @@ export default function FormScreen({ navigation, route }: ScreenProps<'Form'>) {
     }
   }, [route.params]);
 
-  function onMoveChange(moveId: number) {
-    setState((s) => {
-      const { level, selectedMoveIndex } = s.selectedMove;
-      return immutate(s, {
-        character: {
-          learnset: { [level]: { [selectedMoveIndex]: { $set: moveId } } },
-        },
-      });
-    });
-  }
-
   function onTypeChange(type: Type) {
     setState((s) =>
       immutate(s, {
@@ -97,7 +86,7 @@ export default function FormScreen({ navigation, route }: ScreenProps<'Form'>) {
     <CharacterFormContext.Provider value={[state, setState]}>
       <CharacterForm />
       <AbilityMenu />
-      <MoveMenu onChange={onMoveChange} />
+      <MoveMenu />
       <TypeMenu onChange={onTypeChange} />
       <UniverseMenu onChange={onUniverseChange} />
     </CharacterFormContext.Provider>
