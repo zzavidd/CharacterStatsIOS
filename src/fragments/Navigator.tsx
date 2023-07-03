@@ -1,9 +1,10 @@
 import { DarkTheme, NavigationContainer } from '@react-navigation/native';
 import type { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useTheme } from 'native-base';
+import { Text, VStack, useTheme } from 'native-base';
 import React from 'react';
 
+import { version } from 'package.json';
 import FormScreen from 'src/screens/Form';
 import HomeScreen from 'src/screens/Home';
 
@@ -26,7 +27,14 @@ export default function Navigator() {
         <Stack.Screen
           name={'Home'}
           component={HomeScreen}
-          options={{ title: 'Characters' }}
+          options={{
+            headerTitle: () => (
+              <VStack alignItems={'center'}>
+                <Text fontSize={16}>Characters</Text>
+                <Text fontSize={10}>v{version}</Text>
+              </VStack>
+            ),
+          }}
         />
         <Stack.Screen
           name={'Form'}
