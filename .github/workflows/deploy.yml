@@ -10,7 +10,7 @@ on:
     branches: ['main']
 
 jobs:
-  build:
+  publish:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -43,4 +43,6 @@ jobs:
         run: pnpm install
 
       - name: Publish build
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
         run: pnpm run eas:build
