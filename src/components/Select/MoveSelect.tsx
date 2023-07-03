@@ -66,7 +66,18 @@ export default function MoveSelect({
         ) : undefined
       }
       InputRightElement={
-        <HStack mx={2}>
+        <HStack mx={2} alignItems={'center'} space={2}>
+          {value ? (
+            <Image
+              source={PokeIcon.Classes[moveMap[value].damageClass]}
+              resizeMode={'stretch'}
+              alt={value}
+              width={7}
+              height={5}
+              key={value}
+              ml={3}
+            />
+          ) : null}
           <Button onPress={showAbilityMenu} p={2}>
             <ChevronDownIcon />
           </Button>
@@ -231,6 +242,13 @@ const MoveEntry = React.memo(
               ) : null}
             </Box>
             <HStack space={4}>
+              <Image
+                source={PokeIcon.Classes[move.damageClass]}
+                resizeMode={'stretch'}
+                alt={move.damageClass}
+                width={7}
+                height={5}
+              />
               <Text color={'gray.200'} fontSize={12}>
                 Power: {move.power || '-'}
               </Text>

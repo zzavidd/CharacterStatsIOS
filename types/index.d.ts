@@ -3,7 +3,7 @@ import type { FirebaseError } from 'firebase/app';
 import type { Dispatch, SetStateAction } from 'react';
 import type { z } from 'zod';
 
-import type { Type } from 'src/utils/constants/enums';
+import type { DamageClass, Type } from 'src/utils/constants/enums';
 import type {
   zCharacter,
   zCharacterUpdateInput,
@@ -38,7 +38,7 @@ declare global {
     power: number;
     pp: number;
     type: Type;
-    damageClass: string;
+    damageClass: DamageClass;
   }
 
   export interface PokeAbility {

@@ -1,6 +1,11 @@
-import { Type } from './enums';
+import { DamageClass, Type } from './enums';
 
-const PokeIcon = {
+const PokeIcon = <const>{
+  Classes: {
+    [DamageClass.PHYSICAL]: require('assets/icons/classes/Physical.png'),
+    [DamageClass.SPECIAL]: require('assets/icons/classes/Special.png'),
+    [DamageClass.STATUS]: require('assets/icons/classes/Status.png'),
+  },
   Types: {
     [Type.BUG]: require('assets/icons/types/Bug.png'),
     [Type.DARK]: require('assets/icons/types/Dark.png'),

@@ -38,3 +38,9 @@ export enum Stat {
   SPDEF = 'spDef',
   SPEED = 'speed',
 }
+
+export enum DamageClass {
+  PHYSICAL = 'physical',
+  SPECIAL = 'special',
+  STATUS = 'status',
+}
