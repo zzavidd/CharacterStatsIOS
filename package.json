@@ -6,7 +6,7 @@
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "dev": "expo start",
-    "eas:build": "eas build --platform ios --profile preview",
+    "eas:build": "eas build --platform ios --profile preview --non-interactive",
     "tsc": "tsc --skipLibCheck"
   },
   "dependencies": {
