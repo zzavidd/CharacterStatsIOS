@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-function-return-type */
-import { collection } from 'firebase/firestore';
+import { collection, orderBy, query } from 'firebase/firestore';
 import { useEffect } from 'react';
 import { useCollectionData } from 'react-firebase-hooks/firestore';
 import { Alert } from 'react-native';
@@ -11,8 +11,9 @@ const characterCollection = collection(firestore, 'characters').withConverter(
 );
 
 export default function useGetCharacters() {
-  const [data, isLoading, error] =
-    useCollectionData<Character>(characterCollection);
+  const [data, isLoading, error] = useCollectionData<Character>(
+    query(characterCollection, orderBy('createTime', 'desc')),
+  );
 
   useEffect(() => {
     if (error) {
