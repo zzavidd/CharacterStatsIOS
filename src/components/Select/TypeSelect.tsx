@@ -13,12 +13,15 @@ import {
   Stack,
   Text,
 } from 'native-base';
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
+import type { ListRenderItem } from 'react-native';
 
 import CharacterFormContext from 'src/fragments/Form/CharacterForm.context';
 import CSColor from 'src/utils/constants/colors';
 import { Type } from 'src/utils/constants/enums';
 import PokeIcon from 'src/utils/constants/icons';
+
+const ITEM_HEIGHT = 54;
 
 export default function TypeSelect({ name, ...props }: TypeSelectProps) {
   const value = props.value as Type;
@@ -75,7 +78,7 @@ export default function TypeSelect({ name, ...props }: TypeSelectProps) {
   );
 }
 
-export function TypeMenu({ onChange }: TypeMenuProps) {
+export function TypeMenu() {
   const [context, setContext] = useContext(CharacterFormContext);
 
   function hideTypeMenu() {
@@ -89,6 +92,27 @@ export function TypeMenu({ onChange }: TypeMenuProps) {
     );
   }
 
+  function onTypeChange(type: Type) {
+    setContext((c) =>
+      immutate(c, {
+        character: { [c.selectedType.key]: { $set: type } },
+      }),
+    );
+    hideTypeMenu();
+  }
+
+  const renderType = useCallback<ListRenderItem<Type>>(({ item: type }) => {
+    const selected = context.selectedType.selectedValue === type;
+    return (
+      <TypeEntry
+        type={type}
+        selected={selected}
+        onPress={() => onTypeChange(type)}
+      />
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <Actionsheet
       isOpen={context.selectedType.isMenuOpen}
@@ -97,21 +121,15 @@ export function TypeMenu({ onChange }: TypeMenuProps) {
         <FlatList
           data={Object.values(Type)}
           keyExtractor={(item) => item}
-          maxToRenderPerBatch={20}
-          initialNumToRender={20}
+          getItemLayout={(_, index) => ({
+            length: ITEM_HEIGHT,
+            offset: ITEM_HEIGHT * index,
+            index,
+          })}
           numColumns={2}
           key={'1'}
           w={'full'}
-          renderItem={({ item: type }) => {
-            const selected = context.selectedType.selectedValue === type;
-            const onPress = () => {
-              onChange(type);
-              hideTypeMenu();
-            };
-            return (
-              <TypeEntry type={type} selected={selected} onPress={onPress} />
-            );
-          }}
+          renderItem={renderType}
         />
       </Actionsheet.Content>
     </Actionsheet>
@@ -144,10 +162,6 @@ const TypeEntry = React.memo(
 
 interface TypeSelectProps extends IInputProps {
   name: TypeKey;
-}
-
-interface TypeMenuProps {
-  onChange: (type: Type) => void;
 }
 
 interface TypeEntryProps {

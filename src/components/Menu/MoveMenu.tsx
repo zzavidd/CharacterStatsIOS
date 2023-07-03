@@ -11,13 +11,16 @@ import {
   Text,
   VStack,
 } from 'native-base';
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useMemo, useState } from 'react';
+import type { ListRenderItem } from 'react-native';
 import { VirtualizedList } from 'react-native';
 
 import CharacterFormContext from 'src/fragments/Form/CharacterForm.context';
 import PokeIcon from 'src/utils/constants/icons';
 import { containsMatch } from 'src/utils/functions';
 import useMoves from 'src/utils/hooks/useMoves';
+
+const ITEM_HEIGHT = 127.3;
 
 const SORT_GROUPS: Record<number, keyof PokeMove> = {
   1: 'name',
@@ -52,11 +55,17 @@ export default function MoveMenu() {
         },
       });
     });
+    hideMoveMenu();
   }
 
   function clearSearchField() {
     setState((s) => ({ ...s, searchTerm: '' }));
   }
+
+  const renderMove = useCallback<ListRenderItem<PokeMove>>(({ item: move }) => {
+    return <MoveEntry move={move} onPress={() => onMoveChange(move.id)} />;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <Actionsheet
@@ -84,13 +93,16 @@ export default function MoveMenu() {
             data={filteredMoves}
             getItem={(data, index) => data[index]}
             getItemCount={() => filteredMoves.length}
+            getItemLayout={(_, index) => ({
+              length: ITEM_HEIGHT,
+              offset: ITEM_HEIGHT * index,
+              index,
+            })}
             keyExtractor={(item) => String(item.id)}
             maxToRenderPerBatch={20}
             initialNumToRender={20}
             style={{ width: '100%' }}
-            renderItem={({ item: move }) => (
-              <MoveEntry move={move} onPress={() => onMoveChange(move.id)} />
-            )}
+            renderItem={renderMove}
           />
         </Box>
       </Actionsheet.Content>

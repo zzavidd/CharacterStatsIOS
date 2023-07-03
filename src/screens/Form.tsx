@@ -13,7 +13,6 @@ import CharacterFormContext, {
   InitialCharacterFormState,
 } from 'src/fragments/Form/CharacterForm.context';
 import CSColor from 'src/utils/constants/colors';
-import type { Type } from 'src/utils/constants/enums';
 import useCreateCharacters from 'src/utils/hooks/useCreateCharacters';
 import useUpdateCharacters from 'src/utils/hooks/useUpdateCharacters';
 
@@ -79,14 +78,6 @@ export default function FormScreen({ navigation, route }: ScreenProps<'Form'>) {
     }
   }, [route.params]);
 
-  function onTypeChange(type: Type) {
-    setState((s) =>
-      immutate(s, {
-        character: { [s.selectedType.key]: { $set: type } },
-      }),
-    );
-  }
-
   function onUniverseChange(universeId: number) {
     setState((s) =>
       immutate(s, {
@@ -100,7 +91,7 @@ export default function FormScreen({ navigation, route }: ScreenProps<'Form'>) {
       <CharacterForm />
       <AbilityMenu />
       <MoveMenu />
-      <TypeMenu onChange={onTypeChange} />
+      <TypeMenu />
       <UniverseMenu onChange={onUniverseChange} />
     </CharacterFormContext.Provider>
   );

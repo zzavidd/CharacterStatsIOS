@@ -24,6 +24,8 @@ import useGetCharacters from 'src/utils/hooks/useGetCharacters';
 
 import CharacterItem from './CharacterItem';
 
+const ITEM_HEIGHT = 276;
+
 export default function CharacterGrid() {
   const [, setContext] = useContext(HomeContext);
   const { abilitiesResult } = useContext(QueriesContext);
@@ -44,6 +46,11 @@ export default function CharacterGrid() {
       <FlatList
         data={data}
         keyExtractor={(item, index) => item.id ?? '' + index}
+        getItemLayout={(_, index) => ({
+          length: ITEM_HEIGHT,
+          offset: ITEM_HEIGHT * index,
+          index,
+        })}
         renderItem={({ item: character }) => (
           <TouchableOpacity
             activeOpacity={0.85}
