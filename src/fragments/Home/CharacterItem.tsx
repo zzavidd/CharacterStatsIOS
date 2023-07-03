@@ -2,7 +2,7 @@ import { Image } from 'expo-image';
 import { Box, Divider, HStack, Text, VStack } from 'native-base';
 import React from 'react';
 
-import Color from 'src/utils/constants/colors';
+import CSColor from 'src/utils/constants/colors';
 import { StatMap } from 'src/utils/constants/defaults';
 import { Stat } from 'src/utils/constants/enums';
 import PokeIcon from 'src/utils/constants/icons';
@@ -24,8 +24,8 @@ export default function CharacterItem({
     type1,
     type2,
   } = character;
-  const color1 = Color.TYPE[type1!] ?? 'transparent';
-  const color2 = Color.TYPE[type2 || type1!] ?? 'transparent';
+  const color1 = type1 ? CSColor.TYPE[type1] : 'transparent';
+  const color2 = type2 ? CSColor.TYPE[type2] : color1;
   const linearGradient = {
     colors: [color1, color2],
     locations: [0.85, 0.85],

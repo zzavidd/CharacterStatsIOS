@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import { capitalCase } from 'capital-case';
 import { useMemo } from 'react';
 
-import Color from '../constants/colors';
+import CSColor from '../constants/colors';
 import type { Type } from '../constants/enums';
 import { QUERY_TYPES } from '../queries';
 
@@ -14,7 +14,7 @@ export default function useTypes(): ApolloResult<PokeType[]> {
       const marshaledType: PokeType = {
         id: rawtype.id,
         name: typeName,
-        color: Color.TYPE[typeName],
+        color: CSColor.TYPE[typeName],
       };
       return marshaledType;
     });

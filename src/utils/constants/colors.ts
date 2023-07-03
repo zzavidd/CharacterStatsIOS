@@ -1,6 +1,8 @@
+import Color from 'color';
+
 import { Generation, Stat, Type } from './enums';
 
-namespace Color {
+namespace CSColor {
   export const GENERAL = {
     DARK: '#191b1c',
     PLACEHOLDER_TEXT_COLOR: '#aaa',
@@ -63,9 +65,13 @@ namespace Color {
       text: '#F7F7F7',
     },
   };
+
+  export function darken(color: string): string {
+    return Color(color).darken(0.7).saturate(-0.3).hex();
+  }
 }
 
-export default Color;
+export default CSColor;
 
 interface MoveClassColor {
   [key: string]: {

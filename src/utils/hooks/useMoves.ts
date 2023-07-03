@@ -2,7 +2,7 @@ import { useQuery } from '@apollo/client';
 import { capitalCase } from 'capital-case';
 import { useMemo } from 'react';
 
-import Color from '../constants/colors';
+import CSColor from '../constants/colors';
 import type { Type } from '../constants/enums';
 import { QUERY_MOVES } from '../queries';
 
@@ -20,7 +20,7 @@ export default function useMoves(): ApolloResult<PokeMoveMap> {
         pp,
         type,
         name: capitalCase(rawMove.name),
-        color: Color.TYPE[type],
+        color: CSColor.TYPE[type],
         damageClass: rawMove.damageClass.name,
         description: rawMove.description[0]?.text,
       };

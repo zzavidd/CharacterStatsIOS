@@ -3,7 +3,7 @@ import { capitalCase } from 'capital-case';
 import { useMemo } from 'react';
 import invariant from 'tiny-invariant';
 
-import Color from '../constants/colors';
+import CSColor from '../constants/colors';
 import type { Type } from '../constants/enums';
 import { QUERY_ABILITIES } from '../queries';
 
@@ -21,7 +21,7 @@ export default function useAbilities(): ApolloResult<PokeAbilityMap> {
         name: capitalCase(rawAbility.name),
         generation,
         commonType,
-        color: Color.TYPE[commonType],
+        color: CSColor.TYPE[commonType],
         description: rawAbility.description[0]?.text,
       };
       acc[id] = ability;
