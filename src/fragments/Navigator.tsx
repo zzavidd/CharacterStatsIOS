@@ -14,9 +14,6 @@ export default function Navigator() {
 
   const screenOptions: NativeStackNavigationOptions = {
     animation: 'fade_from_bottom',
-    headerStyle: {
-      backgroundColor: undefined,
-    },
     headerTitleStyle: {
       fontFamily: fontConfig.Mulish[500].normal,
       fontSize: 14,
