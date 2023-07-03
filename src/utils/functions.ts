@@ -6,3 +6,8 @@ export function calculateBST(stats: Stats): number {
     return bst;
   }, 0);
 }
+
+export function containsMatch(a: string, b: string): boolean {
+  if (!a || !b) return false;
+  return a.toLowerCase().includes(b.toLowerCase());
+}

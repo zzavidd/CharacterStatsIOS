@@ -3,7 +3,7 @@ import immutate from 'immutability-helper';
 import { Button, ChevronLeftIcon, Icon, Text } from 'native-base';
 import React, { useEffect, useState } from 'react';
 
-import { AbilityMenu } from 'src/components/Select/AbilitySelect';
+import AbilityMenu from 'src/components/Menu/AbilityMenu';
 import { MoveMenu } from 'src/components/Select/MoveSelect';
 import { TypeMenu } from 'src/components/Select/TypeSelect';
 import { UniverseMenu } from 'src/components/Select/UniverseSelect';
@@ -66,14 +66,6 @@ export default function FormScreen({ navigation, route }: ScreenProps<'Form'>) {
     }
   }, [route.params]);
 
-  function onAbilityChange(ability: PokeAbility) {
-    setState((s) =>
-      immutate(s, {
-        character: { [s.selectedAbility.key]: { $set: ability.id } },
-      }),
-    );
-  }
-
   function onMoveChange(moveId: number) {
     setState((s) => {
       const { level, selectedMoveIndex } = s.selectedMove;
@@ -104,7 +96,7 @@ export default function FormScreen({ navigation, route }: ScreenProps<'Form'>) {
   return (
     <CharacterFormContext.Provider value={[state, setState]}>
       <CharacterForm />
-      <AbilityMenu onChange={onAbilityChange} />
+      <AbilityMenu />
       <MoveMenu onChange={onMoveChange} />
       <TypeMenu onChange={onTypeChange} />
       <UniverseMenu onChange={onUniverseChange} />
