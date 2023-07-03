@@ -118,6 +118,7 @@ export function LevelSelect({
       value={String(state.value)}
       onChangeText={onChangeText}
       onEndEditing={onEndEditing}
+      selectTextOnFocus={true}
       variant={'filled'}
       textAlign={'right'}
       inputMode={'numeric'}
