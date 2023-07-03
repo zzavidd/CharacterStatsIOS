@@ -11,6 +11,7 @@ import {
   Image,
   Input,
   SearchIcon,
+  Stack,
   Text,
   VStack,
 } from 'native-base';
@@ -65,9 +66,11 @@ export default function MoveSelect({
         ) : undefined
       }
       InputRightElement={
-        <Button onPress={showAbilityMenu}>
-          <ChevronDownIcon />
-        </Button>
+        <Stack mx={2}>
+          <Button onPress={showAbilityMenu} p={2}>
+            <ChevronDownIcon />
+          </Button>
+        </Stack>
       }
     />
   );

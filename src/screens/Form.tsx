@@ -38,7 +38,7 @@ export default function FormScreen({ navigation, route }: ScreenProps<'Form'>) {
         <Button
           onPress={() => navigation.goBack()}
           startIcon={<ChevronLeftIcon />}
-          px={1}>
+          px={2}>
           <Text color={'primary.300'}>Back</Text>
         </Button>
       ),
@@ -46,7 +46,7 @@ export default function FormScreen({ navigation, route }: ScreenProps<'Form'>) {
         <Button
           onPress={onSave}
           startIcon={<Icon as={Ionicons} name={'save'} />}
-          px={1}>
+          px={2}>
           <Text color={'primary.300'}>Save</Text>
         </Button>
       ),

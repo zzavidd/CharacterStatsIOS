@@ -4,12 +4,12 @@ import {
   Actionsheet,
   Box,
   Button,
-  ChevronDownIcon,
   CloseIcon,
   HStack,
   Image,
   Input,
   SearchIcon,
+  Stack,
   Text,
   VStack,
 } from 'native-base';
@@ -43,15 +43,24 @@ export default function AbilitySelect({
     );
   }
 
+  function onNullifyAbility() {
+    setContext((c) => immutate(c, { character: { [name]: { $set: null } } }));
+  }
+
   return (
     <Input
       {...props}
       value={value ? abilityMap[Number(value)].name : undefined}
+      onPressOut={showAbilityMenu}
       isReadOnly={true}
       InputRightElement={
-        <Button onPress={showAbilityMenu}>
-          <ChevronDownIcon />
-        </Button>
+        value ? (
+          <Stack mx={2}>
+            <Button onPress={onNullifyAbility} p={2}>
+              <CloseIcon />
+            </Button>
+          </Stack>
+        ) : undefined
       }
     />
   );

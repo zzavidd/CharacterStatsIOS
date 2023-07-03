@@ -4,12 +4,13 @@ import {
   Actionsheet,
   Button,
   CheckIcon,
-  ChevronDownIcon,
+  CloseIcon,
   FlatList,
   HStack,
   Image,
   Input,
   Pressable,
+  Stack,
   Text,
 } from 'native-base';
 import React, { useContext } from 'react';
@@ -36,11 +37,16 @@ export default function TypeSelect({ name, ...props }: TypeSelectProps) {
     );
   }
 
+  function onNullifyType() {
+    setContext((c) => immutate(c, { character: { [name]: { $set: null } } }));
+  }
+
   return (
     <Input
       {...props}
       pl={value ? 2 : undefined}
       isReadOnly={true}
+      onPressOut={showTypeMenu}
       InputLeftElement={
         value ? (
           <Image
@@ -54,9 +60,13 @@ export default function TypeSelect({ name, ...props }: TypeSelectProps) {
         ) : undefined
       }
       InputRightElement={
-        <Button onPress={showTypeMenu}>
-          <ChevronDownIcon />
-        </Button>
+        value ? (
+          <Stack mx={2}>
+            <Button onPress={onNullifyType} p={2}>
+              <CloseIcon />
+            </Button>
+          </Stack>
+        ) : undefined
       }
     />
   );

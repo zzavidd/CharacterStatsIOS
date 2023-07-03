@@ -2,9 +2,7 @@ import immutate from 'immutability-helper';
 import type { IInputProps } from 'native-base';
 import {
   Actionsheet,
-  Button,
   CheckIcon,
-  ChevronDownIcon,
   FlatList,
   HStack,
   Input,
@@ -33,17 +31,7 @@ export default function UniverseSelect(props: IInputProps) {
     );
   }
 
-  return (
-    <Input
-      {...props}
-      isReadOnly={true}
-      InputRightElement={
-        <Button onPress={showUniverseMenu}>
-          <ChevronDownIcon />
-        </Button>
-      }
-    />
-  );
+  return <Input {...props} isReadOnly={true} onPressOut={showUniverseMenu} />;
 }
 
 export function UniverseMenu({ onChange }: UniverseMenuProps) {
