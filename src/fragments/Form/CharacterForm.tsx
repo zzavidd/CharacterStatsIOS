@@ -42,6 +42,14 @@ export default function CharacterForm() {
             '0': (levelMoveIds = []) => [1, ...levelMoveIds],
           },
         },
+        selectedMove: {
+          $set: {
+            isMenuOpen: true,
+            level: '0',
+            selectedMoveIndex: 0,
+            selectedValue: undefined,
+          },
+        },
       }),
     );
   }
