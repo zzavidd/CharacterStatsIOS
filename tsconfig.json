@@ -1,0 +1,18 @@
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "noEmit": true,
+    "esModuleInterop": true,
+    "jsx": "react-native",
+    "incremental": true,
+    "paths": {
+      "assets/*": ["assets/*"],
+      "src/*": ["src/*"]
+    },
+    "skipLibCheck": false,
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "tsBuildInfoFile": ".tsbuildinfo"
+  }
+}
