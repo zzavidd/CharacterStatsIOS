@@ -6,6 +6,7 @@ import React, { useContext, useState } from 'react';
 
 import { QueriesContext } from 'App.context';
 import CharacterFormContext from 'src/fragments/Form/CharacterForm.context';
+import CSColor from 'src/utils/constants/colors';
 import PokeIcon from 'src/utils/constants/icons';
 
 export default function MoveSelect({
@@ -39,6 +40,7 @@ export default function MoveSelect({
       value={value ? moveMap[value]?.name : undefined}
       pl={value ? 2 : undefined}
       bgColor={value ? moveMap[value]?.color : 'transparent'}
+      borderColor={value ? CSColor.border(moveMap[value]?.color) : undefined}
       isReadOnly={true}
       InputLeftElement={
         value ? (

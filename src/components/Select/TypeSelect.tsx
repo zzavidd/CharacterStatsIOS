@@ -47,6 +47,7 @@ export default function TypeSelect({ name, ...props }: TypeSelectProps) {
       {...props}
       pl={value ? 2 : undefined}
       bgColor={value ? CSColor.TYPE[value] : 'transparent'}
+      borderColor={value ? CSColor.border(CSColor.TYPE[value]) : undefined}
       isReadOnly={true}
       onPressOut={showTypeMenu}
       InputLeftElement={

@@ -67,7 +67,15 @@ namespace CSColor {
   };
 
   export function darken(color: string): string {
-    return Color(color).darken(0.7).saturate(-0.3).hex();
+    return Color(color).lightness(15).hex();
+  }
+
+  export function lighten(color: string): string {
+    return Color(color).lightness(50).saturationl(50).hex();
+  }
+
+  export function border(color: string): string {
+    return Color(color).lightness(40).hex();
   }
 }
 

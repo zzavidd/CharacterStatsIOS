@@ -19,7 +19,6 @@ import MoveSelect, { LevelSelect } from 'src/components/Select/MoveSelect';
 import StatInput from 'src/components/Select/StatInput';
 import TypeSelect from 'src/components/Select/TypeSelect';
 import UniverseSelect from 'src/components/Select/UniverseSelect';
-import CSColor from 'src/utils/constants/colors';
 import { StatMap } from 'src/utils/constants/defaults';
 import type { Stat, Type } from 'src/utils/constants/enums';
 import { Universes } from 'src/utils/constants/options';
@@ -79,18 +78,8 @@ export default function CharacterForm() {
   const secondHalfStats = Object.entries(StatMap).slice(3);
   const stats = [firstHalfStats, secondHalfStats];
 
-  const { type1, type2 } = context.character;
-  const color1 = type1 ? CSColor.TYPE[type1] : 'transparent';
-  const color2 = type2 ? CSColor.TYPE[type2] : color1;
-  const linearGradient = {
-    colors: [CSColor.darken(color1), CSColor.darken(color2)],
-    locations: [0.5, 1],
-    start: [0.2, -0.8],
-    end: [1.2, 0.8],
-  };
-
   return (
-    <ScreenContainer bg={{ linearGradient }} p={4} flex={1}>
+    <ScreenContainer p={4} flex={1}>
       <ScrollView
         automaticallyAdjustKeyboardInsets={true}
         contentInset={{ bottom: 50 }}
