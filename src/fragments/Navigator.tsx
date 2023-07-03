@@ -1,7 +1,7 @@
 import { DarkTheme, NavigationContainer } from '@react-navigation/native';
 import type { NativeStackNavigationOptions } from '@react-navigation/native-stack';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useTheme, useToken } from 'native-base';
+import { useTheme } from 'native-base';
 import React from 'react';
 
 import FormScreen from 'src/screens/Form';
@@ -11,12 +11,11 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function Navigator() {
   const { fontConfig } = useTheme();
-  const [initialHeaderColor] = useToken('colors', ['gray.800']);
 
   const screenOptions: NativeStackNavigationOptions = {
     animation: 'fade_from_bottom',
     headerStyle: {
-      backgroundColor: initialHeaderColor,
+      backgroundColor: undefined,
     },
     headerTitleStyle: {
       fontFamily: fontConfig.Mulish[500].normal,

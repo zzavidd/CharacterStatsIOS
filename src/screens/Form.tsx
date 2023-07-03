@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import immutate from 'immutability-helper';
-import { Button, ChevronLeftIcon, Icon, Text, useToken } from 'native-base';
+import { Button, ChevronLeftIcon, Icon, Text } from 'native-base';
 import type { ColorType } from 'native-base/lib/typescript/components/types';
 import React, { useEffect, useState } from 'react';
 
@@ -22,8 +22,6 @@ export default function FormScreen({ navigation, route }: ScreenProps<'Form'>) {
   const { mutate: createCharacters } = useCreateCharacters();
   const { mutate: updateCharacters } = useUpdateCharacters();
 
-  const [initialHeaderColor] = useToken('colors', ['gray.800']);
-
   useEffect(() => {
     const onSave = async () => {
       const dateNow = Date.now();
@@ -38,9 +36,7 @@ export default function FormScreen({ navigation, route }: ScreenProps<'Form'>) {
     };
 
     const { type1, type2 } = state.character;
-    const headerColor = type1
-      ? CSColor.darken(CSColor.TYPE[type1])
-      : initialHeaderColor;
+    const headerColor = type1 ? CSColor.darken(CSColor.TYPE[type1]) : undefined;
     const tintColor: ColorType = type2
       ? CSColor.lighten(CSColor.TYPE[type2])
       : type1
@@ -74,7 +70,6 @@ export default function FormScreen({ navigation, route }: ScreenProps<'Form'>) {
     state.character,
     createCharacters,
     updateCharacters,
-    initialHeaderColor,
   ]);
 
   useEffect(() => {

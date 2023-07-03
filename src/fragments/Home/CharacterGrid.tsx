@@ -40,7 +40,7 @@ export default function CharacterGrid() {
 
   return (
     <ScreenContainer safeAreaBottom={16}>
-      <DevTools />
+      {/* <DevTools /> */}
       <FlatList
         data={data}
         keyExtractor={(item, index) => item.id ?? '' + index}
@@ -89,6 +89,7 @@ function Placeholders() {
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function DevTools() {
   const { abilitiesResult, movesResult } = useContext(QueriesContext);
   const { mutate: createCharacters } = useCreateCharacters();
