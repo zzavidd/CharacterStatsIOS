@@ -1,3 +1,4 @@
+import type { Spec } from 'immutability-helper';
 import immutate from 'immutability-helper';
 import type { IInputProps } from 'native-base';
 import {
@@ -88,16 +89,25 @@ export function LevelSelect({
     if (state.value === level) return;
 
     const newLevel = Math.min(100, Number(state.value));
-    setContext((s) =>
-      immutate(s, {
+
+    setContext((s) => {
+      let deleteSpec: Spec<Character['learnset']> = {};
+      if (s.character.learnset[level].length > 1) {
+        deleteSpec = {
+          [level]: { $splice: [[moveIndex, 1]] },
+        };
+      } else {
+        deleteSpec = { $unset: [String(level)] };
+      }
+      return immutate(s, {
         character: {
           learnset: {
             [newLevel]: (levelMoveIds = []) => [...levelMoveIds, currentMoveId],
-            [level]: { $splice: [[moveIndex, 1]] },
+            ...deleteSpec,
           },
         },
-      }),
-    );
+      });
+    });
   }
 
   return (

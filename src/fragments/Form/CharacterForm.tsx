@@ -11,6 +11,7 @@ import {
   VStack,
 } from 'native-base';
 import React, { useContext } from 'react';
+import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 import { ScreenContainer } from 'src/components/Container';
 import AbilitySelect from 'src/components/Select/AbilitySelect';
@@ -26,8 +27,8 @@ import CharacterFormContext from './CharacterForm.context';
 
 export default function CharacterForm() {
   const [context, setContext] = useContext(CharacterFormContext);
-  const typeFields = useTypeFields();
   const abilityFields = useAbilityFields();
+  const typeFields = useTypeFields();
 
   function onChange(spec: Spec<Omit<Character, 'createTime'>>) {
     setContext((s) => immutate(s, { character: spec }));
@@ -38,18 +39,42 @@ export default function CharacterForm() {
       immutate(s, {
         character: {
           learnset: {
-            '0': (levelMoveIds = []) => [...levelMoveIds, 1],
+            '0': (levelMoveIds = []) => [1, ...levelMoveIds],
           },
         },
       }),
     );
   }
 
+  function onDeleteMovePress(level: string, moveIndex: number) {
+    setContext((s) => {
+      let spec: Spec<Character['learnset']> = {};
+      if (s.character.learnset[level].length > 1) {
+        spec = {
+          [level]: { $splice: [[moveIndex, 1]] },
+        };
+      } else {
+        spec = { $unset: [level] };
+      }
+
+      return immutate(s, {
+        character: {
+          learnset: spec,
+        },
+      });
+    });
+  }
+
+  const firstHalfStats = Object.entries(StatMap).slice(0, 3);
+  const secondHalfStats = Object.entries(StatMap).slice(3);
+  const stats = [firstHalfStats, secondHalfStats];
+
   return (
     <ScreenContainer p={4} flex={1}>
       <ScrollView
         automaticallyAdjustKeyboardInsets={true}
-        contentInset={{ bottom: 50 }}>
+        contentInset={{ bottom: 50 }}
+        showsVerticalScrollIndicator={false}>
         <VStack space={3} flex={1}>
           <HStack space={5}>
             <FormControl flex={1}>
@@ -113,10 +138,9 @@ export default function CharacterForm() {
               ))}
             </VStack>
             <HStack space={4} flex={4}>
-              <VStack space={3}>
-                {Object.entries(StatMap)
-                  .slice(0, 3)
-                  .map(([stat, alias]) => {
+              {stats.map((halfStats, i) => (
+                <VStack space={3} key={i}>
+                  {halfStats.map(([stat, alias]) => {
                     return (
                       <FormControl key={stat}>
                         <FormControl.Label>
@@ -129,24 +153,8 @@ export default function CharacterForm() {
                       </FormControl>
                     );
                   })}
-              </VStack>
-              <VStack space={3}>
-                {Object.entries(StatMap)
-                  .slice(3)
-                  .map(([stat, alias]) => {
-                    return (
-                      <FormControl key={stat}>
-                        <FormControl.Label>
-                          <Text>{alias}:</Text>
-                        </FormControl.Label>
-                        <StatInput
-                          stat={stat as Stat}
-                          value={context.character.stats[stat as Stat]}
-                        />
-                      </FormControl>
-                    );
-                  })}
-              </VStack>
+                </VStack>
+              ))}
             </HStack>
           </HStack>
           <FormControl>
@@ -162,11 +170,18 @@ export default function CharacterForm() {
             </Button>
             <VStack space={2}>
               {Object.entries(context.character.learnset).map(
-                ([level, moveIds]) => {
-                  return (
-                    <React.Fragment key={level}>
-                      {moveIds.map((moveId, index) => (
-                        <HStack key={`${level}-${moveId}-${index}`} space={3}>
+                ([level, moveIds]) => (
+                  <React.Fragment key={level}>
+                    {moveIds.map((moveId, index) => (
+                      <Swipeable
+                        renderRightActions={() => (
+                          <Button
+                            onPress={() => onDeleteMovePress(level, index)}>
+                            <Text>Remove</Text>
+                          </Button>
+                        )}
+                        key={`${level}-${moveId}-${index}`}>
+                        <HStack space={3}>
                           <LevelSelect
                             level={Number(level)}
                             currentMoveId={moveId}
@@ -180,10 +195,10 @@ export default function CharacterForm() {
                             flex={1}
                           />
                         </HStack>
-                      ))}
-                    </React.Fragment>
-                  );
-                },
+                      </Swipeable>
+                    ))}
+                  </React.Fragment>
+                ),
               )}
             </VStack>
           </FormControl>

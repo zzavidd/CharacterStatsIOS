@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import type { INativebaseConfig } from 'native-base';
 import { NativeBaseProvider } from 'native-base';
 import React from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 import ContextInitializer from 'src/fragments/ContextInitializer';
 import FontInitializer from 'src/fragments/FontInitializer';
@@ -30,8 +31,10 @@ export default function App() {
       <NativeBaseProvider config={config} theme={theme}>
         <ContextInitializer>
           <FontInitializer>
-            <StatusBar style={'light'} />
-            <Navigator />
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <StatusBar style={'light'} />
+              <Navigator />
+            </GestureHandlerRootView>
           </FontInitializer>
         </ContextInitializer>
       </NativeBaseProvider>
