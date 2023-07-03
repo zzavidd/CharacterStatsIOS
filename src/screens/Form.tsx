@@ -39,7 +39,7 @@ export default function FormScreen({ navigation, route }: ScreenProps<'Form'>) {
           onPress={() => navigation.goBack()}
           startIcon={<ChevronLeftIcon />}
           px={2}>
-          <Text color={'primary.300'}>Back</Text>
+          <Text color={'primary.300'}>Cancel</Text>
         </Button>
       ),
       headerRight: () => (

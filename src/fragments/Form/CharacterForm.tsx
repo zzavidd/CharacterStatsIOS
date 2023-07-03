@@ -195,7 +195,8 @@ export default function CharacterForm() {
                       <Swipeable
                         renderRightActions={() => (
                           <Button
-                            onPress={() => onDeleteMovePress(level, index)}>
+                            onPress={() => onDeleteMovePress(level, index)}
+                            ml={2}>
                             <Text>Remove</Text>
                           </Button>
                         )}
