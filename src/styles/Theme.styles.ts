@@ -28,6 +28,11 @@ const theme = extendTheme({
         size: 'lg',
       },
     },
+    Skeleton: {
+      defaultProps: {
+        rounded: 'md',
+      },
+    },
     Text: {
       baseStyle: {
         color: 'text.200',
