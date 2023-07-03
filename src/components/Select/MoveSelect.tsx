@@ -56,7 +56,7 @@ export default function MoveSelect({
       InputLeftElement={
         value ? (
           <Image
-            source={PokeIcon[moveMap[value].type]}
+            source={PokeIcon.Types[moveMap[value].type]}
             alt={value}
             width={6}
             height={6}
@@ -216,7 +216,7 @@ const MoveEntry = React.memo(
         p={3}>
         <HStack alignItems={'flex-start'} space={4}>
           <Image
-            source={PokeIcon[move.type]}
+            source={PokeIcon.Types[move.type]}
             alt={move.type}
             width={8}
             height={8}

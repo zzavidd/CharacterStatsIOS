@@ -52,7 +52,7 @@ export default function TypeSelect({ name, ...props }: TypeSelectProps) {
       InputLeftElement={
         value ? (
           <Image
-            source={PokeIcon[value]}
+            source={PokeIcon.Types[value]}
             alt={value}
             width={6}
             height={6}
@@ -126,7 +126,12 @@ const TypeEntry = React.memo(
         _pressed={{ bgColor: 'gray.900' }}
         flex={1}>
         <HStack alignItems={'center'} space={4} p={3}>
-          <Image source={PokeIcon[type]} alt={type} width={30} height={30} />
+          <Image
+            source={PokeIcon.Types[type]}
+            alt={type}
+            width={30}
+            height={30}
+          />
           <Text fontSize={20}>{type}</Text>
           {selected ? <CheckIcon size={'5'} /> : null}
         </HStack>

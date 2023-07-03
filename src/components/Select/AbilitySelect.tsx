@@ -155,7 +155,7 @@ const AbilityEntry = React.memo(
         p={3}>
         <HStack alignItems={'flex-start'} space={4}>
           <Image
-            source={PokeIcon[ability.commonType]}
+            source={PokeIcon.Types[ability.commonType]}
             alt={ability.commonType}
             width={8}
             height={8}

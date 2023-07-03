@@ -50,7 +50,7 @@ export default function CharacterItem({
             return (
               <HStack space={2} alignItems={'center'} key={`${type}-${key}`}>
                 <Image
-                  source={PokeIcon[type]}
+                  source={PokeIcon.Types[type]}
                   style={{ width: 20, height: 20 }}
                 />
                 <Text>{type}</Text>
