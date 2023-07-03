@@ -11,7 +11,6 @@ import {
   Image,
   Input,
   SearchIcon,
-  Stack,
   Text,
   VStack,
 } from 'native-base';
@@ -52,6 +51,7 @@ export default function MoveSelect({
       {...props}
       value={value ? moveMap[value]?.name : undefined}
       pl={value ? 2 : undefined}
+      bgColor={value ? moveMap[value]?.color : 'transparent'}
       isReadOnly={true}
       InputLeftElement={
         value ? (
@@ -66,11 +66,11 @@ export default function MoveSelect({
         ) : undefined
       }
       InputRightElement={
-        <Stack mx={2}>
+        <HStack mx={2}>
           <Button onPress={showAbilityMenu} p={2}>
             <ChevronDownIcon />
           </Button>
-        </Stack>
+        </HStack>
       }
     />
   );
@@ -221,13 +221,26 @@ const MoveEntry = React.memo(
             width={8}
             height={8}
           />
-          <VStack>
-            <Text fontSize={20}>{move.name}</Text>
-            {move.description ? (
-              <Text fontSize={12} fontWeight={'light'}>
-                {move.description}
+          <VStack space={1}>
+            <Box>
+              <Text fontSize={20}>{move.name}</Text>
+              {move.description ? (
+                <Text fontSize={12} fontWeight={'light'}>
+                  {move.description}
+                </Text>
+              ) : null}
+            </Box>
+            <HStack space={4}>
+              <Text color={'gray.200'} fontSize={12}>
+                Power: {move.power || '-'}
               </Text>
-            ) : null}
+              <Text color={'gray.200'} fontSize={12}>
+                PP: {move.pp || '-'}
+              </Text>
+              <Text color={'gray.200'} fontSize={12}>
+                Acc: {move.accuracy || '-'}
+              </Text>
+            </HStack>
           </VStack>
         </HStack>
       </Actionsheet.Item>

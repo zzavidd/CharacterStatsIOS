@@ -16,11 +16,12 @@ import {
 import React, { useContext } from 'react';
 
 import CharacterFormContext from 'src/fragments/Form/CharacterForm.context';
+import CSColor from 'src/utils/constants/colors';
 import { Type } from 'src/utils/constants/enums';
 import PokeIcon from 'src/utils/constants/icons';
 
 export default function TypeSelect({ name, ...props }: TypeSelectProps) {
-  const { value } = props;
+  const value = props.value as Type;
   const [, setContext] = useContext(CharacterFormContext);
 
   function showTypeMenu() {
@@ -30,7 +31,7 @@ export default function TypeSelect({ name, ...props }: TypeSelectProps) {
           $set: {
             isMenuOpen: true,
             key: name,
-            selectedValue: value as Type,
+            selectedValue: value,
           },
         },
       }),
@@ -45,12 +46,13 @@ export default function TypeSelect({ name, ...props }: TypeSelectProps) {
     <Input
       {...props}
       pl={value ? 2 : undefined}
+      bgColor={value ? CSColor.TYPE[value] : 'transparent'}
       isReadOnly={true}
       onPressOut={showTypeMenu}
       InputLeftElement={
         value ? (
           <Image
-            source={PokeIcon[value as Type]}
+            source={PokeIcon[value]}
             alt={value}
             width={6}
             height={6}
