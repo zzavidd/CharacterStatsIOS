@@ -23,6 +23,7 @@ import CSColor from 'src/utils/constants/colors';
 import { StatMap } from 'src/utils/constants/defaults';
 import type { Stat, Type } from 'src/utils/constants/enums';
 import { Universes } from 'src/utils/constants/options';
+import { calculateBST } from 'src/utils/functions';
 
 import CharacterFormContext from './CharacterForm.context';
 
@@ -156,25 +157,30 @@ export default function CharacterForm() {
                 </FormControl>
               ))}
             </VStack>
-            <HStack space={4} flex={4}>
-              {stats.map((halfStats, i) => (
-                <VStack space={3} key={i}>
-                  {halfStats.map(([stat, alias]) => {
-                    return (
-                      <FormControl key={stat}>
-                        <FormControl.Label>
-                          <Text>{alias}:</Text>
-                        </FormControl.Label>
-                        <StatInput
-                          stat={stat as Stat}
-                          value={context.character.stats[stat as Stat]}
-                        />
-                      </FormControl>
-                    );
-                  })}
-                </VStack>
-              ))}
-            </HStack>
+            <VStack space={3}>
+              <HStack space={4} flex={4}>
+                {stats.map((halfStats, i) => (
+                  <VStack space={3} key={i}>
+                    {halfStats.map(([stat, alias]) => {
+                      return (
+                        <FormControl key={stat}>
+                          <FormControl.Label>
+                            <Text>{alias}:</Text>
+                          </FormControl.Label>
+                          <StatInput
+                            stat={stat as Stat}
+                            value={context.character.stats[stat as Stat]}
+                          />
+                        </FormControl>
+                      );
+                    })}
+                  </VStack>
+                ))}
+              </HStack>
+              <Text color={'gray.400'} textAlign={'right'} mr={2}>
+                BST: {calculateBST(context.character.stats)}
+              </Text>
+            </VStack>
           </HStack>
           <FormControl>
             <FormControl.Label>
