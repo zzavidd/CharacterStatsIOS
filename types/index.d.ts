@@ -15,7 +15,8 @@ declare global {
   export type CharacterUpdateInput = z.infer<typeof zCharacterUpdateInput>;
   export type Stats = z.infer<typeof zStats>;
 
-  export type ReactUseState<T> = [T, Dispatch<SetStateAction<T>>];
+  export type ReactDispatch<T> = Dispatch<SetStateAction<T>>;
+  export type ReactUseState<T> = [T, ReactDispatch<T>];
 
   export type AbilityKey = 'ability1' | 'ability2' | 'abilityX';
   export type TypeKey = 'type1' | 'type2';

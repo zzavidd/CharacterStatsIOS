@@ -2,12 +2,12 @@ import immutate from 'immutability-helper';
 import { Input } from 'native-base';
 import React, { useContext, useEffect, useState } from 'react';
 
-import CharacterFormContext from 'src/fragments/Form/CharacterForm.context';
+import { CharacterFormContextDispatch } from 'src/fragments/Form/CharacterForm.context';
 import type { Stat } from 'src/utils/constants/enums';
 
 export default function StatInput({ stat, value }: StatInputProps) {
   const [state, setState] = useState({ value: 0 });
-  const [, setContext] = useContext(CharacterFormContext);
+  const setContext = useContext(CharacterFormContextDispatch);
 
   useEffect(() => {
     setState({ value });

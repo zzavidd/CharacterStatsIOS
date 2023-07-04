@@ -11,12 +11,15 @@ import {
 } from 'native-base';
 import React, { useContext } from 'react';
 
-import CharacterFormContext from 'src/fragments/Form/CharacterForm.context';
+import {
+  CharacterFormContextDispatch,
+  CharacterFormContextState,
+} from 'src/fragments/Form/CharacterForm.context';
 import { Universes } from 'src/utils/constants/options';
 
 export default function UniverseSelect(props: IInputProps) {
   const { value } = props;
-  const [, setContext] = useContext(CharacterFormContext);
+  const setContext = useContext(CharacterFormContextDispatch);
 
   function showUniverseMenu() {
     setContext((c) =>
@@ -35,7 +38,8 @@ export default function UniverseSelect(props: IInputProps) {
 }
 
 export function UniverseMenu({ onChange }: UniverseMenuProps) {
-  const [context, setContext] = useContext(CharacterFormContext);
+  const context = useContext(CharacterFormContextState);
+  const setContext = useContext(CharacterFormContextDispatch);
 
   function hideUniverseMenu() {
     setContext((c) =>

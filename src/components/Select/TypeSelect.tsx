@@ -16,7 +16,10 @@ import {
 import React, { useCallback, useContext } from 'react';
 import type { ListRenderItem } from 'react-native';
 
-import CharacterFormContext from 'src/fragments/Form/CharacterForm.context';
+import {
+  CharacterFormContextDispatch,
+  CharacterFormContextState,
+} from 'src/fragments/Form/CharacterForm.context';
 import CSColor from 'src/utils/constants/colors';
 import { Type } from 'src/utils/constants/enums';
 import PokeIcon from 'src/utils/constants/icons';
@@ -25,7 +28,7 @@ const ITEM_HEIGHT = 54;
 
 export default function TypeSelect({ name, ...props }: TypeSelectProps) {
   const value = props.value as Type;
-  const [, setContext] = useContext(CharacterFormContext);
+  const setContext = useContext(CharacterFormContextDispatch);
 
   function showTypeMenu() {
     setContext((c) =>
@@ -79,7 +82,8 @@ export default function TypeSelect({ name, ...props }: TypeSelectProps) {
 }
 
 export function TypeMenu() {
-  const [context, setContext] = useContext(CharacterFormContext);
+  const context = useContext(CharacterFormContextState);
+  const setContext = useContext(CharacterFormContextDispatch);
 
   function hideTypeMenu() {
     setContext((c) =>

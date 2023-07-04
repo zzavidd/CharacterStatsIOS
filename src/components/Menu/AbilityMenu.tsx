@@ -15,7 +15,10 @@ import React, { useCallback, useContext, useMemo, useState } from 'react';
 import type { ListRenderItem } from 'react-native';
 import { VirtualizedList } from 'react-native';
 
-import CharacterFormContext from 'src/fragments/Form/CharacterForm.context';
+import {
+  CharacterFormContextDispatch,
+  CharacterFormContextState,
+} from 'src/fragments/Form/CharacterForm.context';
 import PokeIcon from 'src/utils/constants/icons';
 import { containsMatch } from 'src/utils/functions';
 import useAbilities from 'src/utils/hooks/useAbilities';
@@ -30,7 +33,8 @@ const SORT_GROUPS: Record<number, keyof PokeAbility> = {
 
 export default function AbilityMenu() {
   const [state, setState] = useState({ searchTerm: '' });
-  const [context, setContext] = useContext(CharacterFormContext);
+  const context = useContext(CharacterFormContextState);
+  const setContext = useContext(CharacterFormContextDispatch);
   const filteredAbilities = useFilteredAbilities(state.searchTerm);
 
   function hideAbilityMenu() {

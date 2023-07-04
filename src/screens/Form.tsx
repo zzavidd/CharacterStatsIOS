@@ -9,7 +9,9 @@ import MoveMenu from 'src/components/Menu/MoveMenu';
 import { TypeMenu } from 'src/components/Select/TypeSelect';
 import { UniverseMenu } from 'src/components/Select/UniverseSelect';
 import CharacterForm from 'src/fragments/Form/CharacterForm';
-import CharacterFormContext, {
+import {
+  CharacterFormContextDispatch,
+  CharacterFormContextState,
   InitialCharacterFormState,
 } from 'src/fragments/Form/CharacterForm.context';
 import CSColor from 'src/utils/constants/colors';
@@ -87,12 +89,14 @@ export default function FormScreen({ navigation, route }: ScreenProps<'Form'>) {
   }
 
   return (
-    <CharacterFormContext.Provider value={[state, setState]}>
-      <CharacterForm />
-      <AbilityMenu />
-      <MoveMenu />
-      <TypeMenu />
-      <UniverseMenu onChange={onUniverseChange} />
-    </CharacterFormContext.Provider>
+    <CharacterFormContextState.Provider value={state}>
+      <CharacterFormContextDispatch.Provider value={setState}>
+        <CharacterForm />
+        <AbilityMenu />
+        <MoveMenu />
+        <TypeMenu />
+        <UniverseMenu onChange={onUniverseChange} />
+      </CharacterFormContextDispatch.Provider>
+    </CharacterFormContextState.Provider>
   );
 }

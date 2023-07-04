@@ -5,7 +5,7 @@ import { Button, ChevronDownIcon, HStack, Image, Input } from 'native-base';
 import React, { useContext, useState } from 'react';
 
 import { QueriesContext } from 'App.context';
-import CharacterFormContext from 'src/fragments/Form/CharacterForm.context';
+import { CharacterFormContextDispatch } from 'src/fragments/Form/CharacterForm.context';
 import CSColor from 'src/utils/constants/colors';
 import PokeIcon from 'src/utils/constants/icons';
 
@@ -17,7 +17,7 @@ export default function MoveSelect({
 }: MoveSelectProps) {
   const { movesResult } = useContext(QueriesContext);
   const { data: moveMap = {} } = movesResult;
-  const [, setContext] = useContext(CharacterFormContext);
+  const setContext = useContext(CharacterFormContextDispatch);
 
   function showAbilityMenu() {
     setContext((c) =>
@@ -82,7 +82,7 @@ export function LevelSelect({
   moveIndex,
 }: LevelSelectProps) {
   const [state, setState] = useState({ value: level });
-  const [, setContext] = useContext(CharacterFormContext);
+  const setContext = useContext(CharacterFormContextDispatch);
 
   function onChangeText(value: string) {
     setState({ value: Number(value) });

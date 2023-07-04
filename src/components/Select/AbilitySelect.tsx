@@ -3,7 +3,7 @@ import type { IInputProps } from 'native-base';
 import { Button, CloseIcon, Input, Stack } from 'native-base';
 import React, { useContext } from 'react';
 
-import CharacterFormContext from 'src/fragments/Form/CharacterForm.context';
+import { CharacterFormContextDispatch } from 'src/fragments/Form/CharacterForm.context';
 import useAbilities from 'src/utils/hooks/useAbilities';
 
 export default function AbilitySelect({
@@ -11,7 +11,7 @@ export default function AbilitySelect({
   value,
   ...props
 }: AbilitySelectProps) {
-  const [, setContext] = useContext(CharacterFormContext);
+  const setContext = useContext(CharacterFormContextDispatch);
   const { data: abilityMap = {} } = useAbilities();
 
   function showAbilityMenu() {

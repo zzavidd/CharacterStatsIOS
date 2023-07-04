@@ -15,7 +15,10 @@ import React, { useCallback, useContext, useMemo, useState } from 'react';
 import type { ListRenderItem } from 'react-native';
 import { VirtualizedList } from 'react-native';
 
-import CharacterFormContext from 'src/fragments/Form/CharacterForm.context';
+import {
+  CharacterFormContextDispatch,
+  CharacterFormContextState,
+} from 'src/fragments/Form/CharacterForm.context';
 import PokeIcon from 'src/utils/constants/icons';
 import { containsMatch } from 'src/utils/functions';
 import useMoves from 'src/utils/hooks/useMoves';
@@ -31,7 +34,8 @@ const SORT_GROUPS: Record<number, keyof PokeMove> = {
 
 export default function MoveMenu() {
   const [state, setState] = useState({ searchTerm: '' });
-  const [context, setContext] = useContext(CharacterFormContext);
+  const context = useContext(CharacterFormContextState);
+  const setContext = useContext(CharacterFormContextDispatch);
   const filteredMoves = useFilteredMoves(state.searchTerm);
 
   function hideMoveMenu() {

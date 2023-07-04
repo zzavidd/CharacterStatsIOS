@@ -37,11 +37,11 @@ export const InitialCharacterFormState: CharacterFormState = {
   },
 };
 
-const CharacterFormContext = React.createContext<
-  ReactUseState<CharacterFormState>
->([InitialCharacterFormState, () => {}]);
-
-export default CharacterFormContext;
+export const CharacterFormContextState =
+  React.createContext<CharacterFormState>(InitialCharacterFormState);
+export const CharacterFormContextDispatch = React.createContext<
+  ReactDispatch<CharacterFormState>
+>(() => {});
 
 export interface CharacterFormState {
   character: Omit<Character, 'createTime'>;

@@ -24,10 +24,14 @@ import type { Stat, Type } from 'src/utils/constants/enums';
 import { Universes } from 'src/utils/constants/options';
 import { calculateBST } from 'src/utils/functions';
 
-import CharacterFormContext from './CharacterForm.context';
+import {
+  CharacterFormContextDispatch,
+  CharacterFormContextState,
+} from './CharacterForm.context';
 
 export default function CharacterForm() {
-  const [context, setContext] = useContext(CharacterFormContext);
+  const context = useContext(CharacterFormContextState);
+  const setContext = useContext(CharacterFormContextDispatch);
   const abilityFields = useAbilityFields();
   const typeFields = useTypeFields();
 
@@ -224,7 +228,7 @@ export default function CharacterForm() {
 }
 
 function useTypeFields(): TypeField[] {
-  const [context] = useContext(CharacterFormContext);
+  const context = useContext(CharacterFormContextState);
   return [
     {
       key: 'type1',
@@ -240,7 +244,7 @@ function useTypeFields(): TypeField[] {
 }
 
 function useAbilityFields(): AbilityField[] {
-  const [context] = useContext(CharacterFormContext);
+  const context = useContext(CharacterFormContextState);
   return [
     {
       key: 'ability1',
