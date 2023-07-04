@@ -6,11 +6,13 @@ import {
   FormControl,
   HStack,
   Input,
+  KeyboardAvoidingView,
   ScrollView,
   Text,
   VStack,
 } from 'native-base';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { Keyboard } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 import { ScreenContainer } from 'src/components/Container';
@@ -30,10 +32,18 @@ import {
 } from './CharacterForm.context';
 
 export default function CharacterForm() {
+  const [state, setState] = useState({ isNameFieldFocused: false });
   const context = useContext(CharacterFormContextState);
   const setContext = useContext(CharacterFormContextDispatch);
   const abilityFields = useAbilityFields();
   const typeFields = useTypeFields();
+
+  useEffect(() => {
+    const listener = Keyboard.addListener('keyboardDidHide', () => {
+      setState({ isNameFieldFocused: false });
+    });
+    return () => listener.remove();
+  }, []);
 
   function onChange(spec: Spec<Omit<Character, 'createTime'>>) {
     setContext((s) => immutate(s, { character: spec }));
@@ -82,147 +92,158 @@ export default function CharacterForm() {
   const secondHalfStats = Object.entries(StatMap).slice(3);
   const stats = [firstHalfStats, secondHalfStats];
 
+  const isMenuOpen = [
+    context.selectedAbility,
+    context.selectedMove,
+    context.selectedType,
+    context.selectedUniverse,
+  ].some((s) => s.isMenuOpen);
   return (
     <ScreenContainer p={4} flex={1}>
-      <ScrollView
-        automaticallyAdjustKeyboardInsets={true}
-        contentInset={{ bottom: 50 }}
-        showsVerticalScrollIndicator={false}>
-        <VStack space={3} flex={1}>
-          <HStack space={5}>
-            <FormControl flex={1}>
-              <FormControl.Label>
-                <Text>Name:</Text>
-              </FormControl.Label>
-              <Input
-                value={context.character.name}
-                placeholder={'Enter name...'}
-                onChangeText={(value) => onChange({ name: { $set: value } })}
-                returnKeyType={'done'}
-              />
-            </FormControl>
-            <FormControl flex={1}>
-              <FormControl.Label>
-                <Text>Universe:</Text>
-              </FormControl.Label>
-              <UniverseSelect
-                value={Universes[context.character.universe!]}
-                placeholder={'Select universe...'}
-                onChangeText={(value) =>
-                  onChange({ universe: { $set: Number(value) } })
-                }
-              />
-            </FormControl>
-          </HStack>
-          <HStack space={5}>
-            {typeFields.map(({ key, label, value }) => (
-              <FormControl flex={1} key={key}>
+      <KeyboardAvoidingView
+        behavior={'position'}
+        enabled={!isMenuOpen && !state.isNameFieldFocused}
+        keyboardVerticalOffset={-100}
+        flex={1}>
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <VStack space={3} flex={1}>
+            <HStack space={5}>
+              <FormControl flex={1}>
                 <FormControl.Label>
-                  <Text>{label}:</Text>
+                  <Text>Name:</Text>
                 </FormControl.Label>
-                <TypeSelect
-                  name={key}
-                  value={value ?? undefined}
-                  placeholder={'Select type...'}
+                <Input
+                  value={context.character.name}
+                  onFocus={() => setState({ isNameFieldFocused: true })}
+                  placeholder={'Enter name...'}
+                  onChangeText={(value) => onChange({ name: { $set: value } })}
+                  returnKeyType={'done'}
+                />
+              </FormControl>
+              <FormControl flex={1}>
+                <FormControl.Label>
+                  <Text>Universe:</Text>
+                </FormControl.Label>
+                <UniverseSelect
+                  value={Universes[context.character.universe!]}
+                  placeholder={'Select universe...'}
                   onChangeText={(value) =>
-                    onChange({ [key]: { $set: value as Type } })
+                    onChange({ universe: { $set: Number(value) } })
                   }
                 />
               </FormControl>
-            ))}
-          </HStack>
-          <HStack space={5}>
-            <VStack space={3} flex={5}>
-              {abilityFields.map(({ key, label, value }) => (
-                <FormControl key={key}>
+            </HStack>
+            <HStack space={5}>
+              {typeFields.map(({ key, label, value }) => (
+                <FormControl flex={1} key={key}>
                   <FormControl.Label>
                     <Text>{label}:</Text>
                   </FormControl.Label>
-                  <AbilitySelect
+                  <TypeSelect
                     name={key}
                     value={value ?? undefined}
-                    placeholder={'Select ability...'}
+                    placeholder={'Select type...'}
                     onChangeText={(value) =>
-                      onChange({ [key]: { $set: value } })
+                      onChange({ [key]: { $set: value as Type } })
                     }
-                    key={key}
                   />
                 </FormControl>
               ))}
-            </VStack>
-            <VStack space={3}>
-              <HStack space={4} flex={4}>
-                {stats.map((halfStats, i) => (
-                  <VStack space={3} key={i}>
-                    {halfStats.map(([stat, alias]) => {
-                      return (
-                        <FormControl key={stat}>
-                          <FormControl.Label>
-                            <Text>{alias}:</Text>
-                          </FormControl.Label>
-                          <StatInput
-                            stat={stat as Stat}
-                            value={context.character.stats[stat as Stat]}
-                          />
-                        </FormControl>
-                      );
-                    })}
-                  </VStack>
+            </HStack>
+
+            <HStack space={5}>
+              <VStack space={3} flex={5}>
+                {abilityFields.map(({ key, label, value }) => (
+                  <FormControl key={key}>
+                    <FormControl.Label>
+                      <Text>{label}:</Text>
+                    </FormControl.Label>
+                    <AbilitySelect
+                      name={key}
+                      value={value ?? undefined}
+                      placeholder={'Select ability...'}
+                      onChangeText={(value) =>
+                        onChange({ [key]: { $set: value } })
+                      }
+                      key={key}
+                    />
+                  </FormControl>
                 ))}
-              </HStack>
-              <Text color={'gray.400'} textAlign={'right'} mr={2}>
-                BST: {calculateBST(context.character.stats)}
-              </Text>
-            </VStack>
-          </HStack>
-          <FormControl>
-            <FormControl.Label>
-              <Text>Learnset:</Text>
-            </FormControl.Label>
-            <Button
-              onPress={onAddMovePress}
-              variant={'outline'}
-              startIcon={<AddIcon />}
-              mb={5}>
-              <Text>Add Move</Text>
-            </Button>
-            <VStack space={2}>
-              {Object.entries(context.character.learnset).map(
-                ([level, moveIds]) => (
-                  <React.Fragment key={level}>
-                    {moveIds.map((moveId, index) => (
-                      <Swipeable
-                        renderRightActions={() => (
-                          <Button
-                            onPress={() => onDeleteMovePress(level, index)}
-                            ml={2}>
-                            <Text>Remove</Text>
-                          </Button>
-                        )}
-                        key={`${level}-${moveId}-${index}`}>
-                        <HStack space={3}>
-                          <LevelSelect
-                            level={Number(level)}
-                            currentMoveId={moveId}
-                            moveIndex={index}
-                          />
-                          <MoveSelect
-                            name={level}
-                            index={index}
-                            value={String(moveId)}
-                            placeholder={'Select move...'}
-                            flex={1}
-                          />
-                        </HStack>
-                      </Swipeable>
-                    ))}
-                  </React.Fragment>
-                ),
-              )}
-            </VStack>
-          </FormControl>
-        </VStack>
-      </ScrollView>
+              </VStack>
+              <VStack space={3}>
+                <HStack space={4} flex={4}>
+                  {stats.map((halfStats, i) => (
+                    <VStack space={3} key={i}>
+                      {halfStats.map(([stat, alias]) => {
+                        return (
+                          <FormControl key={stat}>
+                            <FormControl.Label>
+                              <Text>{alias}:</Text>
+                            </FormControl.Label>
+                            <StatInput
+                              stat={stat as Stat}
+                              value={context.character.stats[stat as Stat]}
+                            />
+                          </FormControl>
+                        );
+                      })}
+                    </VStack>
+                  ))}
+                </HStack>
+                <Text color={'gray.400'} textAlign={'right'} mr={2}>
+                  BST: {calculateBST(context.character.stats)}
+                </Text>
+              </VStack>
+            </HStack>
+            <FormControl>
+              <FormControl.Label>
+                <Text>Learnset:</Text>
+              </FormControl.Label>
+              <Button
+                onPress={onAddMovePress}
+                variant={'outline'}
+                startIcon={<AddIcon />}
+                mb={5}>
+                <Text>Add Move</Text>
+              </Button>
+              <VStack space={2}>
+                {Object.entries(context.character.learnset).map(
+                  ([level, moveIds]) => (
+                    <React.Fragment key={level}>
+                      {moveIds.map((moveId, index) => (
+                        <Swipeable
+                          renderRightActions={() => (
+                            <Button
+                              onPress={() => onDeleteMovePress(level, index)}
+                              ml={2}>
+                              <Text>Remove</Text>
+                            </Button>
+                          )}
+                          key={`${level}-${moveId}-${index}`}>
+                          <HStack space={3}>
+                            <LevelSelect
+                              level={Number(level)}
+                              currentMoveId={moveId}
+                              moveIndex={index}
+                            />
+                            <MoveSelect
+                              name={level}
+                              index={index}
+                              value={String(moveId)}
+                              placeholder={'Select move...'}
+                              flex={1}
+                            />
+                          </HStack>
+                        </Swipeable>
+                      ))}
+                    </React.Fragment>
+                  ),
+                )}
+              </VStack>
+            </FormControl>
+          </VStack>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </ScreenContainer>
   );
 }
