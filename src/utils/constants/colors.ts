@@ -32,7 +32,7 @@ namespace CSColor {
     [Type.GRASS]: '#4E8234',
     [Type.GROUND]: '#927D44',
     [Type.ICE]: '#638D8D',
-    [Type.NORMAL]: '#6D6D4E',
+    [Type.NORMAL]: '#6d5f4e',
     [Type.POISON]: '#682A68',
     [Type.PSYCHIC]: '#A13959',
     [Type.ROCK]: '#786824',
