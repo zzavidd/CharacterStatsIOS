@@ -102,7 +102,7 @@ export default function CharacterForm() {
       let currentLevel = 1;
       const newLearnset = Object.entries(s.character.learnset).reduce(
         (acc, [level, moveIds]) => {
-          if (Number(level) === 0) {
+          if (Number(level) === 0 || Number(level) === 100) {
             moveIds.forEach((moveId) => {
               currentLevel += interval;
               const newLevel = String(Math.min(currentLevel, max));
