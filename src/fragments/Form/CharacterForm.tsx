@@ -12,7 +12,7 @@ import {
   VStack,
 } from 'native-base';
 import React, { useContext, useEffect, useState } from 'react';
-import { Keyboard } from 'react-native';
+import { Alert, Keyboard } from 'react-native';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
 
 import { ScreenContainer } from 'src/components/Container';
@@ -67,6 +67,66 @@ export default function CharacterForm() {
         },
       }),
     );
+  }
+
+  function onSpreadMovePress() {
+    Alert.prompt(
+      'Spread moves',
+      'What is the final learnset level?',
+      (level) => spreadMoves(Number(level)),
+      'plain-text',
+      '100',
+      'numeric',
+    );
+  }
+
+  function spreadMoves(maxLevel: number) {
+    setContext((s) => {
+      const min = 2;
+      const max = Math.min(maxLevel, 100);
+
+      const moveCount = Object.entries(s.character.learnset).reduce(
+        (acc, [level, moveIds]) => {
+          if (Number(level) === 0) {
+            acc += moveIds.length;
+          } else if (Number(level) >= 2) {
+            acc += 1;
+          }
+          return acc;
+        },
+        0,
+      );
+
+      const interval = Math.ceil((max - min) / moveCount);
+
+      let currentLevel = 1;
+      const newLearnset = Object.entries(s.character.learnset).reduce(
+        (acc, [level, moveIds]) => {
+          if (Number(level) === 0) {
+            moveIds.forEach((moveId) => {
+              currentLevel += interval;
+              const newLevel = String(Math.min(currentLevel, max));
+              acc[newLevel] = [moveId];
+            });
+          } else if (Number(level) >= 2) {
+            currentLevel += interval;
+            const newLevel = String(Math.min(currentLevel, max));
+            acc[newLevel] = moveIds;
+          } else {
+            acc[level] = moveIds;
+          }
+          return acc;
+        },
+        {} as Record<string, number[]>,
+      );
+      return immutate(s, {
+        character: {
+          learnset: {
+            $set: newLearnset,
+          },
+        },
+      });
+    });
   }
 
   function onDeleteMovePress(level: string, moveIndex: number) {
@@ -150,7 +210,6 @@ export default function CharacterForm() {
                 </FormControl>
               ))}
             </HStack>
-
             <HStack space={5}>
               <VStack space={3} flex={5}>
                 {abilityFields.map(({ key, label, value }) => (
@@ -199,13 +258,17 @@ export default function CharacterForm() {
               <FormControl.Label>
                 <Text>Learnset:</Text>
               </FormControl.Label>
-              <Button
-                onPress={onAddMovePress}
-                variant={'outline'}
-                startIcon={<AddIcon />}
-                mb={5}>
-                <Text>Add Move</Text>
-              </Button>
+              <Button.Group variant={'outline'} isAttached={true} mb={5}>
+                <Button
+                  onPress={onAddMovePress}
+                  startIcon={<AddIcon />}
+                  flex={4}>
+                  <Text>Add Move</Text>
+                </Button>
+                <Button onPress={onSpreadMovePress} flex={1}>
+                  <Text>Spread</Text>
+                </Button>
+              </Button.Group>
               <VStack space={2}>
                 {Object.entries(context.character.learnset).map(
                   ([level, moveIds]) => (
