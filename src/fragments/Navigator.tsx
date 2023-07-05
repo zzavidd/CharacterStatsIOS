@@ -4,7 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { Text, VStack, useTheme } from 'native-base';
 import React from 'react';
 
-import { version } from 'package.json';
+import { expo } from 'app.json';
 import FormScreen from 'src/screens/Form';
 import HomeScreen from 'src/screens/Home';
 
@@ -31,7 +31,7 @@ export default function Navigator() {
             headerTitle: () => (
               <VStack alignItems={'center'}>
                 <Text fontSize={16}>Characters</Text>
-                <Text fontSize={10}>v{version}</Text>
+                <Text fontSize={10}>v{expo.version}</Text>
               </VStack>
             ),
           }}
