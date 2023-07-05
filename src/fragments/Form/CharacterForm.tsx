@@ -97,7 +97,7 @@ export default function CharacterForm() {
         0,
       );
 
-      const interval = Math.ceil((max - min) / moveCount);
+      const interval = Math.floor((max - min) / moveCount);
 
       let currentLevel = 1;
       const newLearnset = Object.entries(s.character.learnset).reduce(
