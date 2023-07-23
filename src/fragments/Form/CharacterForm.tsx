@@ -30,6 +30,11 @@ import {
   CharacterFormContextDispatch,
   CharacterFormContextState,
 } from './CharacterForm.context';
+import {
+  useAddMove,
+  useDeleteMove,
+  useSpreadMoves,
+} from './CharacterForm.hooks';
 
 export default function CharacterForm() {
   const [state, setState] = useState({ isNameFieldFocused: false });
@@ -37,6 +42,10 @@ export default function CharacterForm() {
   const setContext = useContext(CharacterFormContextDispatch);
   const abilityFields = useAbilityFields();
   const typeFields = useTypeFields();
+
+  const addMove = useAddMove();
+  const deleteMove = useDeleteMove();
+  const spreadMoves = useSpreadMoves();
 
   useEffect(() => {
     const listener = Keyboard.addListener('keyboardDidHide', () => {
@@ -46,27 +55,7 @@ export default function CharacterForm() {
   }, []);
 
   function onChange(spec: Spec<Omit<Character, 'createTime'>>) {
-    setContext((s) => immutate(s, { character: spec }));
-  }
-
-  function onAddMovePress() {
-    setContext((s) =>
-      immutate(s, {
-        character: {
-          learnset: {
-            '0': (levelMoveIds = []) => [1, ...levelMoveIds],
-          },
-        },
-        selectedMove: {
-          $set: {
-            isMenuOpen: true,
-            level: '0',
-            selectedMoveIndex: 0,
-            selectedValue: undefined,
-          },
-        },
-      }),
-    );
+    setContext((c) => immutate(c, { character: spec }));
   }
 
   function onSpreadMovePress() {
@@ -75,77 +64,9 @@ export default function CharacterForm() {
       'What is the final learnset level?',
       (level) => spreadMoves(Number(level)),
       'plain-text',
-      '100',
+      '',
       'numeric',
     );
-  }
-
-  function spreadMoves(maxLevel: number) {
-    setContext((s) => {
-      const min = 2;
-      const max = Math.min(maxLevel, 100);
-
-      const moveCount = Object.entries(s.character.learnset).reduce(
-        (acc, [level, moveIds]) => {
-          if (Number(level) === 0) {
-            acc += moveIds.length;
-          } else if (Number(level) >= 2) {
-            acc += 1;
-          }
-          return acc;
-        },
-        0,
-      );
-
-      const interval = Math.floor((max - min) / moveCount);
-
-      let currentLevel = 1;
-      const newLearnset = Object.entries(s.character.learnset).reduce(
-        (acc, [level, moveIds]) => {
-          if (Number(level) === 0 || Number(level) === 100) {
-            moveIds.forEach((moveId) => {
-              currentLevel += interval;
-              const newLevel = String(Math.min(currentLevel, max));
-              acc[newLevel] = [moveId];
-            });
-          } else if (Number(level) >= 2) {
-            currentLevel += interval;
-            const newLevel = String(Math.min(currentLevel, max));
-            acc[newLevel] = moveIds;
-          } else {
-            acc[level] = moveIds;
-          }
-          return acc;
-        },
-        {} as Record<string, number[]>,
-      );
-      return immutate(s, {
-        character: {
-          learnset: {
-            $set: newLearnset,
-          },
-        },
-      });
-    });
-  }
-
-  function onDeleteMovePress(level: string, moveIndex: number) {
-    setContext((s) => {
-      let spec: Spec<Character['learnset']> = {};
-      if (s.character.learnset[level].length > 1) {
-        spec = {
-          [level]: { $splice: [[moveIndex, 1]] },
-        };
-      } else {
-        spec = { $unset: [level] };
-      }
-
-      return immutate(s, {
-        character: {
-          learnset: spec,
-        },
-      });
-    });
   }
 
   const firstHalfStats = Object.entries(StatMap).slice(0, 3);
@@ -259,10 +180,7 @@ export default function CharacterForm() {
                 <Text>Learnset:</Text>
               </FormControl.Label>
               <Button.Group variant={'outline'} isAttached={true} mb={5}>
-                <Button
-                  onPress={onAddMovePress}
-                  startIcon={<AddIcon />}
-                  flex={4}>
+                <Button onPress={addMove} startIcon={<AddIcon />} flex={4}>
                   <Text>Add Move</Text>
                 </Button>
                 <Button onPress={onSpreadMovePress} flex={1}>
@@ -277,7 +195,7 @@ export default function CharacterForm() {
                         <Swipeable
                           renderRightActions={() => (
                             <Button
-                              onPress={() => onDeleteMovePress(level, index)}
+                              onPress={() => deleteMove(level, index)}
                               ml={2}>
                               <Text>Remove</Text>
                             </Button>
